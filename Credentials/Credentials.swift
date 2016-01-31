@@ -24,7 +24,8 @@ public class Credentials {
     public func authenticate (credentialsType: CredentialsType, options: [String:AnyObject]) -> RouterHandler {
         return { (request: RouterRequest, response: RouterResponse, next: ()->Void) in
             if let plugin = self.plugins[credentialsType] {
-                plugin.authenticate(request, options: options, usersCache: self.usersCache.objectForKey(credentialsType.rawValue) as? NSCache) { userProfile in
+                var cache = self.usersCache.objectForKey(credentialsType.rawValue) as! NSCache
+                plugin.authenticate(request, options: options, usersCache: &cache) { userProfile in
                     if let userProfile = userProfile {
                         request.userInfo["profile"] = userProfile
                         next()
@@ -82,11 +83,11 @@ public class UserProfile {
 
 
 public protocol CredentialsPluginProtocol {
-    func authenticate (request: RouterRequest, options: [String:AnyObject], usersCache: NSCache?, callback: (UserProfile?) -> Void)
+    func authenticate (request: RouterRequest, options: [String:AnyObject], inout usersCache: NSCache, callback: (UserProfile?) -> Void)
 }
 
 
-class BaseCacheElement {
+public class BaseCacheElement {
     var userProfile : UserProfile
     var ttl : Int
     
