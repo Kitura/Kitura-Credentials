@@ -8,24 +8,20 @@
 
 import sys
 import net
-import io
 import router
 
 import Foundation
 
 public class Credentials {
     
-    var plugins = [CredentialsType : CredentialsPluginProtocol]()
-    
-    var usersCache = NSCache()
+    var plugins = [String : CredentialsPluginProtocol]()
     
     public init() {}
     
-    public func authenticate (credentialsType: CredentialsType, options: [String:AnyObject]) -> RouterHandler {
-        return { (request: RouterRequest, response: RouterResponse, next: ()->Void) in
+    public func authenticate (credentialsType: String, options: [String:AnyObject]) -> RouterHandler {
+        return { request, response, next in
             if let plugin = self.plugins[credentialsType] {
-                var cache = self.usersCache.objectForKey(credentialsType.rawValue) as! NSCache
-                plugin.authenticate(request, options: options, usersCache: &cache) { userProfile in
+               plugin.authenticate(request, options: options) { userProfile in
                     if let userProfile = userProfile {
                         request.userInfo["profile"] = userProfile
                         next()
@@ -63,35 +59,40 @@ public class Credentials {
         }
     }
     
-    public func register (credentialsType: CredentialsType, plugin: CredentialsPluginProtocol) {
-        plugins[credentialsType] = plugin
-        usersCache.setValue(NSCache(), forKey: credentialsType.rawValue)
+    public func register (plugin: CredentialsPluginProtocol) {
+        // TODO: Configure cache
+        plugins[plugin.name] = plugin
+        plugins[plugin.name]!.usersCache = NSCache()
     }
 }
 
 
-public enum CredentialsType : String {
-    case FacebookToken
-}
-
-
 public class UserProfile {
-    public var id = ""
-    public var firstName = ""
-    public var lastName = ""
+    public var id : String
+    public var firstName : String
+    public var lastName : String
+    
+    public init (id: String, firstName: String, lastName: String) {
+        self.id = id
+        self.firstName = firstName
+        self.lastName = lastName
+    }
 }
 
 
 public protocol CredentialsPluginProtocol {
-    func authenticate (request: RouterRequest, options: [String:AnyObject], inout usersCache: NSCache, callback: (UserProfile?) -> Void)
+    var name: String { get }
+    var usersCache: NSCache? { get set }
+    
+    func authenticate (request: RouterRequest, options: [String:AnyObject], callback: (UserProfile?) -> Void)
 }
 
 
 public class BaseCacheElement {
-    var userProfile : UserProfile
-    var ttl : Int
+    public var userProfile : UserProfile
+    public var ttl : Int
     
-    init (profile: UserProfile) {
+    public init (profile: UserProfile) {
         userProfile = profile
         ttl = 10 // TODO
     }

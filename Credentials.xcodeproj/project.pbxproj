@@ -7,17 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A2C906A61C4F82980020B08B /* Credentials.h in Headers */ = {isa = PBXBuildFile; fileRef = A2C906A51C4F82980020B08B /* Credentials.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A2C906AE1C4F82B90020B08B /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C906AD1C4F82B90020B08B /* Credentials.swift */; };
 		A2C906B01C50C7B80020B08B /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C906AF1C50C7B80020B08B /* Package.swift */; };
+		A2C906E11C6095A60020B08B /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C906DE1C6095A60020B08B /* Credentials.swift */; };
+		A2C906E21C6095A60020B08B /* Credentials.h in Headers */ = {isa = PBXBuildFile; fileRef = A2C906DF1C6095A60020B08B /* Credentials.h */; };
+		A2C906E31C6095A60020B08B /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A2C906E01C6095A60020B08B /* Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		A2C906A21C4F82980020B08B /* Credentials.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Credentials.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		A2C906A51C4F82980020B08B /* Credentials.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Credentials.h; sourceTree = "<group>"; };
-		A2C906A71C4F82980020B08B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A2C906AD1C4F82B90020B08B /* Credentials.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
 		A2C906AF1C50C7B80020B08B /* Package.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
+		A2C906DE1C6095A60020B08B /* Credentials.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Credentials.swift; path = Sources/Credentials/Credentials.swift; sourceTree = SOURCE_ROOT; };
+		A2C906DF1C6095A60020B08B /* Credentials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Credentials.h; path = Sources/Credentials/Credentials.h; sourceTree = SOURCE_ROOT; };
+		A2C906E01C6095A60020B08B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Sources/Credentials/Info.plist; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,9 +52,9 @@
 		A2C906A41C4F82980020B08B /* Credentials */ = {
 			isa = PBXGroup;
 			children = (
-				A2C906A51C4F82980020B08B /* Credentials.h */,
-				A2C906AD1C4F82B90020B08B /* Credentials.swift */,
-				A2C906A71C4F82980020B08B /* Info.plist */,
+				A2C906DE1C6095A60020B08B /* Credentials.swift */,
+				A2C906DF1C6095A60020B08B /* Credentials.h */,
+				A2C906E01C6095A60020B08B /* Info.plist */,
 			);
 			path = Credentials;
 			sourceTree = "<group>";
@@ -65,7 +66,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A2C906A61C4F82980020B08B /* Credentials.h in Headers */,
+				A2C906E21C6095A60020B08B /* Credentials.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -126,6 +127,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A2C906E31C6095A60020B08B /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -136,8 +138,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A2C906E11C6095A60020B08B /* Credentials.swift in Sources */,
 				A2C906B01C50C7B80020B08B /* Package.swift in Sources */,
-				A2C906AE1C4F82B90020B08B /* Credentials.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -288,6 +290,7 @@
 				A2C906AC1C4F82980020B08B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
