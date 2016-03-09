@@ -16,7 +16,7 @@
 
 import KituraRouter
 import KituraNet
-import KituraSys
+import LoggerAPI
 
 import Foundation
 
@@ -48,7 +48,7 @@ public class Credentials {
                                 try response.status(HttpStatusCode.UNAUTHORIZED).end()
                             }
                             catch {
-                                response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey:"Internal error"])
+                                Log.error("Failed to send response")
                             }
 
                         }
@@ -61,14 +61,14 @@ public class Credentials {
                     try response.status(HttpStatusCode.UNAUTHORIZED).end()
                 }
                 catch {
-                    response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey:"Internal error"])
+                    Log.error("Failed to send response")
                 }
             }
+            next()
         }
     }
     
     public func register (plugin: CredentialsPluginProtocol) {
-        // TODO: Configure cache
         plugins[plugin.name] = plugin
         plugins[plugin.name]!.usersCache = NSCache()
     }
@@ -77,13 +77,11 @@ public class Credentials {
 
 public class UserProfile {
     public var id : String
-    public var firstName : String
-    public var lastName : String
+    public var name : String
     
-    public init (id: String, firstName: String, lastName: String) {
+    public init (id: String, name: String) {
         self.id = id
-        self.firstName = firstName
-        self.lastName = lastName
+        self.name = name
     }
 }
 
@@ -98,10 +96,8 @@ public protocol CredentialsPluginProtocol {
 
 public class BaseCacheElement {
     public var userProfile : UserProfile
-    public var ttl : Int
     
     public init (profile: UserProfile) {
         userProfile = profile
-        ttl = 10 // TODO
     }
 }
