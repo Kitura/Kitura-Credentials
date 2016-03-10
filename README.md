@@ -6,7 +6,7 @@ A pluggable framework for validating user credentials in a Swift server using Ki
 ![Apache 2](https://img.shields.io/badge/license-Apache2-blue.svg?style=flat)
 
 ## Summary
-A pluggable framework for validating user credentials in a Swift server using Kitura
+A pluggable framework for validating user credentials in a Swift server using Kitura. A particular plugin for this framework enables authenticating a user in some particular way. For example, Open-Id, Facebook login, Google login, and potentially many others.   
 
 
 ## Table of Contents
@@ -50,10 +50,14 @@ And finally call `authenticate` to create a handler for post requests:
 
 ```
 router.post("/collection/:new", handler: credentials.authenticate(fbCredentialsPlugin.name, options: [:]))
+router.post("/collection/:new") {request, response, next in
+   ...
+   next()
+}
 ```
 
 ## List of plugins:
-* [Kitura-CredentialsFacebookToken](https://github.com/IBM-Swift/Kitura-CredentialsFacebookToken)
+* [Authentication using an OAuth token from Facebook](https://github.com/IBM-Swift/Kitura-CredentialsFacebookToken)
 
 ## License
 This library is licensed under Apache 2.0. Full license text is available in [LICENSE](LICENSE.txt).
