@@ -49,8 +49,8 @@ This example authenticates post requests using [Kitura-CredentialsFacebookToken]
 First create an instance of `Credentials` and an instance of credentials plugin:
 
 ```swift
-#import Credentials
-#import CredentialsFacebookToken
+import Credentials
+import CredentialsFacebookToken
 
 let credentials = Credentials()
 let fbCredentialsPlugin = CredentialsFacebookToken()
