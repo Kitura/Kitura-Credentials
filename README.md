@@ -28,8 +28,19 @@ public func authenticate (credentialsType: String, options: [String:AnyObject]) 
 ```
 
 `credentialsType` is the name of credentials plugin (e.g. [Kitura-CredentialsFacebookToken](https://github.com/IBM-Swift/Kitura-CredentialsFacebookToken))
+<br>
 `options` is a dictionary of options passed to the plugin
-
+<br>
+The function returns a `RouterHandler` to be called upon requests that require authentication.
+<br>
+<br>
+After successful authentication `request.userInfo["profile"]` will contain an instance of `UserProfile` with user's profile information received from OAuth server using the plugin:
+```swift
+public class UserProfile {
+    public var id : String
+    public var name : String
+}
+```
 
 ## Example
 
@@ -37,20 +48,27 @@ This example authenticates post requests using [Kitura-CredentialsFacebookToken]
 
 First create an instance of `Credentials` and an instance of credentials plugin:
 
-```
+```swift
+#import Credentials
+#import CredentialsFacebookToken
+
 let credentials = Credentials()
 let fbCredentialsPlugin = CredentialsFacebookToken()
 ```
 Now register the plugin:
-```
+```swift
 credentials.register(fbCredentialsPlugin)
 ```
 
 And finally call `authenticate` to create a handler for post requests:
 
-```
+```swift
 router.post("/collection/:new", handler: credentials.authenticate(fbCredentialsPlugin.name, options: [:]))
 router.post("/collection/:new") {request, response, next in
+   ...
+   let profile = request.userInfo["profile"] as! UserProfile
+   let userId = profile.id
+   let userName = profile.name
    ...
    next()
 }
