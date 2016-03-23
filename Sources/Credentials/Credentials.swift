@@ -20,22 +20,36 @@ import LoggerAPI
 
 import Foundation
 
-public class Credentials {
+public class Credentials : RouterMiddleware {
     
-    var plugins = [String : CredentialsPluginProtocol]()
+    var plugins = [CredentialsPluginProtocol]()
+    public var options : [String:AnyObject]
     
-    public init() {}
+    public convenience init () {
+        self.init(options: [String:AnyObject]())
+    }
     
-    public func authenticate (credentialsType: String, options: [String:AnyObject]) -> RouterHandler {
-        return { request, response, next in
-            if let plugin = self.plugins[credentialsType] {
-               plugin.authenticate(request, options: options) { userProfile in
-                    if let userProfile = userProfile {
+    public init (options: [String:AnyObject]) {
+        self.options = options
+    }
+    
+    public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) {
+        var pluginIndex = -1
+        
+        // Extra variable to get around use of variable in its own initializer
+        var callback: (()->Void)? = nil
+        
+        let callbackHandler = {[unowned request, unowned response, next] () -> Void in
+            pluginIndex += 1
+            if pluginIndex < self.plugins.count {
+                let plugin = self.plugins[pluginIndex]
+                plugin.authenticate(request, options: self.options,
+                    onSuccess: { userProfile in
                         request.userInfo["profile"] = userProfile
                         next()
-                    }
-                    else {
-                        if let redirect = options["failureRedirect"] as? String {
+                    },
+                    onFailure: {
+                        if let redirect = self.options["failureRedirect"] as? String {
                             do {
                                 try response.redirect(HttpStatusCode.UNAUTHORIZED, path: redirect)
                             }
@@ -50,11 +64,13 @@ public class Credentials {
                             catch {
                                 Log.error("Failed to send response")
                             }
-
                         }
                         next()
+                    },
+                    onPass: {
+                        callback!()
                     }
-                }
+                )
             }
             else {
                 do {
@@ -63,15 +79,19 @@ public class Credentials {
                 catch {
                     Log.error("Failed to send response")
                 }
+                next()
             }
-            next()
         }
+
+        callback = callbackHandler
+        callbackHandler()
     }
     
     public func register (plugin: CredentialsPluginProtocol) {
-        plugins[plugin.name] = plugin
-        plugins[plugin.name]!.usersCache = NSCache()
+        plugins.append(plugin)
+        plugins[plugins.count - 1].usersCache = NSCache()
     }
+    
 }
 
 
@@ -90,7 +110,7 @@ public protocol CredentialsPluginProtocol {
     var name: String { get }
     var usersCache: NSCache? { get set }
     
-    func authenticate (request: RouterRequest, options: [String:AnyObject], callback: (UserProfile?) -> Void)
+    func authenticate (request: RouterRequest, options: [String:AnyObject], onSuccess: (UserProfile) -> Void, onFailure: () -> Void, onPass: () -> Void)
 }
 
 
