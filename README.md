@@ -18,7 +18,7 @@ Kitura-Credentials loops through the plugins in the order they were registered u
 * [License](#license)
 
 ## Swift version
-The latest version of Kitura-Credentials works with the DEVELOPMENT-SNAPSHOT-2016-03-01-a version of the Swift binaries. You can download this version of the Swift binaries by following this [link](https://swift.org/download/).
+The latest version of Kitura-Credentials works with the DEVELOPMENT-SNAPSHOT-2016-03-24-a version of the Swift binaries. You can download this version of the Swift binaries by following this [link](https://swift.org/download/). Compatibility with other Swift versions is not guaranteed.
 
 
 ## Example
@@ -41,15 +41,15 @@ Now register the plugin:
 credentials.register(fbCredentialsPlugin)
 ```
 
-Kitura-Credentials framework is `RouterMiddleware`. To connect it to the desired path use one of the `Router` methods. After successful authentication `request.userInfo["profile"]` will contain an instance of `UserProfile` with user profile information received from OAuth server using the plugin.
+Kitura-Credentials framework is `RouterMiddleware`. To connect it to the desired path use one of the `Router` methods. After successful authentication `request.userPprofile` will contain an instance of `UserProfile` with user profile information received from OAuth server using the plugin.
 
 ```swift
 router.post("/collection/:new", middleware: credentials)
 router.post("/collection/:new") {request, response, next in
    ...
-   let profile = request.userInfo["profile"] as! UserProfile
+   let profile = request.userProfile
    let userId = profile.id
-   let userName = profile.name
+   let userName = profile.displayName
    ...
    next()
 }
