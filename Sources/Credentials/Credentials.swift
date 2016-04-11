@@ -43,32 +43,21 @@ public class Credentials : RouterMiddleware {
             pluginIndex += 1
             if pluginIndex < self.plugins.count {
                 let plugin = self.plugins[pluginIndex]
-                plugin.authenticate(request, options: self.options,
+                plugin.authenticate(request, response: response, options: self.options,
                     onSuccess: { userProfile in
-                        request.userInfo["profile"] = userProfile
+                        request.userProfile = userProfile
                         next()
                     },
                     onFailure: {
-                        if let redirect = self.options["failureRedirect"] as? String {
-                            do {
-                                try response.redirect(HttpStatusCode.UNAUTHORIZED, path: redirect)
-                            }
-                            catch {
-                                response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey:"Failed to redirect unauthorized request"])
-                            }
-                        }
-                        else {
-                            do {
-                                try response.status(HttpStatusCode.UNAUTHORIZED).end()
-                            }
-                            catch {
-                                Log.error("Failed to send response")
-                            }
-                        }
+                        self.redirectUnauthorized(response)
                         next()
                     },
                     onPass: {
                         callback!()
+                    },
+                    inProgress: {
+                        self.redirectUnauthorized(response)
+                        next()
                     }
                 )
             }
@@ -92,17 +81,33 @@ public class Credentials : RouterMiddleware {
         plugins[plugins.count - 1].usersCache = NSCache()
     }
     
-}
-
-
-public class UserProfile {
-    public var id : String
-    public var name : String
-    
-    public init (id: String, name: String) {
-        self.id = id
-        self.name = name
+    private func redirectUnauthorized (response: RouterResponse, path: String?=nil) {
+        let redirect : String?
+        if let path = path {
+            redirect = path
+        }
+        else {
+            redirect = options["failureRedirect"] as? String
+        }
+        if let redirect = redirect {
+            do {
+                try response.redirect(redirect)
+            }
+            catch {
+                response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey:"Failed to redirect unauthorized request"])
+            }
+        }
+        else {
+            do {
+                try response.status(HttpStatusCode.UNAUTHORIZED).end()
+            }
+            catch {
+                Log.error("Failed to send response")
+            }
+        }
     }
+    
+
 }
 
 
@@ -110,7 +115,7 @@ public protocol CredentialsPluginProtocol {
     var name: String { get }
     var usersCache: NSCache? { get set }
     
-    func authenticate (request: RouterRequest, options: [String:AnyObject], onSuccess: (UserProfile) -> Void, onFailure: () -> Void, onPass: () -> Void)
+    func authenticate (request: RouterRequest, response: RouterResponse, options: [String:AnyObject], onSuccess: (UserProfile) -> Void, onFailure: () -> Void, onPass: () -> Void, inProgress: () -> Void)
 }
 
 

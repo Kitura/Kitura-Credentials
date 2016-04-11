@@ -14,11 +14,20 @@
  * limitations under the License.
  **/
 
-import PackageDescription
+import Kitura
 
-let package = Package(
-    name: "Kitura-Credentials",
-    dependencies: [
-        .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 8)
-    ]
-)
+import Foundation
+
+
+private let USER_PROFILE_USER_INFO_KEY = "@@Kitura@@UserProfile@@"
+
+public extension RouterRequest {
+    public internal(set) var userProfile: UserProfile? {
+        get {
+            return userInfo[USER_PROFILE_USER_INFO_KEY] as? UserProfile
+        }
+        set {
+            userInfo[USER_PROFILE_USER_INFO_KEY] = newValue
+        }
+    }
+}

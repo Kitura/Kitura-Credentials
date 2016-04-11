@@ -7,11 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A26D449F1CB3D5F100D87953 /* RouterRequest+UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = A26D449E1CB3D5F100D87953 /* RouterRequest+UserProfile.swift */; };
+		A26D44A11CB3D6A900D87953 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = A26D44A01CB3D6A900D87953 /* UserProfile.swift */; };
 		A2C906B01C50C7B80020B08B /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C906AF1C50C7B80020B08B /* Package.swift */; };
 		A2C906E11C6095A60020B08B /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C906DE1C6095A60020B08B /* Credentials.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A26D449E1CB3D5F100D87953 /* RouterRequest+UserProfile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "RouterRequest+UserProfile.swift"; path = "Sources/Credentials/RouterRequest+UserProfile.swift"; sourceTree = SOURCE_ROOT; };
+		A26D44A01CB3D6A900D87953 /* UserProfile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserProfile.swift; path = Sources/Credentials/UserProfile.swift; sourceTree = SOURCE_ROOT; };
 		A2C906A21C4F82980020B08B /* Credentials.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Credentials.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2C906AF1C50C7B80020B08B /* Package.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		A2C906DE1C6095A60020B08B /* Credentials.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Credentials.swift; path = Sources/Credentials/Credentials.swift; sourceTree = SOURCE_ROOT; };
@@ -49,6 +53,8 @@
 			isa = PBXGroup;
 			children = (
 				A2C906DE1C6095A60020B08B /* Credentials.swift */,
+				A26D44A01CB3D6A900D87953 /* UserProfile.swift */,
+				A26D449E1CB3D5F100D87953 /* RouterRequest+UserProfile.swift */,
 			);
 			path = Credentials;
 			sourceTree = "<group>";
@@ -130,8 +136,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A26D44A11CB3D6A900D87953 /* UserProfile.swift in Sources */,
 				A2C906E11C6095A60020B08B /* Credentials.swift in Sources */,
 				A2C906B01C50C7B80020B08B /* Package.swift in Sources */,
+				A26D449F1CB3D5F100D87953 /* RouterRequest+UserProfile.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
