@@ -16,7 +16,7 @@
 
 import XCTest
 
-@testable import CredentialsTestSuite
+@testable import KituraCredentialsTestSuite
 
 XCTMain([
 ])
