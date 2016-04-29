@@ -220,7 +220,7 @@ public enum CredentialsPluginType {
 public protocol CredentialsPluginProtocol {
     var name: String { get }
 #if os(OSX)
-    var usersCache: NSCache<NSString, NSString>? { get set }
+    var usersCache: NSCache<NSString, BaseCacheElement>? { get set }
 #else
     var usersCache: NSCache? { get set }
 #endif
