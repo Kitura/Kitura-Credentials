@@ -70,7 +70,7 @@ public class Credentials : RouterMiddleware {
                 pluginIndex += 1
                 if pluginIndex < self.tokenPlugins.count {
                     let plugin = self.tokenPlugins[pluginIndex]
-                    plugin.authenticate(request, response: response, options: self.options,
+                    plugin.authenticate(request: request, response: response, options: self.options,
                                         onSuccess: { userProfile in
                                             request.userProfile = userProfile
                                             next()
@@ -116,7 +116,7 @@ public class Credentials : RouterMiddleware {
         }
     }
 
-    private func redirectUnauthorized (response: RouterResponse, path: String?=nil) {
+    private func redirectUnauthorized (_ response: RouterResponse, path: String?=nil) {
         let redirect : String?
         if let path = path {
             redirect = path
@@ -143,7 +143,7 @@ public class Credentials : RouterMiddleware {
     }
     
     
-    private func redirectAuthorized (response: RouterResponse, path: String?=nil) {
+    private func redirectAuthorized (_ response: RouterResponse, path: String?=nil) {
         let redirect : String?
         if let path = path {
             redirect = path
@@ -165,7 +165,7 @@ public class Credentials : RouterMiddleware {
     public func authenticate (credentialsType: String, successRedirect: String?=nil, failureRedirect: String?=nil) -> RouterHandler {
         return { request, response, next in
             if let plugin = self.sessionPlugins[credentialsType] {
-                plugin.authenticate(request, response: response, options: self.options,
+                plugin.authenticate(request: request, response: response, options: self.options,
                                     onSuccess: { userProfile in
                                         if let session = request.session {
                                             var profile = [String:String]()
@@ -177,7 +177,7 @@ public class Credentials : RouterMiddleware {
                                             var redirect : String?
                                             if session["returnTo"].type != .Null  {
                                                 redirect = session["returnTo"].stringValue
-                                                session.remove("returnTo")
+                                                session.remove(key: "returnTo")
                                             }
                                             self.redirectAuthorized(response, path: redirect ?? successRedirect)
                                             
@@ -219,7 +219,11 @@ public enum CredentialsPluginType {
 
 public protocol CredentialsPluginProtocol {
     var name: String { get }
+#if os(OSX)
+    var usersCache: NSCache<NSString, NSString>? { get set }
+#else
     var usersCache: NSCache? { get set }
+#endif
     var type: CredentialsPluginType { get }
     
     func authenticate (request: RouterRequest, response: RouterResponse, options: [String:AnyObject], onSuccess: (UserProfile) -> Void, onFailure: () -> Void, onPass: () -> Void, inProgress: () -> Void)
