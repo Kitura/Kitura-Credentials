@@ -23,17 +23,23 @@ import Foundation
 
 import SwiftyJSON
 
+#if os(Linux)
+public typealias OptionValue = Any
+#else
+public typealias OptionValue = AnyObject
+#endif
+
 public class Credentials : RouterMiddleware {
     
     var tokenPlugins = [CredentialsPluginProtocol]()
     var sessionPlugins = [String : CredentialsPluginProtocol]()
-    public var options : [String:AnyObject]
+    public var options : [String:OptionValue]
     
     public convenience init () {
-        self.init(options: [String:AnyObject]())
+        self.init(options: [String:OptionValue]())
     }
     
-    public init (options: [String:AnyObject]) {
+    public init (options: [String:OptionValue]) {
         self.options = options
     }
     
@@ -226,7 +232,7 @@ public protocol CredentialsPluginProtocol {
 #endif
     var type: CredentialsPluginType { get }
     
-    func authenticate (request: RouterRequest, response: RouterResponse, options: [String:AnyObject], onSuccess: (UserProfile) -> Void, onFailure: () -> Void, onPass: () -> Void, inProgress: () -> Void)
+    func authenticate (request: RouterRequest, response: RouterResponse, options: [String:OptionValue], onSuccess: (UserProfile) -> Void, onFailure: () -> Void, onPass: () -> Void, inProgress: () -> Void)
 }
 
 
@@ -237,3 +243,4 @@ public class BaseCacheElement {
         userProfile = profile
     }
 }
+
