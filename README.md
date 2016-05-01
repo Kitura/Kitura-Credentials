@@ -22,7 +22,7 @@ In the web session case authentication is performed for a specific plugin: Kitur
 * [License](#license)
 
 ## Swift version
-The latest version of Kitura-Credentials works with the DEVELOPMENT-SNAPSHOT-2016-03-24-a version of the Swift binaries. You can download this version of the Swift binaries by following this [link](https://swift.org/download/). Compatibility with other Swift versions is not guaranteed.
+The latest version of Kitura-Credentials works with the DEVELOPMENT-SNAPSHOT-2016-04-25-a version of the Swift binaries. You can download this version of the Swift binaries by following this [link](https://swift.org/download/). Compatibility with other Swift versions is not guaranteed.
 
 
 ## Example
