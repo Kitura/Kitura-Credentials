@@ -118,7 +118,6 @@ public class Credentials : RouterMiddleware {
             tokenPlugins[tokenPlugins.count - 1].usersCache = NSCache()
         case .Session:
             sessionPlugins[plugin.name] = plugin
-            sessionPlugins[plugin.name]!.usersCache = NSCache()
         }
     }
 

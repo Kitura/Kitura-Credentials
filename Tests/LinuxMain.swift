@@ -16,7 +16,10 @@
 
 import XCTest
 
-@testable import KituraCredentialsTestSuite
+@testable import CredentialsTestSuite
+
 
 XCTMain([
-])
+            testCase(TestToken.allTests),
+            testCase(TestSession.allTests)
+    ])
