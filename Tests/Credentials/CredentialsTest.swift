@@ -28,30 +28,30 @@ protocol CredentialsTest {
 }
 
 extension CredentialsTest {
-    
+
     func doTearDown() {
         //       sleep(10)
     }
-    
+
     func performServerTest(router: HttpServerDelegate, asyncTasks: (expectation: XCTestExpectation) -> Void...) {
         let server = setupServer(port: 8090, delegate: router)
         let requestQueue = Queue(type: QueueType.SERIAL)
-        
+
         for (index, asyncTask) in asyncTasks.enumerated() {
             let expectation = self.expectation(index)
             requestQueue.queueAsync {
                 asyncTask(expectation: expectation)
             }
         }
-        
+
         waitExpectation(timeout: 10) { error in
             // blocks test until request completes
             server.stop()
             XCTAssertNil(error);
         }
     }
-    
-    func performRequest(method: String, path: String, callback: ClientRequestCallback, headers: [String: String]? = nil, requestModifier: ((ClientRequest) -> Void)? = nil) {
+
+    func performRequest(method: String, host: String = "localhost", path: String, callback: ClientRequestCallback, headers: [String: String]? = nil, requestModifier: ((ClientRequest) -> Void)? = nil) {
         var allHeaders = [String: String]()
         if  let headers = headers  {
             for  (headerName, headerValue) in headers  {
@@ -59,13 +59,13 @@ extension CredentialsTest {
             }
         }
         allHeaders["Content-Type"] = "text/plain"
-        let req = Http.request([.Method(method), .Hostname("localhost"), .Port(8090), .Path(path), .Headers(allHeaders)], callback: callback)
+        let req = Http.request([.Method(method), .Hostname(host), .Port(8090), .Path(path), .Headers(allHeaders)], callback: callback)
         if let requestModifier = requestModifier {
             requestModifier(req)
         }
         req.end()
     }
-    
+
     private func setupServer(port: Int, delegate: HttpServerDelegate) -> HttpServer {
         return HttpServer.listen(port: port, delegate: delegate,
                                  notOnMainQueue:true)
