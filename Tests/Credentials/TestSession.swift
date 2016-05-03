@@ -25,44 +25,41 @@ import KituraSession
 @testable import Credentials
 
 class TestSession : XCTestCase {
-    
+
     static var allTests : [(String, TestSession -> () throws -> Void)] {
         return [
             ("testSession", testSession),
         ]
     }
-    
+
     override func tearDown() {
         doTearDown()
     }
-    
+
+    let host = "127.0.0.1"
+
     let router = TestSession.setupRouter()
-    
+
     func testSession() {
-//        performServerTest(router: router) { expectation in
-//            self.performRequest(method: "get", path:"/private/data", callback: {response in
-//                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-//                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
-//                do {
-//                    let body = try response!.readString()
-//                    XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Dummy User is logged in with DummySession</b></body></html>\n\n")
-//                }
-//                catch{
-//                    XCTFail("No response body")
-//                }
-//                expectation.fulfill()
-//                })
-//        }
+        performServerTest(router: router) { expectation in
+            self.performRequest(method: "get", host: self.host, path: "/private/data", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Dummy User is logged in with DummySession</b></body></html>\n\n")
+                }
+                catch{
+                    XCTFail("No response body")
+                }
+                expectation.fulfill()
+                })
+        }
     }
-    
+
     static func setupRouter() -> Router {
         let router = Router()
-//        router.all() {request, _, next in
-//            for (key, value) in request.headers {
-//                print("Header: key=\(key) value=\(value)")
-//            }
-//            next()
-//        }
+
         router.all(middleware: Session(secret: "Very very secret....."))
 
         let dummySessionPlugin = DummySessionPlugin(clientId: "dummyClientId", clientSecret: "dummyClientSecret", callbackUrl: "/login/callback")
