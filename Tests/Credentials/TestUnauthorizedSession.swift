@@ -1,3 +1,12 @@
+//
+//  TestUnauthorizedSession.swift
+//  Kitura-Credentials
+//
+//  Created by Ira Rosen on 03/05/2016.
+//
+//
+
+import Foundation
 /**
  * Copyright IBM Corporation 2016
  *
@@ -20,15 +29,16 @@ import XCTest
 import Kitura
 import KituraNet
 import KituraSys
+import KituraSession
 
 @testable import Credentials
 
-class TestToken : XCTestCase {
+class TestUnauthorizedSession : XCTestCase {
     
-    static var allTests : [(String, TestToken -> () throws -> Void)] {
+    static var allTests : [(String, TestUnauthorizedSession -> () throws -> Void)] {
         return [
-            ("testToken", testToken),
-            ("testUnauthorized", testUnauthorized)
+                ("testRedirect", testRedirect),
+                ("testNoRedirect", testNoRedirect)
         ]
     }
     
@@ -36,56 +46,71 @@ class TestToken : XCTestCase {
         doTearDown()
     }
     
-    let router = TestToken.setupRouter()
+    let host = "127.0.0.1"
     
-    func testToken() {
-        performServerTest(router: router) { expectation in
-            self.performRequest(method: "get", path:"/private/user", callback: {response in
-                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
-                do {
-                    let body = try response!.readString()
-                    XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Dummy User is logged in with DummyToken</b></body></html>\n\n")
-                }
-                catch{
-                    XCTFail("No response body")
-                }
-                expectation.fulfill()
-            }, headers: ["X-token-type" : "DummyToken", "access_token" : "dummyToken123"])
-        }
-    }
+    static let credentials = Credentials()
+    let router = TestUnauthorizedSession.setupRouter()
     
-    func testUnauthorized() {
+    func testRedirect() {
+        TestUnauthorizedSession.credentials.options["failureRedirect"] = "/login"
         performServerTest(router: router) { expectation in
-            self.performRequest(method: "get", path:"/private/user", callback: {response in
+            self.performRequest(method: "get", host: self.host, path: "/private/data", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response!.statusCode, HttpStatusCode.UNAUTHORIZED, "HTTP Status code was \(response!.statusCode)")
+               
                 expectation.fulfill()
-                }, headers: ["X-token-type" : "DummyToken", "access_token" : "wrongToken"])
+            })
         }
     }
 
-    
+    func testNoRedirect() {
+        TestUnauthorizedSession.credentials.options["failureRedirect"] = nil
+        performServerTest(router: router) { expectation in
+            self.performRequest(method: "get", host: self.host, path: "/private/data", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HttpStatusCode.UNAUTHORIZED, "HTTP Status code was \(response!.statusCode)")
+               
+                expectation.fulfill()
+            })
+        }
+    }
+
+
     static func setupRouter() -> Router {
         let router = Router()
-        
-        let dummyTokenPlugin = DummyTokenPlugin()
-        let credentials = Credentials()
-        credentials.register(plugin: dummyTokenPlugin)
+
+        router.all(middleware: Session(secret: "Very very secret....."))
+
+        let badSessionPlugin = BadSessionPlugin(clientId: "dummyClientId", clientSecret: "dummyClientSecret", callbackUrl: "/login/callback")
+        credentials.register(plugin: badSessionPlugin)
+        credentials.options["failureRedirect"] = "/login"
+        credentials.options["successRedirect"] = "/private/data"
         
         router.all("/private/*", middleware: BodyParser())
         
         router.all("/private", middleware: credentials)
         
-        router.get("/private/user") { request, response, next in
+        router.get("/private/data") { request, response, next in
             response.setHeader("Content-Type", value: "text/html; charset=utf-8")
             do {
                 if let profile = request.userProfile {
                     try response.status(HttpStatusCode.OK).end("<!DOCTYPE html><html><body><b>\(profile.displayName) is logged in with \(profile.provider)</b></body></html>\n\n")
                 }
+             }
+            catch {}
+            
+            next()
+        }
+        
+        router.get("/login",
+                   handler: credentials.authenticate(credentialsType: badSessionPlugin.name))
+        router.get("/login/callback",
+                   handler: credentials.authenticate(credentialsType: badSessionPlugin.name, failureRedirect: "/login/failure"))
+        router.get("/login/failure") { _, response, next in
+            do {
+                try response.status(HttpStatusCode.UNAUTHORIZED).end()
             }
             catch {}
-
             next()
         }
         
