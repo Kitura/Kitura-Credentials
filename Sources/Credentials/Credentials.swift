@@ -216,30 +216,4 @@ public class Credentials : RouterMiddleware {
 }
 
 
-public enum CredentialsPluginType {
-    case Token
-    case Session
-}
-
-
-public protocol CredentialsPluginProtocol {
-    var name: String { get }
-#if os(OSX)
-    var usersCache: NSCache<NSString, BaseCacheElement>? { get set }
-#else
-    var usersCache: NSCache? { get set }
-#endif
-    var type: CredentialsPluginType { get }
-    
-    func authenticate (request: RouterRequest, response: RouterResponse, options: [String:OptionValue], onSuccess: (UserProfile) -> Void, onFailure: () -> Void, onPass: () -> Void, inProgress: () -> Void)
-}
-
-
-public class BaseCacheElement {
-    public var userProfile : UserProfile
-    
-    public init (profile: UserProfile) {
-        userProfile = profile
-    }
-}
 

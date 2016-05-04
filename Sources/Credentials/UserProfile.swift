@@ -14,8 +14,6 @@
  * limitations under the License.
  **/
 
-import Kitura
-
 import Foundation
 
 public class UserProfile {
