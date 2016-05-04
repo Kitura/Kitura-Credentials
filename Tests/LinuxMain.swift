@@ -21,5 +21,6 @@ import XCTest
 
 XCTMain([
             testCase(TestToken.allTests),
-            testCase(TestSession.allTests)
+            testCase(TestSession.allTests),
+            testCase(TestUnauthorizedSession.allTests)
     ])
