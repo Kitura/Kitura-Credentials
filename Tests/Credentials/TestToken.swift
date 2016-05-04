@@ -28,7 +28,6 @@ class TestToken : XCTestCase {
     static var allTests : [(String, TestToken -> () throws -> Void)] {
         return [
             ("testToken", testToken),
-            ("testUnauthorized", testUnauthorized)
         ]
     }
     
@@ -55,17 +54,6 @@ class TestToken : XCTestCase {
         }
     }
     
-    func testUnauthorized() {
-        performServerTest(router: router) { expectation in
-            self.performRequest(method: "get", path:"/private/user", callback: {response in
-                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HttpStatusCode.UNAUTHORIZED, "HTTP Status code was \(response!.statusCode)")
-                expectation.fulfill()
-                }, headers: ["X-token-type" : "DummyToken", "access_token" : "wrongToken"])
-        }
-    }
-
-    
     static func setupRouter() -> Router {
         let router = Router()
         
@@ -82,6 +70,9 @@ class TestToken : XCTestCase {
             do {
                 if let profile = request.userProfile {
                     try response.status(HttpStatusCode.OK).end("<!DOCTYPE html><html><body><b>\(profile.displayName) is logged in with \(profile.provider)</b></body></html>\n\n")
+                }
+                else {
+                    try response.status(HttpStatusCode.UNAUTHORIZED).end()
                 }
             }
             catch {}
