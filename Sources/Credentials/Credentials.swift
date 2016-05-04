@@ -213,6 +213,14 @@ public class Credentials : RouterMiddleware {
             }
         }
     }
+    
+    
+    public func logOut (request: RouterRequest) {
+        if let session = request.session  {
+            request.userProfile = nil
+            session.remove(key: "userProfile")
+        }
+    }
 }
 
 
