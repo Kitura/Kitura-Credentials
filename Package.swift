@@ -19,7 +19,7 @@ import PackageDescription
 let package = Package(
     name: "Kitura-Credentials",
     dependencies: [
-        .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 11),
-        .Package(url: "https://github.com/IBM-Swift/Kitura-Session.git", majorVersion: 0, minor: 3)
+        .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 13),
+        .Package(url: "https://github.com/IBM-Swift/Kitura-Session.git", majorVersion: 0, minor: 5)
     ]
 )

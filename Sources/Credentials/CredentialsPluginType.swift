@@ -15,6 +15,6 @@
  **/
 
 public enum CredentialsPluginType {
-    case Token
-    case Session
+    case token
+    case session
 }

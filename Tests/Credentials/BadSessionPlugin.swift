@@ -24,33 +24,33 @@ import SwiftyJSON
 import Foundation
 
 public class BadSessionPlugin : CredentialsPluginProtocol {
-    
+
     private var clientId : String
-    
+
     private var clientSecret : String
-    
+
     public var callbackUrl : String
-    
+
     public var name : String {
         return "BadSession"
     }
-    
+
     public var type : CredentialsPluginType {
-        return .Session
+        return .session
     }
-    
+
 #if os(OSX)
     public var usersCache : NSCache<NSString, BaseCacheElement>?
 #else
     public var usersCache : NSCache?
 #endif
-    
+
     public init (clientId: String, clientSecret : String, callbackUrl : String) {
         self.clientId = clientId
         self.clientSecret = clientSecret
         self.callbackUrl = callbackUrl
     }
-    
+
     public func authenticate (request: RouterRequest, response: RouterResponse, options: [String:OptionValue], onSuccess: (UserProfile) -> Void, onFailure: () -> Void, onPass: () -> Void, inProgress: () -> Void) {
         if let code = request.queryParams["code"] where code == "123" {
             onFailure()

@@ -25,30 +25,30 @@ import KituraSession
 @testable import Credentials
 
 class TestUnauthorizedSession : XCTestCase {
-    
+
     static var allTests : [(String, TestUnauthorizedSession -> () throws -> Void)] {
         return [
                 ("testRedirect", testRedirect),
                 ("testNoRedirect", testNoRedirect)
         ]
     }
-    
+
     override func tearDown() {
         doTearDown()
     }
-    
+
     let host = "127.0.0.1"
-    
+
     static let credentials = Credentials()
     let router = TestUnauthorizedSession.setupRouter()
-    
+
     func testRedirect() {
         TestUnauthorizedSession.credentials.options["failureRedirect"] = "/login"
         performServerTest(router: router) { expectation in
             self.performRequest(method: "get", host: self.host, path: "/private/data", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HttpStatusCode.UNAUTHORIZED, "HTTP Status code was \(response!.statusCode)")
-               
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.unauthorized, "HTTP Status code was \(response!.statusCode)")
+
                 expectation.fulfill()
             })
         }
@@ -59,8 +59,8 @@ class TestUnauthorizedSession : XCTestCase {
         performServerTest(router: router) { expectation in
             self.performRequest(method: "get", host: self.host, path: "/private/data", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HttpStatusCode.UNAUTHORIZED, "HTTP Status code was \(response!.statusCode)")
-               
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.unauthorized, "HTTP Status code was \(response!.statusCode)")
+
                 expectation.fulfill()
             })
         }
@@ -76,36 +76,36 @@ class TestUnauthorizedSession : XCTestCase {
         credentials.register(plugin: badSessionPlugin)
         credentials.options["failureRedirect"] = "/login"
         credentials.options["successRedirect"] = "/private/data"
-        
+
         router.all("/private/*", middleware: BodyParser())
-        
+
         router.all("/private", middleware: credentials)
-        
+
         router.get("/private/data") { request, response, next in
             response.setHeader("Content-Type", value: "text/html; charset=utf-8")
             do {
                 if let profile = request.userProfile {
-                    try response.status(HttpStatusCode.OK).end("<!DOCTYPE html><html><body><b>\(profile.displayName) is logged in with \(profile.provider)</b></body></html>\n\n")
+                    try response.status(.OK).end("<!DOCTYPE html><html><body><b>\(profile.displayName) is logged in with \(profile.provider)</b></body></html>\n\n")
                 }
              }
             catch {}
-            
+
             next()
         }
-        
+
         router.get("/login",
                    handler: credentials.authenticate(credentialsType: badSessionPlugin.name))
         router.get("/login/callback",
                    handler: credentials.authenticate(credentialsType: badSessionPlugin.name, failureRedirect: "/login/failure"))
         router.get("/login/failure") { _, response, next in
             do {
-                try response.status(HttpStatusCode.UNAUTHORIZED).end()
+                try response.status(.unauthorized).end()
             }
             catch {}
             next()
         }
-        
-        
+
+
         router.error { request, response, next in
             response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
             do {
