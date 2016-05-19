@@ -24,23 +24,23 @@ import SwiftyJSON
 import Foundation
 
 public class DummyTokenPlugin : CredentialsPluginProtocol {
-    
+
     public var name : String {
         return "DummyToken"
     }
-    
+
     public var type : CredentialsPluginType {
-        return .Token
+        return .token
     }
-    
+
     public init () {}
-    
+
 #if os(OSX)
     public var usersCache : NSCache<NSString, BaseCacheElement>?
 #else
     public var usersCache : NSCache?
 #endif
-    
+
     public func authenticate (request: RouterRequest, response: RouterResponse, options: [String:OptionValue], onSuccess: (UserProfile) -> Void, onFailure: () -> Void, onPass: () -> Void, inProgress: () -> Void) {
         if let type = request.headers["X-token-type"] where type == name {
             if let token = request.headers["access_token"] where token == "dummyToken123" {

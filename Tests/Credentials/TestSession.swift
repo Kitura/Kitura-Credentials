@@ -44,7 +44,7 @@ class TestSession : XCTestCase {
         performServerTest(router: router) { expectation in
             self.performRequest(method: "get", host: self.host, path: "/private/data", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
                 do {
                     let body = try response!.readString()
                     XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Dummy User is logged in with DummySession</b></body></html>\n\n")
@@ -67,39 +67,39 @@ class TestSession : XCTestCase {
         credentials.register(plugin: dummySessionPlugin)
         credentials.options["failureRedirect"] = "/login"
         credentials.options["successRedirect"] = "/private/data"
-        
+
         router.all("/private/*", middleware: BodyParser())
-        
+
         router.all("/private", middleware: credentials)
-        
+
         router.get("/private/data") { request, response, next in
             response.setHeader("Content-Type", value: "text/html; charset=utf-8")
             do {
                 if let profile = request.userProfile {
-                    try response.status(HttpStatusCode.OK).end("<!DOCTYPE html><html><body><b>\(profile.displayName) is logged in with \(profile.provider)</b></body></html>\n\n")
+                    try response.status(.OK).end("<!DOCTYPE html><html><body><b>\(profile.displayName) is logged in with \(profile.provider)</b></body></html>\n\n")
                 }
                 else {
-                    try response.status(HttpStatusCode.UNAUTHORIZED).end()
+                    try response.status(.unauthorized).end()
                 }
             }
             catch {}
-            
+
             next()
         }
-        
+
         router.get("/login",
                    handler: credentials.authenticate(credentialsType: dummySessionPlugin.name))
         router.get("/login/callback",
                    handler: credentials.authenticate(credentialsType: dummySessionPlugin.name, failureRedirect: "/login/failure"))
         router.get("/login/failure") { _, response, next in
             do {
-                try response.status(HttpStatusCode.UNAUTHORIZED).end()
+                try response.status(.unauthorized).end()
             }
             catch {}
             next()
         }
-        
-        
+
+
         router.error { request, response, next in
             response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
             do {

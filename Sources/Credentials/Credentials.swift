@@ -96,7 +96,7 @@ public class Credentials : RouterMiddleware {
                 }
                 else {
                     do {
-                        try response.status(HttpStatusCode.UNAUTHORIZED).end()
+                        try response.status(.unauthorized).end()
                     }
                     catch {
                         Log.error("Failed to send response")
@@ -104,19 +104,19 @@ public class Credentials : RouterMiddleware {
                     next()
                 }
             }
-            
+
             callback = callbackHandler
             callbackHandler()
         }
     }
-    
-    
+
+
     public func register (plugin: CredentialsPluginProtocol) {
         switch plugin.type {
-        case .Token:
+        case .token:
             tokenPlugins.append(plugin)
             tokenPlugins[tokenPlugins.count - 1].usersCache = NSCache()
-        case .Session:
+        case .session:
             sessionPlugins[plugin.name] = plugin
         }
     }
@@ -139,15 +139,15 @@ public class Credentials : RouterMiddleware {
         }
         else {
             do {
-                try response.status(HttpStatusCode.UNAUTHORIZED).end()
+                try response.status(.unauthorized).end()
             }
             catch {
                 Log.error("Failed to send response")
             }
         }
     }
-    
-    
+
+
     private func redirectAuthorized (_ response: RouterResponse, path: String?=nil) {
         let redirect : String?
         if let path = path {
@@ -204,7 +204,7 @@ public class Credentials : RouterMiddleware {
             }
             else {
                 do {
-                    try response.status(HttpStatusCode.UNAUTHORIZED).end()
+                    try response.status(.unauthorized).end()
                 }
                 catch {
                     Log.error("Failed to send response")
@@ -222,6 +222,3 @@ public class Credentials : RouterMiddleware {
         }
     }
 }
-
-
-

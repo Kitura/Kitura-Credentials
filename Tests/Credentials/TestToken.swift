@@ -24,25 +24,25 @@ import KituraSys
 @testable import Credentials
 
 class TestToken : XCTestCase {
-    
+
     static var allTests : [(String, TestToken -> () throws -> Void)] {
         return [
             ("testToken", testToken),
             ("testUnauthorized", testUnauthorized)
         ]
     }
-    
+
     override func tearDown() {
         doTearDown()
     }
-    
+
     let router = TestToken.setupRouter()
-    
+
     func testToken() {
         performServerTest(router: router) { expectation in
             self.performRequest(method: "get", path:"/private/user", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
                 do {
                     let body = try response!.readString()
                     XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Dummy User is logged in with DummyToken</b></body></html>\n\n")
@@ -54,42 +54,42 @@ class TestToken : XCTestCase {
             }, headers: ["X-token-type" : "DummyToken", "access_token" : "dummyToken123"])
         }
     }
-    
+
     func testUnauthorized() {
         performServerTest(router: router) { expectation in
             self.performRequest(method: "get", path:"/private/user", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HttpStatusCode.UNAUTHORIZED, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.unauthorized, "HTTP Status code was \(response!.statusCode)")
                 expectation.fulfill()
                 }, headers: ["X-token-type" : "DummyToken", "access_token" : "wrongToken"])
         }
     }
 
-    
+
     static func setupRouter() -> Router {
         let router = Router()
-        
+
         let dummyTokenPlugin = DummyTokenPlugin()
         let credentials = Credentials()
         credentials.register(plugin: dummyTokenPlugin)
-        
+
         router.all("/private/*", middleware: BodyParser())
-        
+
         router.all("/private", middleware: credentials)
-        
+
         router.get("/private/user") { request, response, next in
             response.setHeader("Content-Type", value: "text/html; charset=utf-8")
             do {
                 if let profile = request.userProfile {
-                    try response.status(HttpStatusCode.OK).end("<!DOCTYPE html><html><body><b>\(profile.displayName) is logged in with \(profile.provider)</b></body></html>\n\n")
+                    try response.status(.OK).end("<!DOCTYPE html><html><body><b>\(profile.displayName) is logged in with \(profile.provider)</b></body></html>\n\n")
                 }
             }
             catch {}
 
             next()
         }
-        
-        
+
+
         router.error { request, response, next in
             response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
             do {
