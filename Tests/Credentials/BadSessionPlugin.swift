@@ -62,7 +62,7 @@ public class BadSessionPlugin : CredentialsPluginProtocol {
                 inProgress()
             }
             catch {
-                Log.error("Failed to redirect to Google login page")
+                onFailure()
             }
         }
     }

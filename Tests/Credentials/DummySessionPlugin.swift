@@ -64,7 +64,7 @@ public class DummySessionPlugin : CredentialsPluginProtocol {
                 inProgress()
             }
             catch {
-                Log.error("Failed to redirect to Google login page")
+                onFailure()
             }
         }
     }
