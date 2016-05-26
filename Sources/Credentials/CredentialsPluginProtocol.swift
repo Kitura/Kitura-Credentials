@@ -15,6 +15,7 @@
  **/
 
 import Kitura
+import KituraNet
 
 import Foundation
 
@@ -25,7 +26,7 @@ public protocol CredentialsPluginProtocol {
     #else
     var usersCache: NSCache? { get set }
     #endif
-    var type: CredentialsPluginType { get }
+    var redirecting: Bool { get }
     
-    func authenticate (request: RouterRequest, response: RouterResponse, options: [String:OptionValue], onSuccess: (UserProfile) -> Void, onFailure: () -> Void, onPass: () -> Void, inProgress: () -> Void)
+    func authenticate (request: RouterRequest, response: RouterResponse, options: [String:OptionValue], onSuccess: (UserProfile) -> Void, onFailure: (HTTPStatusCode?, [String:String]?) -> Void, onPass: (HTTPStatusCode?, [String:String]?) -> Void, inProgress: () -> Void)
 }

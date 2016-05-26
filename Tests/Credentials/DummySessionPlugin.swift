@@ -35,8 +35,8 @@ public class DummySessionPlugin : CredentialsPluginProtocol {
         return "DummySession"
     }
 
-    public var type : CredentialsPluginType {
-        return .session
+    public var redirecting : Bool {
+        return true
     }
 
 #if os(OSX)
@@ -51,7 +51,7 @@ public class DummySessionPlugin : CredentialsPluginProtocol {
         self.callbackUrl = callbackUrl
     }
 
-    public func authenticate (request: RouterRequest, response: RouterResponse, options: [String:OptionValue], onSuccess: (UserProfile) -> Void, onFailure: () -> Void, onPass: () -> Void, inProgress: () -> Void) {
+    public func authenticate (request: RouterRequest, response: RouterResponse, options: [String:OptionValue], onSuccess: (UserProfile) -> Void, onFailure: (HTTPStatusCode?, [String:String]?) -> Void, onPass: (HTTPStatusCode?, [String:String]?) -> Void, inProgress: () -> Void) {
 
         if let code = request.queryParams["code"] where code == "123" {
             let userProfile = UserProfile(id: "123", displayName: "Dummy User", provider: self.name)
@@ -64,7 +64,7 @@ public class DummySessionPlugin : CredentialsPluginProtocol {
                 inProgress()
             }
             catch {
-                onFailure()
+                onFailure(nil, nil)
             }
         }
     }

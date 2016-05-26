@@ -35,8 +35,8 @@ public class BadSessionPlugin : CredentialsPluginProtocol {
         return "BadSession"
     }
 
-    public var type : CredentialsPluginType {
-        return .session
+    public var redirecting : Bool {
+        return true
     }
 
 #if os(OSX)
@@ -51,9 +51,9 @@ public class BadSessionPlugin : CredentialsPluginProtocol {
         self.callbackUrl = callbackUrl
     }
 
-    public func authenticate (request: RouterRequest, response: RouterResponse, options: [String:OptionValue], onSuccess: (UserProfile) -> Void, onFailure: () -> Void, onPass: () -> Void, inProgress: () -> Void) {
+    public func authenticate (request: RouterRequest, response: RouterResponse, options: [String:OptionValue], onSuccess: (UserProfile) -> Void, onFailure: (HTTPStatusCode?, [String:String]?) -> Void, onPass: (HTTPStatusCode?, [String:String]?) -> Void, inProgress: () -> Void) {
         if let code = request.queryParams["code"] where code == "123" {
-            onFailure()
+            onFailure(nil, nil)
         }
         else {
             // Log in
@@ -62,7 +62,7 @@ public class BadSessionPlugin : CredentialsPluginProtocol {
                 inProgress()
             }
             catch {
-                onFailure()
+                onFailure(nil, nil)
             }
         }
     }
