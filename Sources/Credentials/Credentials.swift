@@ -81,7 +81,6 @@ public class Credentials : RouterMiddleware {
                     },
                                     onFailure: { status, headers in
                                         self.fail(response: response, status: status, headers: headers)
-                                        next()
                     },
                                     onPass: { status, headers in
                                         // Last pass parameters are saved
@@ -102,11 +101,9 @@ public class Credentials : RouterMiddleware {
                 if let session = request.session where !self.redirectingPlugins.isEmpty {
                     session["returnTo"] = JSON(request.originalUrl ?? request.url)
                     self.redirectUnauthorized(response: response)
-                    next()
                 }
                 else {
                     self.fail(response: response, status: passStatus, headers: passHeaders)
-                    next()
                 }
             }
         }
@@ -143,6 +140,7 @@ public class Credentials : RouterMiddleware {
         }
     }
 
+    
     private func redirectUnauthorized (response: RouterResponse, path: String?=nil) {
         let redirect : String?
         if let path = path {
@@ -213,11 +211,9 @@ public class Credentials : RouterMiddleware {
                     },
                                     onFailure: { _, _ in
                                         self.redirectUnauthorized(response: response, path: failureRedirect)
-                                        next()
                     },
                                     onPass: { _, _ in
                                         self.redirectUnauthorized(response: response, path: failureRedirect)
-                                        next()
                     },
                                     inProgress: {
                                         next()
