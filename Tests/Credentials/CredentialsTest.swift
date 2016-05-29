@@ -35,6 +35,7 @@ extension CredentialsTest {
 
     func performServerTest(router: HTTPServerDelegate, asyncTasks: (expectation: XCTestExpectation) -> Void...) {
         let server = setupServer(port: 8090, delegate: router)
+        sleep(10)
         let requestQueue = Queue(type: QueueType.serial)
 
         for (index, asyncTask) in asyncTasks.enumerated() {
