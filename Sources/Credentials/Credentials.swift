@@ -83,10 +83,12 @@ public class Credentials : RouterMiddleware {
                                         self.fail(response: response, status: status, headers: headers)
                     },
                                     onPass: { status, headers in
-                                        // Last pass parameters are saved
+                                        // First pass parameters are saved
                                         if let status = status {
-                                            passStatus = passStatus ?? status
-                                            passHeaders = headers
+                                            if passStatus == nil {
+                                                passStatus = status
+                                                passHeaders = headers
+                                            }
                                         }
                                         callback!()
                     },
