@@ -26,7 +26,7 @@ import KituraSession
 
 class TestSession : XCTestCase {
 
-    static var allTests : [(String, TestSession -> () throws -> Void)] {
+    static var allTests : [(String, (TestSession) -> () throws -> Void)] {
         return [
             ("testSession", testSession),
         ]
