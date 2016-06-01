@@ -84,11 +84,9 @@ public class Credentials : RouterMiddleware {
                     },
                                     onPass: { status, headers in
                                         // First pass parameters are saved
-                                        if let status = status {
-                                            if passStatus == nil {
-                                                passStatus = status
-                                                passHeaders = headers
-                                            }
+                                        if let status = status where passStatus == nil {
+                                            passStatus = status
+                                            passHeaders = headers
                                         }
                                         callback!()
                     },
