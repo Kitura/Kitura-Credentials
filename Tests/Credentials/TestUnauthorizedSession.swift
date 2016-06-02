@@ -82,7 +82,7 @@ class TestUnauthorizedSession : XCTestCase {
         router.all("/private", middleware: credentials)
 
         router.get("/private/data") { request, response, next in
-            response.setHeader("Content-Type", value: "text/html; charset=utf-8")
+            response.headers["Content-Type"] = "text/html; charset=utf-8"
             do {
                 if let profile = request.userProfile {
                     try response.status(.OK).end("<!DOCTYPE html><html><body><b>\(profile.displayName) is logged in with \(profile.provider)</b></body></html>\n\n")
@@ -107,7 +107,7 @@ class TestUnauthorizedSession : XCTestCase {
 
 
         router.error { request, response, next in
-            response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
+            response.headers["Content-Type"] = "text/html; charset=utf-8"
             do {
                 let errorDescription: String
                 if let error = response.error {

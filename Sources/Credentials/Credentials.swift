@@ -31,8 +31,8 @@ public typealias OptionValue = AnyObject
 
 public class Credentials : RouterMiddleware {
     
-    var tokenPlugins = [CredentialsPluginProtocol]()
-    var sessionPlugins = [String : CredentialsPluginProtocol]()
+    var nonRedirectingPlugins = [CredentialsPluginProtocol]()
+    var redirectingPlugins = [String : CredentialsPluginProtocol]()
     public var options : [String:OptionValue]
     
     public convenience init () {
@@ -61,67 +61,87 @@ public class Credentials : RouterMiddleware {
                     }
                 }
             }
-            
-            session["returnTo"] = JSON(request.originalUrl ?? request.url)
-            self.redirectUnauthorized(response)
-            next()
         }
-        else {
-            var pluginIndex = -1
-            
-            // Extra variable to get around use of variable in its own initializer
-            var callback: (()->Void)? = nil
-            
-            let callbackHandler = {[unowned request, unowned response, next] () -> Void in
-                pluginIndex += 1
-                if pluginIndex < self.tokenPlugins.count {
-                    let plugin = self.tokenPlugins[pluginIndex]
-                    plugin.authenticate(request: request, response: response, options: self.options,
-                                        onSuccess: { userProfile in
-                                            request.userProfile = userProfile
-                                            next()
-                        },
-                                        onFailure: {
-                                            self.redirectUnauthorized(response)
-                                            next()
-                        },
-                                        onPass: {
-                                            callback!()
-                        },
-                                        inProgress: {
-                                            self.redirectUnauthorized(response)
-                                            next()
-                        }
-                    )
+
+        var pluginIndex = -1
+        var passStatus : HTTPStatusCode?
+        var passHeaders : [String:String]?
+        
+        // Extra variable to get around use of variable in its own initializer
+        var callback: (()->Void)? = nil
+        
+        let callbackHandler = {[unowned request, unowned response, next] () -> Void in
+            pluginIndex += 1
+            if pluginIndex < self.nonRedirectingPlugins.count {
+                let plugin = self.nonRedirectingPlugins[pluginIndex]
+                plugin.authenticate(request: request, response: response, options: self.options,
+                                    onSuccess: { userProfile in
+                                        request.userProfile = userProfile
+                                        next()
+                    },
+                                    onFailure: { status, headers in
+                                        self.fail(response: response, status: status, headers: headers)
+                    },
+                                    onPass: { status, headers in
+                                        // First pass parameters are saved
+                                        if let status = status where passStatus == nil {
+                                            passStatus = status
+                                            passHeaders = headers
+                                        }
+                                        callback!()
+                    },
+                                    inProgress: {
+                                        self.redirectUnauthorized(response: response)
+                                        next()
+                    }
+                )
+            }
+            else {
+                // All the plugins passed
+                if let session = request.session where !self.redirectingPlugins.isEmpty {
+                    session["returnTo"] = JSON(request.originalUrl ?? request.url)
+                    self.redirectUnauthorized(response: response)
                 }
                 else {
-                    do {
-                        try response.status(.unauthorized).end()
-                    }
-                    catch {
-                        Log.error("Failed to send response")
-                    }
-                    next()
+                    self.fail(response: response, status: passStatus, headers: passHeaders)
                 }
             }
-
-            callback = callbackHandler
-            callbackHandler()
         }
+        
+        callback = callbackHandler
+        callbackHandler()
+        
     }
 
+    
+    private func fail (response: RouterResponse, status: HTTPStatusCode?, headers: [String:String]?) {
+        let responseStatus = status ?? .unauthorized
+        if let headers = headers {
+            for (key, value) in headers {
+                response.headers.append(key, value: value)
+            }
+        }
+        do {
+            try response.status(responseStatus).end()
+        }
+        catch {
+            Log.error("Failed to send response")
+        }
+    }
+    
 
     public func register (plugin: CredentialsPluginProtocol) {
-        switch plugin.type {
-        case .token:
-            tokenPlugins.append(plugin)
-            tokenPlugins[tokenPlugins.count - 1].usersCache = NSCache()
-        case .session:
-            sessionPlugins[plugin.name] = plugin
+        if plugin.redirecting {
+            redirectingPlugins[plugin.name] = plugin
+        }
+        else {
+            nonRedirectingPlugins.append(plugin)
+            nonRedirectingPlugins[nonRedirectingPlugins.count - 1].usersCache = NSCache()
         }
     }
 
-    private func redirectUnauthorized (_ response: RouterResponse, path: String?=nil) {
+    
+    private func redirectUnauthorized (response: RouterResponse, path: String?=nil) {
         let redirect : String?
         if let path = path {
             redirect = path
@@ -148,7 +168,7 @@ public class Credentials : RouterMiddleware {
     }
 
 
-    private func redirectAuthorized (_ response: RouterResponse, path: String?=nil) {
+    private func redirectAuthorized (response: RouterResponse, path: String?=nil) {
         let redirect : String?
         if let path = path {
             redirect = path
@@ -169,7 +189,7 @@ public class Credentials : RouterMiddleware {
     
     public func authenticate (credentialsType: String, successRedirect: String?=nil, failureRedirect: String?=nil) -> RouterHandler {
         return { request, response, next in
-            if let plugin = self.sessionPlugins[credentialsType] {
+            if let plugin = self.redirectingPlugins[credentialsType] {
                 plugin.authenticate(request: request, response: response, options: self.options,
                                     onSuccess: { userProfile in
                                         if let session = request.session {
@@ -184,18 +204,16 @@ public class Credentials : RouterMiddleware {
                                                 redirect = session["returnTo"].stringValue
                                                 session.remove(key: "returnTo")
                                             }
-                                            self.redirectAuthorized(response, path: redirect ?? successRedirect)
+                                            self.redirectAuthorized(response: response, path: redirect ?? successRedirect)
                                             
                                         }
                                         next()
                     },
-                                    onFailure: {
-                                        self.redirectUnauthorized(response, path: failureRedirect)
-                                        next()
+                                    onFailure: { _, _ in
+                                        self.redirectUnauthorized(response: response, path: failureRedirect)
                     },
-                                    onPass: {
-                                        self.redirectUnauthorized(response, path: failureRedirect)
-                                        next()
+                                    onPass: { _, _ in
+                                        self.redirectUnauthorized(response: response, path: failureRedirect)
                     },
                                     inProgress: {
                                         next()

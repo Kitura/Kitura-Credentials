@@ -29,8 +29,8 @@ public class DummyTokenPlugin : CredentialsPluginProtocol {
         return "DummyToken"
     }
 
-    public var type : CredentialsPluginType {
-        return .token
+    public var redirecting : Bool {
+        return false
     }
 
     public init () {}
@@ -41,7 +41,7 @@ public class DummyTokenPlugin : CredentialsPluginProtocol {
     public var usersCache : NSCache?
 #endif
 
-    public func authenticate (request: RouterRequest, response: RouterResponse, options: [String:OptionValue], onSuccess: (UserProfile) -> Void, onFailure: () -> Void, onPass: () -> Void, inProgress: () -> Void) {
+    public func authenticate (request: RouterRequest, response: RouterResponse, options: [String:OptionValue], onSuccess: (UserProfile) -> Void, onFailure: (HTTPStatusCode?, [String:String]?) -> Void, onPass: (HTTPStatusCode?, [String:String]?) -> Void, inProgress: () -> Void) {
         if let type = request.headers["X-token-type"] where type == name {
             if let token = request.headers["access_token"] where token == "dummyToken123" {
                 let userProfile = UserProfile(id: "123", displayName: "Dummy User", provider: self.name)
@@ -50,11 +50,11 @@ public class DummyTokenPlugin : CredentialsPluginProtocol {
                 onSuccess(userProfile)
             }
             else {
-                onFailure()
+                onFailure(nil, nil)
             }
         }
         else {
-            onPass()
+            onPass(nil, nil)
         }
     }
 }
