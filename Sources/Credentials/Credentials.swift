@@ -154,7 +154,11 @@ public class Credentials : RouterMiddleware {
                 try response.redirect(redirect)
             }
             catch {
-                response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey:"Failed to redirect unauthorized request"] as NSObject as? [NSObject : OptionValue])
+#if os(Linux)
+                response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey:"Failed to redirect unauthorized request"])
+#else
+                response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey as NSString:"Failed to redirect unauthorized request"])
+#endif
             }
         }
         else {
@@ -181,7 +185,11 @@ public class Credentials : RouterMiddleware {
                try response.redirect(redirect)
             }
             catch {
-                response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey:"Failed to redirect successfuly authorized request"] as NSObject as? [NSObject : OptionValue])
+#if os(Linux)
+                    response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey:"Failed to redirect successfuly authorized request"])
+#else
+                    response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey as NSString:"Failed to redirect successfuly authorized request"])
+#endif
             }
         }
     }
