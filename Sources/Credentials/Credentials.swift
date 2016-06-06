@@ -99,7 +99,7 @@ public class Credentials : RouterMiddleware {
             else {
                 // All the plugins passed
                 if let session = request.session where !self.redirectingPlugins.isEmpty {
-                    session["returnTo"] = JSON(request.originalUrl as OptionValue ?? request.url as OptionValue)
+                    session["returnTo"] = JSON(request.originalURL as OptionValue ?? request.url as OptionValue)
                     self.redirectUnauthorized(response: response)
                 }
                 else {
