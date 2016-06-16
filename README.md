@@ -32,13 +32,13 @@ For web session authentication example please see [Kitura-Credentials-Sample](ht
 <br>
 
 
-The following is an example of non-redirecting token-based authentication.This example authenticates post requests using [Kitura-CredentialsFacebookToken](https://github.com/IBM-Swift/Kitura-CredentialsFacebookToken) plugin.
+The following is an example of non-redirecting token-based authentication.This example authenticates post requests using [CredentialsFacebookToken](https://github.com/IBM-Swift/Kitura-CredentialsFacebook) plugin.
 
 First create an instance of `Credentials` and an instance of credentials plugin:
 
 ```swift
 import Credentials
-import CredentialsFacebookToken
+import CredentialsFacebook
 
 let credentials = Credentials()
 let fbCredentialsPlugin = CredentialsFacebookToken()
@@ -65,13 +65,10 @@ router.post("/collection/:new") {request, response, next in
 ```
 
 ## List of plugins:
-* [Authentication using an OAuth token from Facebook](https://github.com/IBM-Swift/Kitura-CredentialsFacebookToken)
 
-* [Authentication using Facebook web login](https://github.com/IBM-Swift/Kitura-CredentialsFacebook)
+* [Authentication using Facebook web login and an OAuth token from Facebook ](https://github.com/IBM-Swift/Kitura-CredentialsFacebook)
 
-* [Authentication using an OAuth token from Google](https://github.com/IBM-Swift/Kitura-CredentialsGoogleToken)
-
-* [Authentication using Google web login](https://github.com/IBM-Swift/Kitura-CredentialsGoogle)
+* [Authentication using Google web login and an OAuth token from Google](https://github.com/IBM-Swift/Kitura-CredentialsGoogle)
 
 * [Authentication using HTTP Basic authentication](https://github.com/IBM-Swift/Kitura-CredentialsHttp)
 
