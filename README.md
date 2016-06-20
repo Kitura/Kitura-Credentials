@@ -66,11 +66,17 @@ router.post("/collection/:new") {request, response, next in
 
 ## List of plugins:
 
-* [Authentication using Facebook web login and an OAuth token from Facebook ](https://github.com/IBM-Swift/Kitura-CredentialsFacebook)
+* [Facebook web login](https://github.com/IBM-Swift/Kitura-CredentialsFacebook)
 
-* [Authentication using Google web login and an OAuth token from Google](https://github.com/IBM-Swift/Kitura-CredentialsGoogle)
+* [Facebook OAuth token](https://github.com/IBM-Swift/Kitura-CredentialsFacebook)
 
-* [Authentication using HTTP Basic authentication](https://github.com/IBM-Swift/Kitura-CredentialsHttp)
+* [Google web login](https://github.com/IBM-Swift/Kitura-CredentialsGoogle)
+
+* [Google OAuth token](https://github.com/IBM-Swift/Kitura-CredentialsGoogle)
+
+* [HTTP Basic authentication](https://github.com/IBM-Swift/Kitura-CredentialsHttp)
+
+* [HTTP Digest authentication](https://github.com/IBM-Swift/Kitura-CredentialsHttp)
 
 ## License
 This library is licensed under Apache 2.0. Full license text is available in [LICENSE](LICENSE.txt).
