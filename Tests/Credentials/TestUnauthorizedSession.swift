@@ -26,7 +26,7 @@ import KituraSession
 
 class TestUnauthorizedSession : XCTestCase {
 
-    static var allTests : [(String, TestUnauthorizedSession -> () throws -> Void)] {
+    static var allTests : [(String, (TestUnauthorizedSession) -> () throws -> Void)] {
         return [
                 ("testRedirect", testRedirect),
                 ("testNoRedirect", testNoRedirect)

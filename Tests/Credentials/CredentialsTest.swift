@@ -40,7 +40,7 @@ extension CredentialsTest {
 
         for (index, asyncTask) in asyncTasks.enumerated() {
             let expectation = self.expectation(index)
-            requestQueue.queueAsync {
+            requestQueue.enqueueAsynchronously {
                 asyncTask(expectation: expectation)
             }
         }
@@ -52,7 +52,7 @@ extension CredentialsTest {
         }
     }
 
-    func performRequest(method: String, host: String = "localhost", path: String, callback: ClientRequestCallback, headers: [String: String]? = nil, requestModifier: ((ClientRequest) -> Void)? = nil) {
+    func performRequest(method: String, host: String = "localhost", path: String, callback: ClientRequest.Callback, headers: [String: String]? = nil, requestModifier: ((ClientRequest) -> Void)? = nil) {
         var allHeaders = [String: String]()
         if  let headers = headers  {
             for  (headerName, headerValue) in headers  {

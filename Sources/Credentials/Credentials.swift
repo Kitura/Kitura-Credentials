@@ -99,7 +99,7 @@ public class Credentials : RouterMiddleware {
             else {
                 // All the plugins passed
                 if let session = request.session where !self.redirectingPlugins.isEmpty {
-                    session["returnTo"] = JSON(request.originalUrl ?? request.url)
+                    session["returnTo"] = JSON(request.originalURL as OptionValue ?? request.url as OptionValue)
                     self.redirectUnauthorized(response: response)
                 }
                 else {
@@ -154,7 +154,11 @@ public class Credentials : RouterMiddleware {
                 try response.redirect(redirect)
             }
             catch {
+#if os(Linux)
                 response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey:"Failed to redirect unauthorized request"])
+#else
+                response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey as NSString:"Failed to redirect unauthorized request"])
+#endif
             }
         }
         else {
@@ -181,7 +185,11 @@ public class Credentials : RouterMiddleware {
                try response.redirect(redirect)
             }
             catch {
-                response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey:"Failed to redirect successfuly authorized request"])
+#if os(Linux)
+                    response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey:"Failed to redirect successfuly authorized request"])
+#else
+                    response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey as NSString:"Failed to redirect successfuly authorized request"])
+#endif
             }
         }
     }
@@ -197,7 +205,7 @@ public class Credentials : RouterMiddleware {
                                             profile["displayName"] = userProfile.displayName
                                             profile["provider"] = credentialsType
                                             profile["id"] = userProfile.id
-                                            session["userProfile"] = JSON(profile)
+                                            session["userProfile"] = JSON(profile as OptionValue)
                                         
                                             var redirect : String?
                                             if session["returnTo"].type != .Null  {

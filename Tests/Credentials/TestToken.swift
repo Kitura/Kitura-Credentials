@@ -25,7 +25,7 @@ import KituraSys
 
 class TestToken : XCTestCase {
 
-    static var allTests : [(String, TestToken -> () throws -> Void)] {
+    static var allTests : [(String, (TestToken) -> () throws -> Void)] {
         return [
             ("testToken", testToken),
             ("testUnauthorized", testUnauthorized)
