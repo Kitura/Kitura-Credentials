@@ -74,9 +74,9 @@ router.post("/collection/:new") {request, response, next in
 
 * [Google OAuth token](https://github.com/IBM-Swift/Kitura-CredentialsGoogle)
 
-* [HTTP Basic authentication](https://github.com/IBM-Swift/Kitura-CredentialsHttp)
+* [HTTP Basic authentication](https://github.com/IBM-Swift/Kitura-CredentialsHTTP)
 
-* [HTTP Digest authentication](https://github.com/IBM-Swift/Kitura-CredentialsHttp)
+* [HTTP Digest authentication](https://github.com/IBM-Swift/Kitura-CredentialsHTTP)
 
 ## License
 This library is licensed under Apache 2.0. Full license text is available in [LICENSE](LICENSE.txt).
