@@ -22,7 +22,7 @@ import Foundation
 public protocol CredentialsPluginProtocol {
     var name: String { get }
     #if os(OSX)
-    var usersCache: NSCache<NSString, BaseCacheElement>? { get set }
+    var usersCache: Cache<NSString, BaseCacheElement>? { get set }
     #else
     var usersCache: NSCache? { get set }
     #endif
