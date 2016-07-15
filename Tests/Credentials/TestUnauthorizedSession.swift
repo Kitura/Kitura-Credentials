@@ -85,7 +85,7 @@ class TestUnauthorizedSession : XCTestCase {
             response.headers["Content-Type"] = "text/html; charset=utf-8"
             do {
                 if let profile = request.userProfile {
-                    try response.status(.OK).end("<!DOCTYPE html><html><body><b>\(profile.displayName) is logged in with \(profile.provider)</b></body></html>\n\n")
+                    try response.status(.OK).send("<!DOCTYPE html><html><body><b>\(profile.displayName) is logged in with \(profile.provider)</b></body></html>\n\n").end()
                 }
              }
             catch {}
