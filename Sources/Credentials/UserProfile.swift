@@ -25,6 +25,12 @@ public class UserProfile {
         public var familyName : String
         public var givenName : String
         public var middleName : String
+        
+        public init(familyName : String, givenName : String, middleName : String) {
+            self.familyName = familyName
+            self.givenName = givenName
+            self.middleName = middleName
+        }
     }
     public var name : UserProfileName?
     
@@ -33,12 +39,21 @@ public class UserProfile {
         public var value : String
         /// The type of email address (home, work, etc.).
         public var type : String
+        
+        public init(value : String, type : String) {
+            self.value = value
+            self.type = type
+        }
     }
     public var emails : [UserProfileEmail]?
     
     public struct UserProfilePhoto {
         /// The URL of the image.
         public var value : String
+        
+        public init(_ value : String) {
+            self.value = value
+        }
     }
     public var photos : [UserProfilePhoto]?
     
