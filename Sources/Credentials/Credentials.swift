@@ -51,7 +51,7 @@ public class Credentials : RouterMiddleware {
             }
             else {
                 let userProfile = session["userProfile"]
-                if  userProfile.type != .Null  {
+                if  userProfile.type != .null  {
                     if let name = userProfile["displayName"].string,
                         let provider = userProfile["provider"].string,
                         let id = userProfile["id"].string {
@@ -212,7 +212,7 @@ public class Credentials : RouterMiddleware {
                                             session["userProfile"] = JSON(profile as OptionValue)
                                         
                                             var redirect : String?
-                                            if session["returnTo"].type != .Null  {
+                                            if session["returnTo"].type != .null  {
                                                 redirect = session["returnTo"].stringValue
                                                 session.remove(key: "returnTo")
                                             }
