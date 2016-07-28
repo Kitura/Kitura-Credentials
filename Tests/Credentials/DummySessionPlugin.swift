@@ -54,7 +54,7 @@ public class DummySessionPlugin : CredentialsPluginProtocol {
     public func authenticate (request: RouterRequest, response: RouterResponse, options: [String:OptionValue], onSuccess: (UserProfile) -> Void, onFailure: (HTTPStatusCode?, [String:String]?) -> Void, onPass: (HTTPStatusCode?, [String:String]?) -> Void, inProgress: () -> Void) {
 
         if let code = request.queryParameters["code"] where code == "123" {
-            let userProfile = UserProfile(id: "123", displayName: "Dummy User", provider: self.name)
+            let userProfile = UserProfile(id: "123", displayName: "Dummy User", provider: self.name, name: UserProfile.UserProfileName(familyName: "User", givenName: "Dummy", middleName: "Dummy"))
             onSuccess(userProfile)
         }
         else {
