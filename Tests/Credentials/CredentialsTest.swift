@@ -22,16 +22,10 @@ import KituraSys
 
 import Foundation
 
-#if os(Linux)
-    typealias TimeIntervalType = NSTimeInterval
-#else
-    typealias TimeIntervalType = TimeInterval
-#endif
-
 
 protocol CredentialsTest {
     func expectation(_ index: Int) -> XCTestExpectation
-    func waitExpectation(timeout t: TimeIntervalType, handler: XCWaitCompletionHandler?)
+    func waitExpectation(timeout t: TimeInterval, handler: XCWaitCompletionHandler?)
 }
 
 extension CredentialsTest {
@@ -83,10 +77,10 @@ extension CredentialsTest {
 extension XCTestCase: CredentialsTest {
     func expectation(_ index: Int) -> XCTestExpectation {
         let expectationDescription = "\(self.dynamicType)-\(index)"
-        return self.expectation(withDescription: expectationDescription)
+        return self.expectation(description: expectationDescription)
     }
     
-    func waitExpectation(timeout t: TimeIntervalType, handler: XCWaitCompletionHandler?) {
-        self.waitForExpectations(withTimeout: t, handler: handler)
+    func waitExpectation(timeout t: TimeInterval, handler: XCWaitCompletionHandler?) {
+        self.waitForExpectations(timeout: t, handler: handler)
     }
 }

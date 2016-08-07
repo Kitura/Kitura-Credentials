@@ -40,9 +40,9 @@ public class BadSessionPlugin : CredentialsPluginProtocol {
     }
 
 #if os(OSX)
-    public var usersCache : Cache<NSString, BaseCacheElement>?
+    public var usersCache : NSCache<NSString, BaseCacheElement>?
 #else
-    public var usersCache : NSCache?
+    public var usersCache : Cache?
 #endif
 
     public init (clientId: String, clientSecret : String, callbackUrl : String) {
@@ -52,7 +52,7 @@ public class BadSessionPlugin : CredentialsPluginProtocol {
     }
 
     public func authenticate (request: RouterRequest, response: RouterResponse, options: [String:OptionValue], onSuccess: (UserProfile) -> Void, onFailure: (HTTPStatusCode?, [String:String]?) -> Void, onPass: (HTTPStatusCode?, [String:String]?) -> Void, inProgress: () -> Void) {
-        if let code = request.queryParameters["code"] where code == "123" {
+        if let code = request.queryParameters["code"], code == "123" {
             onFailure(nil, nil)
         }
         else {
