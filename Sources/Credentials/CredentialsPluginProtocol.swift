@@ -21,10 +21,10 @@ import Foundation
 
 public protocol CredentialsPluginProtocol {
     var name: String { get }
-    #if os(OSX)
+    #if os(Linux)
     var usersCache: Cache<NSString, BaseCacheElement>? { get set }
     #else
-    var usersCache: NSCache? { get set }
+    var usersCache: NSCache<NSString, BaseCacheElement>? { get set }
     #endif
     var redirecting: Bool { get }
     
