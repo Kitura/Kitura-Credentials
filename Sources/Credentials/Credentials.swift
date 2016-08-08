@@ -84,7 +84,7 @@ public class Credentials : RouterMiddleware {
                     },
                                     onPass: { status, headers in
                                         // First pass parameters are saved
-                                        if let status = status where passStatus == nil {
+                                        if let status = status, passStatus == nil {
                                             passStatus = status
                                             passHeaders = headers
                                         }
@@ -98,8 +98,8 @@ public class Credentials : RouterMiddleware {
             }
             else {
                 // All the plugins passed
-                if let session = request.session where !self.redirectingPlugins.isEmpty {
-                    session["returnTo"] = JSON(request.originalURL as OptionValue ?? request.url as OptionValue)
+                if let session = request.session, !self.redirectingPlugins.isEmpty {
+                    session["returnTo"] = JSON(request.originalURL as OptionValue)
                     self.redirectUnauthorized(response: response)
                 }
                 else {
@@ -136,7 +136,7 @@ public class Credentials : RouterMiddleware {
         }
         else {
             nonRedirectingPlugins.append(plugin)
-            #if os(Linux)
+            #if os(OSX)
                 nonRedirectingPlugins[nonRedirectingPlugins.count - 1].usersCache = NSCache()
             #else
                 nonRedirectingPlugins[nonRedirectingPlugins.count - 1].usersCache = Cache()

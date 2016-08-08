@@ -36,14 +36,14 @@ public class DummyTokenPlugin : CredentialsPluginProtocol {
     public init () {}
 
 #if os(OSX)
-    public var usersCache : Cache<NSString, BaseCacheElement>?
+    public var usersCache : NSCache<NSString, BaseCacheElement>?
 #else
-    public var usersCache : NSCache?
+    public var usersCache : Cache?
 #endif
 
     public func authenticate (request: RouterRequest, response: RouterResponse, options: [String:OptionValue], onSuccess: (UserProfile) -> Void, onFailure: (HTTPStatusCode?, [String:String]?) -> Void, onPass: (HTTPStatusCode?, [String:String]?) -> Void, inProgress: () -> Void) {
-        if let type = request.headers["X-token-type"] where type == name {
-            if let token = request.headers["access_token"] where token == "dummyToken123" {
+        if let type = request.headers["X-token-type"], type == name {
+            if let token = request.headers["access_token"], token == "dummyToken123" {
                 let userProfile = UserProfile(id: "123", displayName: "Dummy User", provider: self.name)
                 let newCacheElement = BaseCacheElement(profile: userProfile)
                 self.usersCache!.setObject(newCacheElement, forKey: token.bridge())
