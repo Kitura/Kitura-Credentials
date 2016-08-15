@@ -19,6 +19,7 @@ import XCTest
 
 import Kitura
 import KituraNet
+import KituraSession
 import KituraSys
 
 @testable import Credentials
@@ -68,6 +69,8 @@ class TestToken : XCTestCase {
 
     static func setupRouter() -> Router {
         let router = Router()
+
+        router.all(middleware: Session(secret: "Very very secret....."))
 
         let dummyTokenPlugin = DummyTokenPlugin()
         let credentials = Credentials()
