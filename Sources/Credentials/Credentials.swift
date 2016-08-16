@@ -30,7 +30,7 @@ public typealias OptionValue = AnyObject
 #endif
 
 public class Credentials : RouterMiddleware {
-    private let ERROR_NO_SESSION = "No session is available. Session must be "
+    private static let ERROR_NO_SESSION = "No session is available. Session is required to authenticate user."
     
     var nonRedirectingPlugins = [CredentialsPluginProtocol]()
     var redirectingPlugins = [String : CredentialsPluginProtocol]()
@@ -66,9 +66,9 @@ public class Credentials : RouterMiddleware {
         else {
             // session is not available; return error
 #if os(Linux)
-            response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey: ERROR_NO_SESSION])
+            response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey: Credentials.ERROR_NO_SESSION])
 #else
-            response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey as NSString: ERROR_NO_SESSION])
+            response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey as NSString: Credentials.ERROR_NO_SESSION])
 #endif
             next()
             return
@@ -254,9 +254,9 @@ public class Credentials : RouterMiddleware {
             else {
                 // session is not available; return error
 #if os(Linux)
-                response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey:"Failed to redirect unauthorized request"])
+                response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey: Credentials.ERROR_NO_SESSION])
 #else
-                response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey as NSString:"Failed to redirect unauthorized request"])
+                response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey as NSString: Credentials.ERROR_NO_SESSION])
 #endif
                 next()
                 return
