@@ -18,9 +18,9 @@ import XCTest
 
 import Kitura
 import KituraNet
-import KituraSys
 
 import Foundation
+import Dispatch
 
 
 protocol CredentialsTest {
@@ -34,15 +34,15 @@ extension CredentialsTest {
         //       sleep(10)
     }
 
-    func performServerTest(router: ServerDelegate, asyncTasks: (expectation: XCTestExpectation) -> Void...) {
+    func performServerTest(router: ServerDelegate, asyncTasks: @escaping (XCTestExpectation) -> Void...) {
         let server = setupServer(port: 8090, delegate: router)
         sleep(10)
-        let requestQueue = Queue(type: QueueType.serial)
+        let requestQueue = DispatchQueue(label: "Request queue")
 
         for (index, asyncTask) in asyncTasks.enumerated() {
             let expectation = self.expectation(index)
-            requestQueue.enqueueAsynchronously {
-                asyncTask(expectation: expectation)
+            requestQueue.sync {
+                asyncTask(expectation)
             }
         }
 
@@ -76,7 +76,7 @@ extension CredentialsTest {
 
 extension XCTestCase: CredentialsTest {
     func expectation(_ index: Int) -> XCTestExpectation {
-        let expectationDescription = "\(self.dynamicType)-\(index)"
+        let expectationDescription = "\(type(of: self))-\(index)"
         return self.expectation(description: expectationDescription)
     }
     
