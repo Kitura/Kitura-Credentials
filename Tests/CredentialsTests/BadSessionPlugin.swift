@@ -51,7 +51,11 @@ public class BadSessionPlugin : CredentialsPluginProtocol {
         self.callbackUrl = callbackUrl
     }
 
-    public func authenticate (request: RouterRequest, response: RouterResponse, options: [String:OptionValue], onSuccess: (UserProfile) -> Void, onFailure: (HTTPStatusCode?, [String:String]?) -> Void, onPass: (HTTPStatusCode?, [String:String]?) -> Void, inProgress: () -> Void) {
+    public func authenticate (request: RouterRequest, response: RouterResponse,
+                              options: [String:Any], onSuccess: (UserProfile) -> Void,
+                              onFailure: (HTTPStatusCode?, [String:String]?) -> Void,
+                              onPass: (HTTPStatusCode?, [String:String]?) -> Void,
+                              inProgress: () -> Void) {
         if let code = request.queryParameters["code"], code == "123" {
             onFailure(nil, nil)
         }

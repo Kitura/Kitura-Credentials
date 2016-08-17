@@ -41,7 +41,11 @@ public class DummyTokenPlugin : CredentialsPluginProtocol {
     public var usersCache : Cache?
 #endif
 
-    public func authenticate (request: RouterRequest, response: RouterResponse, options: [String:OptionValue], onSuccess: (UserProfile) -> Void, onFailure: (HTTPStatusCode?, [String:String]?) -> Void, onPass: (HTTPStatusCode?, [String:String]?) -> Void, inProgress: () -> Void) {
+    public func authenticate (request: RouterRequest, response: RouterResponse,
+                              options: [String:Any], onSuccess: (UserProfile) -> Void,
+                              onFailure: (HTTPStatusCode?, [String:String]?) -> Void,
+                              onPass: (HTTPStatusCode?, [String:String]?) -> Void,
+                              inProgress: () -> Void) {
         if let type = request.headers["X-token-type"], type == name {
             if let token = request.headers["access_token"], token == "dummyToken123" {
                 let userProfile = UserProfile(id: "123", displayName: "Dummy User", provider: self.name)
