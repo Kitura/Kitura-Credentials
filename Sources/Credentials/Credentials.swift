@@ -43,7 +43,7 @@ public class Credentials : RouterMiddleware {
         self.options = options
     }
     
-    public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) {
+    public func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) {
         if let session = request.session  {
             if let _ = request.userProfile {
                 next()
