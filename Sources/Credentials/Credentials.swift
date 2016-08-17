@@ -23,23 +23,17 @@ import Foundation
 
 import SwiftyJSON
 
-#if os(Linux)
-public typealias OptionValue = Any
-#else
-public typealias OptionValue = AnyObject
-#endif
-
 public class Credentials : RouterMiddleware {
     
     var nonRedirectingPlugins = [CredentialsPluginProtocol]()
     var redirectingPlugins = [String : CredentialsPluginProtocol]()
-    public var options : [String:OptionValue]
+    public var options : [String:Any]
     
     public convenience init () {
-        self.init(options: [String:OptionValue]())
+        self.init(options: [String:Any]())
     }
     
-    public init (options: [String:OptionValue]) {
+    public init (options: [String:Any]) {
         self.options = options
     }
     
@@ -99,7 +93,7 @@ public class Credentials : RouterMiddleware {
             else {
                 // All the plugins passed
                 if let session = request.session, !self.redirectingPlugins.isEmpty {
-                    session["returnTo"] = JSON(request.originalURL as OptionValue)
+                    session["returnTo"] = JSON(request.originalURL)
                     self.redirectUnauthorized(response: response)
                 }
                 else {
@@ -200,7 +194,7 @@ public class Credentials : RouterMiddleware {
 
     
     public func authenticate (credentialsType: String, successRedirect: String?=nil, failureRedirect: String?=nil) -> RouterHandler {
-        return { request, response, next in
+        return { (request: RouterRequest, response: RouterResponse, next: () -> Void) in
             if let plugin = self.redirectingPlugins[credentialsType] {
                 plugin.authenticate(request: request, response: response, options: self.options,
                                     onSuccess: { userProfile in
@@ -209,7 +203,7 @@ public class Credentials : RouterMiddleware {
                                             profile["displayName"] = userProfile.displayName
                                             profile["provider"] = credentialsType
                                             profile["id"] = userProfile.id
-                                            session["userProfile"] = JSON(profile as OptionValue)
+                                            session["userProfile"] = JSON(profile)
                                         
                                             var redirect : String?
                                             if session["returnTo"].type != .null  {
