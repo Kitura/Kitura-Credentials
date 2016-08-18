@@ -194,7 +194,7 @@ public class Credentials : RouterMiddleware {
 
     
     public func authenticate (credentialsType: String, successRedirect: String?=nil, failureRedirect: String?=nil) -> RouterHandler {
-        return { (request: RouterRequest, response: RouterResponse, next: () -> Void) in
+        return { request, response, next in
             if let plugin = self.redirectingPlugins[credentialsType] {
                 plugin.authenticate(request: request, response: response, options: self.options,
                                     onSuccess: { userProfile in

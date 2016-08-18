@@ -28,5 +28,9 @@ public protocol CredentialsPluginProtocol {
     #endif
     var redirecting: Bool { get }
     
-    func authenticate (request: RouterRequest, response: RouterResponse, options: [String:Any], onSuccess: (UserProfile) -> Void, onFailure: (HTTPStatusCode?, [String:String]?) -> Void, onPass: (HTTPStatusCode?, [String:String]?) -> Void, inProgress: () -> Void)
+    func authenticate (request: RouterRequest, response: RouterResponse,
+                       options: [String:Any], onSuccess: @escaping (UserProfile) -> Void,
+                       onFailure: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
+                       onPass: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
+                       inProgress: @escaping () -> Void)
 }
