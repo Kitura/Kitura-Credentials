@@ -130,11 +130,7 @@ public class Credentials : RouterMiddleware {
         }
         else {
             nonRedirectingPlugins.append(plugin)
-            #if os(OSX)
-                nonRedirectingPlugins[nonRedirectingPlugins.count - 1].usersCache = NSCache()
-            #else
-                nonRedirectingPlugins[nonRedirectingPlugins.count - 1].usersCache = Cache()
-            #endif
+            nonRedirectingPlugins[nonRedirectingPlugins.count - 1].usersCache = NSCache()
         }
     }
 

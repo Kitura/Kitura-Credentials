@@ -39,11 +39,7 @@ public class DummySessionPlugin : CredentialsPluginProtocol {
         return true
     }
 
-#if os(OSX)
     public var usersCache : NSCache<NSString, BaseCacheElement>?
-#else
-    public var usersCache : Cache?
-#endif
 
     public init (clientId: String, clientSecret : String, callbackUrl : String) {
         self.clientId = clientId

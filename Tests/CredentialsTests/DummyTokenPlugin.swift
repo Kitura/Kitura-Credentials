@@ -35,11 +35,7 @@ public class DummyTokenPlugin : CredentialsPluginProtocol {
 
     public init () {}
 
-#if os(OSX)
     public var usersCache : NSCache<NSString, BaseCacheElement>?
-#else
-    public var usersCache : Cache?
-#endif
 
     public func authenticate (request: RouterRequest, response: RouterResponse,
                               options: [String:Any], onSuccess: @escaping (UserProfile) -> Void,
@@ -53,7 +49,7 @@ public class DummyTokenPlugin : CredentialsPluginProtocol {
                 #if os(OSX)
                     self.usersCache!.setObject(newCacheElement, forKey: token as NSString)
                 #else
-                    self.usersCache!.setObject(newCacheElement, forKey: token)
+                    self.usersCache!.setObject(newCacheElement, forKey: NSString(string: token))
                 #endif
                 onSuccess(userProfile)
             }
