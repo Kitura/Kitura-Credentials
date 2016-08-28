@@ -30,6 +30,7 @@ public typealias OptionValue = AnyObject
 #endif
 
 public class Credentials : RouterMiddleware {
+    private static let ERROR_NO_SESSION = "No session is available. Session is required to authenticate user."
     
     var nonRedirectingPlugins = [CredentialsPluginProtocol]()
     var redirectingPlugins = [String : CredentialsPluginProtocol]()
@@ -61,6 +62,16 @@ public class Credentials : RouterMiddleware {
                     }
                 }
             }
+        }
+        else {
+            // session is not available; return error
+#if os(Linux)
+            response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey: Credentials.ERROR_NO_SESSION])
+#else
+            response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey as NSString: Credentials.ERROR_NO_SESSION])
+#endif
+            next()
+            return
         }
 
         var pluginIndex = -1
@@ -201,45 +212,54 @@ public class Credentials : RouterMiddleware {
     
     public func authenticate (credentialsType: String, successRedirect: String?=nil, failureRedirect: String?=nil) -> RouterHandler {
         return { request, response, next in
-            if let plugin = self.redirectingPlugins[credentialsType] {
-                plugin.authenticate(request: request, response: response, options: self.options,
-                                    onSuccess: { userProfile in
-                                        if let session = request.session {
+            if let session = request.session {
+                if let plugin = self.redirectingPlugins[credentialsType] {
+                    plugin.authenticate(request: request, response: response, options: self.options,
+                                        onSuccess: { userProfile in
                                             var profile = [String:String]()
                                             profile["displayName"] = userProfile.displayName
                                             profile["provider"] = credentialsType
                                             profile["id"] = userProfile.id
                                             session["userProfile"] = JSON(profile as OptionValue)
-                                        
+
                                             var redirect : String?
                                             if session["returnTo"].type != .null  {
                                                 redirect = session["returnTo"].stringValue
                                                 session.remove(key: "returnTo")
                                             }
                                             self.redirectAuthorized(response: response, path: redirect ?? successRedirect)
-                                            
-                                        }
-                                        next()
-                    },
-                                    onFailure: { _, _ in
-                                        self.redirectUnauthorized(response: response, path: failureRedirect)
-                    },
-                                    onPass: { _, _ in
-                                        self.redirectUnauthorized(response: response, path: failureRedirect)
-                    },
-                                    inProgress: {
-                                        next()
+                                            next()
+                        },
+                                        onFailure: { _, _ in
+                                            self.redirectUnauthorized(response: response, path: failureRedirect)
+                        },
+                                        onPass: { _, _ in
+                                            self.redirectUnauthorized(response: response, path: failureRedirect)
+                        },
+                                        inProgress: {
+                                            next()
+                        }
+                    )
+                }
+                else {
+                    do {
+                        try response.status(.unauthorized).end()
                     }
-                )
+                    catch {
+                        Log.error("Failed to send response")
+                    }
+                    next()
+                }
             }
             else {
-                do {
-                    try response.status(.unauthorized).end()
-                }
-                catch {
-                    Log.error("Failed to send response")
-                }
+                // session is not available; return error
+#if os(Linux)
+                response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey: Credentials.ERROR_NO_SESSION])
+#else
+                response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey as NSString: Credentials.ERROR_NO_SESSION])
+#endif
                 next()
+                return
             }
         }
     }
