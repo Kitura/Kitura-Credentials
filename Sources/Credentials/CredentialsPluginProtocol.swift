@@ -21,12 +21,12 @@ import Foundation
 
 public protocol CredentialsPluginProtocol {
     var name: String { get }
-    #if os(Linux)
-    var usersCache: Cache? { get set }
-    #else
     var usersCache: NSCache<NSString, BaseCacheElement>? { get set }
-    #endif
     var redirecting: Bool { get }
     
-    func authenticate (request: RouterRequest, response: RouterResponse, options: [String:OptionValue], onSuccess: (UserProfile) -> Void, onFailure: (HTTPStatusCode?, [String:String]?) -> Void, onPass: (HTTPStatusCode?, [String:String]?) -> Void, inProgress: () -> Void)
+    func authenticate (request: RouterRequest, response: RouterResponse,
+                       options: [String:Any], onSuccess: @escaping (UserProfile) -> Void,
+                       onFailure: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
+                       onPass: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
+                       inProgress: @escaping () -> Void)
 }

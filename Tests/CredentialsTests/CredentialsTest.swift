@@ -18,9 +18,9 @@ import XCTest
 
 import Kitura
 import KituraNet
-import KituraSys
 
 import Foundation
+import Dispatch
 
 
 protocol CredentialsTest {
@@ -34,15 +34,15 @@ extension CredentialsTest {
         //       sleep(10)
     }
 
-    func performServerTest(router: ServerDelegate, asyncTasks: (expectation: XCTestExpectation) -> Void...) {
+    func performServerTest(router: ServerDelegate, asyncTasks: @escaping (XCTestExpectation) -> Void...) {
         let server = setupServer(port: 8090, delegate: router)
         sleep(10)
-        let requestQueue = Queue(type: QueueType.serial)
+        let requestQueue = DispatchQueue(label: "Request queue")
 
         for (index, asyncTask) in asyncTasks.enumerated() {
             let expectation = self.expectation(index)
-            requestQueue.enqueueAsynchronously {
-                asyncTask(expectation: expectation)
+            requestQueue.sync {
+                asyncTask(expectation)
             }
         }
 
@@ -53,7 +53,7 @@ extension CredentialsTest {
         }
     }
 
-    func performRequest(method: String, host: String = "localhost", path: String, callback: ClientRequest.Callback, headers: [String: String]? = nil, requestModifier: ((ClientRequest) -> Void)? = nil) {
+    func performRequest(method: String, host: String = "localhost", path: String, callback: @escaping ClientRequest.Callback, headers: [String: String]? = nil, requestModifier: ((ClientRequest) -> Void)? = nil) {
         var allHeaders = [String: String]()
         if  let headers = headers  {
             for  (headerName, headerValue) in headers  {
@@ -61,7 +61,9 @@ extension CredentialsTest {
             }
         }
         allHeaders["Content-Type"] = "text/plain"
-        let req = HTTP.request([.method(method), .hostname(host), .port(8090), .path(path), .headers(allHeaders)], callback: callback)
+        let options: [ClientRequest.Options] =
+                [.method(method), .hostname(host), .port(8090), .path(path), .headers(allHeaders)]
+        let req = HTTP.request(options, callback: callback)
         if let requestModifier = requestModifier {
             requestModifier(req)
         }
@@ -76,7 +78,7 @@ extension CredentialsTest {
 
 extension XCTestCase: CredentialsTest {
     func expectation(_ index: Int) -> XCTestExpectation {
-        let expectationDescription = "\(self.dynamicType)-\(index)"
+        let expectationDescription = "\(type(of: self))-\(index)"
         return self.expectation(description: expectationDescription)
     }
     

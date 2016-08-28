@@ -39,11 +39,7 @@ public class DummySessionPlugin : CredentialsPluginProtocol {
         return true
     }
 
-#if os(OSX)
     public var usersCache : NSCache<NSString, BaseCacheElement>?
-#else
-    public var usersCache : Cache?
-#endif
 
     public init (clientId: String, clientSecret : String, callbackUrl : String) {
         self.clientId = clientId
@@ -51,7 +47,11 @@ public class DummySessionPlugin : CredentialsPluginProtocol {
         self.callbackUrl = callbackUrl
     }
 
-    public func authenticate (request: RouterRequest, response: RouterResponse, options: [String:OptionValue], onSuccess: (UserProfile) -> Void, onFailure: (HTTPStatusCode?, [String:String]?) -> Void, onPass: (HTTPStatusCode?, [String:String]?) -> Void, inProgress: () -> Void) {
+    public func authenticate (request: RouterRequest, response: RouterResponse,
+                              options: [String:Any], onSuccess: @escaping (UserProfile) -> Void,
+                              onFailure: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
+                              onPass: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
+                              inProgress: @escaping () -> Void) {
 
         if let code = request.queryParameters["code"], code == "123" {
             let userProfile = UserProfile(id: "123", displayName: "Dummy User", provider: self.name, name: UserProfile.UserProfileName(familyName: "User", givenName: "Dummy", middleName: "Dummy"))
