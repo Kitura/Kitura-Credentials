@@ -70,6 +70,8 @@ router.post("/collection/:new") {request, response, next in
 
 * [Facebook OAuth token](https://github.com/IBM-Swift/Kitura-CredentialsFacebook)
 
+* [GitHub web login](https://github.com/IBM-Swift/Kitura-CredentialsGitHub)
+
 * [Google web login](https://github.com/IBM-Swift/Kitura-CredentialsGoogle)
 
 * [Google OAuth token](https://github.com/IBM-Swift/Kitura-CredentialsGoogle)
