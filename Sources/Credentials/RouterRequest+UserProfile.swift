@@ -18,10 +18,14 @@ import Kitura
 
 import Foundation
 
+// MARK RouterRequest+UserProfile
 
 private let USER_PROFILE_USER_INFO_KEY = "@@Kitura@@UserProfile@@"
 
+/// Extension of `RouterRequest` with `UserProfile` information.
 public extension RouterRequest {
+    
+    /// User profile info.
     public internal(set) var userProfile: UserProfile? {
         get {
             return userInfo[USER_PROFILE_USER_INFO_KEY] as? UserProfile
