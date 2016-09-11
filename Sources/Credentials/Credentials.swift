@@ -23,20 +23,36 @@ import Foundation
 
 import SwiftyJSON
 
+// MARK Credentials
+
+/// A pluggable framework for validating user credentials.
 public class Credentials : RouterMiddleware {
-    
     var nonRedirectingPlugins = [CredentialsPluginProtocol]()
     var redirectingPlugins = [String : CredentialsPluginProtocol]()
-    public var options : [String:Any]
     
+    /// The dictionary of options to pass to the plugins.
+    public var options: [String:Any]
+    
+    /// Initialize a `Credentials` instance.
     public convenience init () {
         self.init(options: [String:Any]())
     }
     
+    /// Initialize a `Credentials` instance.
+    ///
+    /// - Parameter options: The dictionary of options to pass to the plugins.
     public init (options: [String:Any]) {
         self.options = options
     }
     
+    /// Handle an incoming request: authenticate the request using the registered plugins.
+    ///
+    /// - Parameter request: The `RouterRequest` object used to get information
+    ///                     about the request.
+    /// - Parameter response: The `RouterResponse` object used to respond to the
+    ///                       request.
+    /// - Parameter next: The closure to invoke to enable the Router to check for
+    ///                  other handlers or middleware to work with this request.
     public func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) {
         if let session = request.session  {
             if let _ = request.userProfile {
@@ -104,9 +120,7 @@ public class Credentials : RouterMiddleware {
         
         callback = callbackHandler
         callbackHandler()
-        
     }
-
     
     private func fail (response: RouterResponse, status: HTTPStatusCode?, headers: [String:String]?) {
         let responseStatus = status ?? .unauthorized
@@ -122,8 +136,11 @@ public class Credentials : RouterMiddleware {
             Log.error("Failed to send response")
         }
     }
-    
 
+    /// Register a plugin implementing `CredentialsPluginProtocol`.
+    ///
+    /// - Parameter plugin: An implementation of `CredentialsPluginProtocol`. The credentials
+    ///                 framework invokes registered plugins to authenticate incoming requests.
     public func register (plugin: CredentialsPluginProtocol) {
         if plugin.redirecting {
             redirectingPlugins[plugin.name] = plugin
@@ -133,7 +150,6 @@ public class Credentials : RouterMiddleware {
             nonRedirectingPlugins[nonRedirectingPlugins.count - 1].usersCache = NSCache()
         }
     }
-
     
     private func redirectUnauthorized (response: RouterResponse, path: String?=nil) {
         let redirect : String?
@@ -165,7 +181,6 @@ public class Credentials : RouterMiddleware {
         }
     }
 
-
     private func redirectAuthorized (response: RouterResponse, path: String?=nil) {
         let redirect : String?
         if let path = path {
@@ -188,7 +203,12 @@ public class Credentials : RouterMiddleware {
         }
     }
 
-    
+    /// Create a `RouterHandler` that invokes the specific redirecting plugin to authenticate incoming requests.
+    ///
+    /// - Parameter credentialsType: The name of a registered redirecting plugin that will be used for request authentication.
+    /// - Parameter successRedirect: The path to redirect to if the authentication is successful.
+    /// - Parameter failureRedirect: The path to redirect to if the authentication failed.
+    /// - Returns: A `RouterHandler` for request authentication.
     public func authenticate (credentialsType: String, successRedirect: String?=nil, failureRedirect: String?=nil) -> RouterHandler {
         return { request, response, next in
             if let plugin = self.redirectingPlugins[credentialsType] {
@@ -234,7 +254,10 @@ public class Credentials : RouterMiddleware {
         }
     }
     
-    
+    /// Delete the user profile information from the session and the request.
+    ///
+    /// - Parameter request: The `RouterRequest` object used to get information
+    ///                     about the request.
     public func logOut (request: RouterRequest) {
         if let session = request.session  {
             request.userProfile = nil

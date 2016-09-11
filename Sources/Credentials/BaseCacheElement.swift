@@ -14,9 +14,16 @@
  * limitations under the License.
  **/
 
+// MARK BaseCacheElement
+
+/// The cache element for keeping user profile information.
 public class BaseCacheElement {
-    public var userProfile : UserProfile
+    /// The user profile information stored as `UserProfile`.
+    public var userProfile: UserProfile
     
+    /// Initialize a `BaseCacheElement`.
+    ///
+    /// - Parameter profile: the `UserProfile` to store.
     public init (profile: UserProfile) {
         userProfile = profile
     }
