@@ -16,15 +16,14 @@
 
 // MARK BaseCacheElement
 
-/// Cache element for keeping user profile information.
+/// The cache element for keeping user profile information.
 public class BaseCacheElement {
-    /// User profile information.
+    /// The user profile information stored as `UserProfile`.
     public var userProfile : UserProfile
     
     /// Initialize a `BaseCacheElement`.
     ///
-    /// - Parameter profile: a `UserProfile` to store.
-    /// - Returns: an instance of `BaseCacheElement`.
+    /// - Parameter profile: the `UserProfile` to store.
     public init (profile: UserProfile) {
         userProfile = profile
     }

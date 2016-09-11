@@ -30,31 +30,28 @@ public class Credentials : RouterMiddleware {
     var nonRedirectingPlugins = [CredentialsPluginProtocol]()
     var redirectingPlugins = [String : CredentialsPluginProtocol]()
     
-    /// A dictionary of options passed to the plugins.
+    /// The dictionary of options to pass to the plugins.
     public var options : [String:Any]
     
     /// Initialize a `Credentials`.
-    ///
-    /// - Returns: a `Credentials` instance.
     public convenience init () {
         self.init(options: [String:Any]())
     }
     
     /// Initialize a `Credentials`.
     ///
-    /// - Parameter options: a dictionary of options to pass to the plugins.
-    /// - Returns: a `Credentials `instance.
+    /// - Parameter options: The dictionary of options to pass to the plugins.
     public init (options: [String:Any]) {
         self.options = options
     }
     
-    /// Handle an incoming request: authenticate the request using registered plugins.
+    /// Handle an incoming request: authenticate the request using the registered plugins.
     ///
-    /// - Parameter request: the `RouterRequest` object used to get inormation
+    /// - Parameter request: The `RouterRequest` object used to get information
     ///                     about the request.
-    /// - Parameter response: the `RouterResponse` object used to respond to the
+    /// - Parameter response: The `RouterResponse` object used to respond to the
     ///                       request.
-    /// - Parameter next: the closure to invoke to enable the Router to check for
+    /// - Parameter next: The closure to invoke to enable the Router to check for
     ///                  other handlers or middleware to work with this request.
     public func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) {
         if let session = request.session  {
@@ -142,8 +139,8 @@ public class Credentials : RouterMiddleware {
 
     /// Register a plugin implementing `CredentialsPluginProtocol`.
     ///
-    /// - Parameter plugin: an implementation of `CredentialsPluginProtocol`. Credentials
-    ///                 framework calls registered plugins to authenticate incoming requests.
+    /// - Parameter plugin: An implementation of `CredentialsPluginProtocol`. The credentials
+    ///                 framework invokes registered plugins to authenticate incoming requests.
     public func register (plugin: CredentialsPluginProtocol) {
         if plugin.redirecting {
             redirectingPlugins[plugin.name] = plugin
@@ -206,12 +203,12 @@ public class Credentials : RouterMiddleware {
         }
     }
 
-    /// Create a `RouterHandler` that calls the specific redirecting plugin to authenticate incoming requests.
+    /// Create a `RouterHandler` that invokes the specific redirecting plugin to authenticate incoming requests.
     ///
-    /// - Parameter credentialsType: a name of registered redirecting plugin that will be used for request authentication.
-    /// - Parameter successRedirect: a path to redirect to in case of successful authentication.
-    /// - Parameter failureRedirect: a path to redirect to in the case that the authentication failed.
-    /// - Returns: a `RouterHandler` for request authentication.
+    /// - Parameter credentialsType: The name of a registered redirecting plugin that will be used for request authentication.
+    /// - Parameter successRedirect: The path to redirect to if the authentication is successful.
+    /// - Parameter failureRedirect: The path to redirect to if the authentication failed.
+    /// - Returns: A `RouterHandler` for request authentication.
     public func authenticate (credentialsType: String, successRedirect: String?=nil, failureRedirect: String?=nil) -> RouterHandler {
         return { request, response, next in
             if let plugin = self.redirectingPlugins[credentialsType] {
@@ -257,9 +254,9 @@ public class Credentials : RouterMiddleware {
         }
     }
     
-    /// Delete user profile info from session and request.
+    /// Delete the user profile information from the session and the request.
     ///
-    /// - Parameter request: the `RouterRequest` object used to get inormation
+    /// - Parameter request: The `RouterRequest` object used to get information
     ///                     about the request.
     public func logOut (request: RouterRequest) {
         if let session = request.session  {

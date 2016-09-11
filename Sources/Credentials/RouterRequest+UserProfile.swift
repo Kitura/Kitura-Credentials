@@ -22,10 +22,11 @@ import Foundation
 
 private let USER_PROFILE_USER_INFO_KEY = "@@Kitura@@UserProfile@@"
 
-/// Extension of `RouterRequest` with `UserProfile` information.
+/// Extension of the `RouterRequest` class to provide access to `UserProfile` 
+/// information of authenticated users.
 public extension RouterRequest {
     
-    /// User profile info.
+    /// `UserProfile` information of authenticated users.
     public internal(set) var userProfile: UserProfile? {
         get {
             return userInfo[USER_PROFILE_USER_INFO_KEY] as? UserProfile
