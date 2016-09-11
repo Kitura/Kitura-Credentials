@@ -23,27 +23,27 @@ import Foundation
 public class UserProfile {
     
     /// The user's ID.
-    public var id : String
+    public var id: String
     
     /// The authenticating service used to authenticate the user.
-    public var provider : String
+    public var provider: String
     
     /// The user's name the way it should be displayed.
-    public var displayName : String
+    public var displayName: String
     
     /// A structure for the user's name.
     public struct UserProfileName {
         
         /// The family/last name of the user.
-        public var familyName : String
+        public var familyName: String
         
         /// The given/first name of the user.
-        public var givenName : String
+        public var givenName: String
         
         /// The middle name of the user.
-        public var middleName : String
+        public var middleName: String
         
-        /// Initialize a `UserProfileName`.
+        /// Initialize a `UserProfileName` instance.
         ///
         /// - Parameter familyName: The family/last name of the user.
         /// - Parameter givenName: The given/first name of the user.
@@ -56,18 +56,18 @@ public class UserProfile {
     }
     
     /// The user's name (optional).
-    public var name : UserProfileName?
+    public var name: UserProfileName?
     
     /// A structure for user's email address.
     public struct UserProfileEmail {
 
         /// The actual email address.
-        public var value : String
+        public var value: String
         
         /// The type of email address (home, work, etc.).
-        public var type : String
+        public var type: String
         
-        /// Initialize a `UserProfileEmail`.
+        /// Initialize a `UserProfileEmail` instance.
         ///
         /// - Parameter value: The actual email address.
         /// - Parameter type: The type of the email address.
@@ -78,15 +78,15 @@ public class UserProfile {
     }
     
     /// An optional array of the user's email addresses.
-    public var emails : [UserProfileEmail]?
+    public var emails: [UserProfileEmail]?
     
     /// A structure for the user's photo.
     public struct UserProfilePhoto {
 
         /// The URL of the image.
-        public var value : String
+        public var value: String
         
-        /// Initialize a `UserProfilePhoto`.
+        /// Initialize a `UserProfilePhoto` instance.
         ///
         /// - Parameter value: The photo's URL.
         public init(_ value: String) {
@@ -97,7 +97,7 @@ public class UserProfile {
     /// An optional array of the user's photos.
     public var photos : [UserProfilePhoto]?
     
-    /// Initialize a `UserProfile`.
+    /// Initialize a `UserProfile` instance.
     ///
     /// - Parameter id: The user's ID.
     /// - Parameter displayName: The user's name to display.

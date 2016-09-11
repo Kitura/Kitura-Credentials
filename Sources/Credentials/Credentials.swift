@@ -31,14 +31,14 @@ public class Credentials : RouterMiddleware {
     var redirectingPlugins = [String : CredentialsPluginProtocol]()
     
     /// The dictionary of options to pass to the plugins.
-    public var options : [String:Any]
+    public var options: [String:Any]
     
-    /// Initialize a `Credentials`.
+    /// Initialize a `Credentials` instance.
     public convenience init () {
         self.init(options: [String:Any]())
     }
     
-    /// Initialize a `Credentials`.
+    /// Initialize a `Credentials` instance.
     ///
     /// - Parameter options: The dictionary of options to pass to the plugins.
     public init (options: [String:Any]) {
