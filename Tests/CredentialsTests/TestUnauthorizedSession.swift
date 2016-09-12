@@ -19,7 +19,6 @@ import XCTest
 
 import Kitura
 import KituraNet
-import KituraSys
 import KituraSession
 
 @testable import Credentials
