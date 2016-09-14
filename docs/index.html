@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Credentials  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+
+
+    <a title="Credentials  Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="index.html">
+          Credentials Docs
+        </a>
+         (100% documented)
+      </p>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="https://github.com/IBM-Swift/Kitura-Credentials/">
+            <img class="header-icon" src="img/gh.png"/>
+            View on GitHub
+          </a>
+        </p>
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="index.html">Credentials Reference</a>
+      <img class="carat" src="img/carat.png" />
+      Credentials  Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/BaseCacheElement.html">BaseCacheElement</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/Credentials.html">Credentials</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/UserProfile.html">UserProfile</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/UserProfile/UserProfileName.html">– UserProfileName</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/UserProfile/UserProfileEmail.html">– UserProfileEmail</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/UserProfile/UserProfilePhoto.html">– UserProfilePhoto</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/RouterRequest.html">RouterRequest</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/CredentialsPluginProtocol.html">CredentialsPluginProtocol</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content">
+            
+            <a href='#kitura-credentials' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h1 id='kitura-credentials'>Kitura-Credentials</h1>
+
+<p>A pluggable framework for validating user credentials in a Swift server using Kitura</p>
+
+<p><a href="https://travis-ci.org/IBM-Swift/Kitura-Credentials"><img src="https://travis-ci.org/IBM-Swift/Kitura.svg?branch=master" alt="Build Status - Master"></a>
+<img src="https://img.shields.io/badge/os-Mac%20OS%20X-green.svg?style=flat" alt="Mac OS X">
+<img src="https://img.shields.io/badge/os-linux-green.svg?style=flat" alt="Linux">
+<img src="https://img.shields.io/badge/license-Apache2-blue.svg?style=flat" alt="Apache 2"></p>
+<a href='#summary' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='summary'>Summary</h2>
+
+<p>A pluggable framework for validating user credentials in a Swift server using Kitura. A particular plugin for this framework enables authenticating a user in some particular way. For example, Open-Id, Facebook login, Google login, HTTP authentication, and potentially many others.</p>
+
+<p>There are two main authentication schemes supported by Kitura-Credentials: redirecting and non-redirecting. Redirecting scheme is used for web session authentication, where the users, that are not logged in, are redirected to a login page. All other types of authentication are non-redirecting, i.e., unauthorized requests are rejected (usually with 401 Unauthorized HTTP status code). An example of non-redirecting authentication is authentication with OAuth token that was acquired by a mobile app or other client of the Kitura based backend.</p>
+
+<p>Kitura-Credentials middleware checks if the request belongs to a session. If so and the user is logged in, it updates request&rsquo;s user profile and propagates the request. Otherwise, it loops through the non-redirecting plugins in the order they were registered until a matching plugin is found. The plugin either succeeds to authenticate the request (in that case user profile information is returned) or fails. If a matching plugin is found but it fails to authenticate the request, HTTP status code in the router response is set to Unauthorized (401), or to the code returned from the plugin along with HTTP headers, and the request is not propagated. If no matching plugin is found, in case the request belongs to a session and a redirecting plugin exists, the request is redirected. Otherwise, HTTP status code in the router response is set to Unauthorized (401), or to the first code returned from the plugins along with HTTP headers, and the request is not propagated. In case of successful authentication, request&rsquo;s user profile is set with user profile information received from the authenticating plugin.</p>
+
+<p>In the scope of a web session, authentication is performed by a specific plugin. Kitura-Credentials tries to login and authenticate the first request by calling the plugin and, if successful, stores the relevant data in the session for authentication of the further requests in that session. The plugin will not be called for other requests within the scope of the session.</p>
+<a href='#table-of-contents' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='table-of-contents'>Table of Contents</h2>
+
+<ul>
+<li><a href="#swift-version">Swift version</a></li>
+<li><a href="#example">Example</a></li>
+<li><a href="#list-of-plugins">List of plugins</a></li>
+<li><a href="#license">License</a></li>
+</ul>
+<a href='#swift-version' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='swift-version'>Swift version</h2>
+
+<p>The latest version of Kitura-Credentials works with the DEVELOPMENT-SNAPSHOT-2016-09-07-a version of the Swift binaries. You can download this version of the Swift binaries by following this <a href="https://swift.org/download/">link</a>. Compatibility with other Swift versions is not guaranteed.</p>
+<a href='#example' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='example'>Example</h2>
+
+<p>For web session authentication example please see <a href="https://github.com/IBM-Swift/Kitura-Credentials-Sample">Kitura-Credentials-Sample</a>.
+<br></p>
+
+<p>The following is an example of non-redirecting token-based authentication.This example authenticates post requests using <a href="https://github.com/IBM-Swift/Kitura-CredentialsFacebook">CredentialsFacebookToken</a> plugin.</p>
+
+<p>First create an instance of <code>Credentials</code> and an instance of credentials plugin:</p>
+<pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">Credentials</span>
+<span class="kd">import</span> <span class="kt">CredentialsFacebook</span>
+
+<span class="k">let</span> <span class="nv">credentials</span> <span class="o">=</span> <span class="kt">Credentials</span><span class="p">()</span>
+<span class="k">let</span> <span class="nv">fbCredentialsPlugin</span> <span class="o">=</span> <span class="kt">CredentialsFacebookToken</span><span class="p">()</span>
+</code></pre>
+
+<p>You can also set <code>options</code> (a dictionary of options passed to the plugin) either using the designated initializer or by setting them directly.</p>
+
+<p>Now register the plugin:
+<code>swift
+credentials.register(fbCredentialsPlugin)
+</code></p>
+
+<p>Kitura-Credentials framework is <code>RouterMiddleware</code>. To connect it to the desired path use one of the <code>Router</code> methods. After successful authentication <code>request.userProfile</code> will contain an instance of <code>UserProfile</code> with user profile information received from OAuth server using the plugin.</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">post</span><span class="p">(</span><span class="s">"/collection/:new"</span><span class="p">,</span> <span class="nv">middleware</span><span class="p">:</span> <span class="n">credentials</span><span class="p">)</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">post</span><span class="p">(</span><span class="s">"/collection/:new"</span><span class="p">)</span> <span class="p">{</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
+   <span class="o">...</span>
+   <span class="k">let</span> <span class="nv">profile</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">userProfile</span>
+   <span class="k">let</span> <span class="nv">userId</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">id</span>
+   <span class="k">let</span> <span class="nv">userName</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">displayName</span>
+   <span class="o">...</span>
+   <span class="nf">next</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre>
+<a href='#list-of-plugins' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='list-of-plugins'>List of plugins:</h2>
+
+<ul>
+<li><p><a href="https://github.com/IBM-Swift/Kitura-CredentialsFacebook">Facebook web login</a></p></li>
+<li><p><a href="https://github.com/IBM-Swift/Kitura-CredentialsFacebook">Facebook OAuth token</a></p></li>
+<li><p><a href="https://github.com/IBM-Swift/Kitura-CredentialsGitHub">GitHub web login</a></p></li>
+<li><p><a href="https://github.com/IBM-Swift/Kitura-CredentialsGoogle">Google web login</a></p></li>
+<li><p><a href="https://github.com/IBM-Swift/Kitura-CredentialsGoogle">Google OAuth token</a></p></li>
+<li><p><a href="https://github.com/IBM-Swift/Kitura-CredentialsHTTP">HTTP Basic authentication</a></p></li>
+<li><p><a href="https://github.com/IBM-Swift/Kitura-CredentialsHTTP">HTTP Digest authentication</a></p></li>
+</ul>
+<a href='#license' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='license'>License</h2>
+
+<p>This library is licensed under Apache 2.0. Full license text is available in <a href="LICENSE.txt">LICENSE</a>.</p>
+
+          </div>
+        </section>
+
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2016-09-14)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+    </section>
+  </body>
+</div>
+</html>
