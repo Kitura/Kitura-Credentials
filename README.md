@@ -7,13 +7,16 @@ A pluggable framework for validating user credentials in a Swift server using Ki
 ![Apache 2](https://img.shields.io/badge/license-Apache2-blue.svg?style=flat)
 
 ## Summary
-A pluggable framework for validating user credentials in a Swift server using Kitura. A particular plugin for this framework enables authenticating a user in some particular way. For example, Open-Id, Facebook login, Google login, HTTP authentication, and potentially many others.
+Kitura-Credentials is an authentication middleware for Kitura. Kitura-Credentials recognizes that each application has unique authentication requirements. It allows individual authentication mechanisms to be packaged as plugins which it consumes.
 
-There are two main authentication schemes supported by Kitura-Credentials: redirecting and non-redirecting. Redirecting scheme is used for web session authentication, where the users, that are not logged in, are redirected to a login page. All other types of authentication are non-redirecting, i.e., unauthorized requests are rejected (usually with 401 Unauthorized HTTP status code). An example of non-redirecting authentication is authentication with OAuth token that was acquired by a mobile app or other client of the Kitura based backend.
+Plugins can range from a simple password based authentication or delegated authentication using OAuth (via Facebook OAuth provider, etc.), or federated authentication using OpenID.
+
+
+There are two main authentication schemes supported by Kitura-Credentials: redirecting and non-redirecting. Redirecting scheme is used for example in OAuth2 Authorization Code flow authentication, where the users, that are not logged in, are redirected to a login page. All other types of authentication are non-redirecting, i.e., unauthorized requests are rejected (usually with 401 Unauthorized HTTP status code). An example of non-redirecting authentication is delegated authentication using OAuth access token (also called bearer token) that was independently acquired (say by a mobile app or other client of the Kitura based backend).
 
 Kitura-Credentials middleware checks if the request belongs to a session. If so and the user is logged in, it updates request's user profile and propagates the request. Otherwise, it loops through the non-redirecting plugins in the order they were registered until a matching plugin is found. The plugin either succeeds to authenticate the request (in that case user profile information is returned) or fails. If a matching plugin is found but it fails to authenticate the request, HTTP status code in the router response is set to Unauthorized (401), or to the code returned from the plugin along with HTTP headers, and the request is not propagated. If no matching plugin is found, in case the request belongs to a session and a redirecting plugin exists, the request is redirected. Otherwise, HTTP status code in the router response is set to Unauthorized (401), or to the first code returned from the plugins along with HTTP headers, and the request is not propagated. In case of successful authentication, request's user profile is set with user profile information received from the authenticating plugin.
 
-In the scope of a web session, authentication is performed by a specific plugin. Kitura-Credentials tries to login and authenticate the first request by calling the plugin and, if successful, stores the relevant data in the session for authentication of the further requests in that session. The plugin will not be called for other requests within the scope of the session.
+In the scope of OAuth2 Authorization Code flow, authentication is performed by a specific plugin. Kitura-Credentials tries to login and authenticate the first request by calling the plugin and, if successful, stores the relevant data in the session for authentication of the further requests in that session. The plugin will not be called for other requests within the scope of the session.
 
 
 ## Table of Contents
@@ -28,11 +31,11 @@ The latest version of Kitura-Credentials requires **Swift 3.0**. You can downloa
 
 ## Example
 
-For web session authentication example please see [Kitura-Credentials-Sample](https://github.com/IBM-Swift/Kitura-Credentials-Sample).
+For OAuth2 Authorization Code flow authentication example please see [Kitura-Credentials-Sample](https://github.com/IBM-Swift/Kitura-Credentials-Sample).
 <br>
 
 
-The following is an example of non-redirecting token-based authentication.This example authenticates post requests using [CredentialsFacebookToken](https://github.com/IBM-Swift/Kitura-CredentialsFacebook) plugin.
+The following is an example of  token-based authentication using Facebook OAuth2 access tokens.This example authenticates post requests using [CredentialsFacebookToken](https://github.com/IBM-Swift/Kitura-CredentialsFacebook) plugin.
 
 First create an instance of `Credentials` and an instance of credentials plugin:
 
@@ -66,15 +69,15 @@ router.post("/collection/:new") {request, response, next in
 
 ## List of plugins:
 
-* [Facebook web login](https://github.com/IBM-Swift/Kitura-CredentialsFacebook)
+* [Facebook OAuth2 Authorization Code flow login](https://github.com/IBM-Swift/Kitura-CredentialsFacebook)
 
-* [Facebook OAuth token](https://github.com/IBM-Swift/Kitura-CredentialsFacebook)
+* [Facebook OAuth2 token](https://github.com/IBM-Swift/Kitura-CredentialsFacebook)
 
-* [GitHub web login](https://github.com/IBM-Swift/Kitura-CredentialsGitHub)
+* [GitHub OAuth2 Authorization Code flow login](https://github.com/IBM-Swift/Kitura-CredentialsGitHub)
 
-* [Google web login](https://github.com/IBM-Swift/Kitura-CredentialsGoogle)
+* [Google OAuth2 Authorization Code flow login](https://github.com/IBM-Swift/Kitura-CredentialsGoogle)
 
-* [Google OAuth token](https://github.com/IBM-Swift/Kitura-CredentialsGoogle)
+* [Google OAuth2 token](https://github.com/IBM-Swift/Kitura-CredentialsGoogle)
 
 * [HTTP Basic authentication](https://github.com/IBM-Swift/Kitura-CredentialsHTTP)
 
