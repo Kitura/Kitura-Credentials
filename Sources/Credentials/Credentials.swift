@@ -54,6 +54,12 @@ public class Credentials : RouterMiddleware {
     /// - Parameter next: The closure to invoke to enable the Router to check for
     ///                  other handlers or middleware to work with this request.
     public func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) {
+        if (nonRedirectingPlugins.count == 0 && redirectingPlugins.count == 0) {
+            Log.error("No plugins registered to Kitura-Credentials")
+            next()
+            return
+        }
+        
         if let session = request.session  {
             if let _ = request.userProfile {
                 next()
@@ -72,7 +78,7 @@ public class Credentials : RouterMiddleware {
                 }
             }
         }
-
+        
         var pluginIndex = -1
         var passStatus : HTTPStatusCode?
         var passHeaders : [String:String]?
@@ -113,6 +119,7 @@ public class Credentials : RouterMiddleware {
                     self.redirectUnauthorized(response: response)
                 }
                 else {
+                    Log.error("The authentication failed either because the authentication data was not recognized by any non-redirecting plugin, or because a session, required by redirecting authentication, was not configured.")
                     self.fail(response: response, status: passStatus, headers: passHeaders)
                 }
             }
@@ -136,7 +143,7 @@ public class Credentials : RouterMiddleware {
             Log.error("Failed to send response")
         }
     }
-
+    
     /// Register a plugin implementing `CredentialsPluginProtocol`.
     ///
     /// - Parameter plugin: An implementation of `CredentialsPluginProtocol`. The credentials
@@ -164,11 +171,11 @@ public class Credentials : RouterMiddleware {
                 try response.redirect(redirect)
             }
             catch {
-#if os(Linux)
-                response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey:"Failed to redirect unauthorized request"])
-#else
-                response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey as NSString:"Failed to redirect unauthorized request"])
-#endif
+                #if os(Linux)
+                    response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey:"Failed to redirect unauthorized request"])
+                #else
+                    response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey as NSString:"Failed to redirect unauthorized request"])
+                #endif
             }
         }
         else {
@@ -180,7 +187,7 @@ public class Credentials : RouterMiddleware {
             }
         }
     }
-
+    
     private func redirectAuthorized (response: RouterResponse, path: String?=nil) {
         let redirect : String?
         if let path = path {
@@ -191,18 +198,18 @@ public class Credentials : RouterMiddleware {
         }
         if let redirect = redirect {
             do {
-               try response.redirect(redirect)
+                try response.redirect(redirect)
             }
             catch {
-#if os(Linux)
+                #if os(Linux)
                     response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey:"Failed to redirect successfuly authorized request"])
-#else
+                #else
                     response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey as NSString:"Failed to redirect successfuly authorized request"])
-#endif
+                #endif
             }
         }
     }
-
+    
     /// Create a `RouterHandler` that invokes the specific redirecting plugin to authenticate incoming requests.
     ///
     /// - Parameter credentialsType: The name of a registered redirecting plugin that will be used for request authentication.
@@ -211,45 +218,53 @@ public class Credentials : RouterMiddleware {
     /// - Returns: A `RouterHandler` for request authentication.
     public func authenticate (credentialsType: String, successRedirect: String?=nil, failureRedirect: String?=nil) -> RouterHandler {
         return { request, response, next in
-            if let plugin = self.redirectingPlugins[credentialsType] {
-                plugin.authenticate(request: request, response: response, options: self.options,
-                                    onSuccess: { userProfile in
-                                        if let session = request.session {
+            if let session = request.session {
+                if let plugin = self.redirectingPlugins[credentialsType] {
+                    plugin.authenticate(request: request, response: response, options: self.options,
+                                        onSuccess: { userProfile in
                                             var profile = [String:String]()
                                             profile["displayName"] = userProfile.displayName
                                             profile["provider"] = credentialsType
                                             profile["id"] = userProfile.id
                                             session["userProfile"] = JSON(profile)
-                                        
+                                            
                                             var redirect : String?
                                             if session["returnTo"].type != .null  {
                                                 redirect = session["returnTo"].stringValue
                                                 session.remove(key: "returnTo")
                                             }
                                             self.redirectAuthorized(response: response, path: redirect ?? successRedirect)
-                                            
-                                        }
-                                        next()
-                    },
-                                    onFailure: { _, _ in
-                                        self.redirectUnauthorized(response: response, path: failureRedirect)
-                    },
-                                    onPass: { _, _ in
-                                        self.redirectUnauthorized(response: response, path: failureRedirect)
-                    },
-                                    inProgress: {
-                                        next()
+                                            next()
+                        },
+                                        onFailure: { _, _ in
+                                            self.redirectUnauthorized(response: response, path: failureRedirect)
+                        },
+                                        onPass: { _, _ in
+                                            self.redirectUnauthorized(response: response, path: failureRedirect)
+                        },
+                                        inProgress: {
+                                            next()
+                        }
+                    )
+                }
+                else {
+                    do {
+                        try response.status(.unauthorized).end()
                     }
-                )
+                    catch {
+                        Log.error("Failed to send response")
+                    }
+                    next()
+                }
             }
             else {
-                do {
-                    try response.status(.unauthorized).end()
-                }
-                catch {
-                    Log.error("Failed to send response")
-                }
-                next()
+                let error = "The server was not configured properly: no session found for redirecting authentication"
+                Log.error(error)
+                #if os(Linux)
+                    response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey: error])
+                #else
+                    response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey as NSString: error])
+                #endif
             }
         }
     }
