@@ -54,6 +54,12 @@ public class Credentials : RouterMiddleware {
     /// - Parameter next: The closure to invoke to enable the Router to check for
     ///                  other handlers or middleware to work with this request.
     public func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) {
+        if (nonRedirectingPlugins.count == 0 && redirectingPlugins.count == 0) {
+            Log.error("No plugins registered to Kitura-Credentials")
+            next()
+            return
+        }
+        
         if let session = request.session  {
             if let _ = request.userProfile {
                 next()
