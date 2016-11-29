@@ -66,12 +66,22 @@ public class Credentials : RouterMiddleware {
                 return
             }
             else {
-                let userProfile = session["userProfile"]
-                if  userProfile.type != .null  {
-                    if let name = userProfile["displayName"].string,
-                        let provider = userProfile["provider"].string,
-                        let id = userProfile["id"].string {
-                        request.userProfile = UserProfile(id: id, displayName: name, provider: provider)
+                let sessionUserProfile = session["userProfile"]
+                if sessionUserProfile.type != .null  {
+                    var userProfile: UserProfile? = nil
+                    if let provider = sessionUserProfile["provider"].string,
+                        let plugin = redirectingPlugins[provider],
+                        let delegate = plugin.userProfileDelegate,
+                        let dictionary = sessionUserProfile.dictionaryObject {
+                        userProfile = delegate.dictionaryToUserProfile(dictionary)
+                    }
+                    else if let name = sessionUserProfile["displayName"].string,
+                        let provider = sessionUserProfile["provider"].string,
+                        let id = sessionUserProfile["id"].string {
+                        userProfile = UserProfile(id: id, displayName: name, provider: provider)
+                    }
+                    if let userProfile = userProfile {
+                        request.userProfile = userProfile
                         next()
                         return
                     }
@@ -222,10 +232,16 @@ public class Credentials : RouterMiddleware {
                 if let plugin = self.redirectingPlugins[credentialsType] {
                     plugin.authenticate(request: request, response: response, options: self.options,
                                         onSuccess: { userProfile in
-                                            var profile = [String:String]()
-                                            profile["displayName"] = userProfile.displayName
-                                            profile["provider"] = credentialsType
-                                            profile["id"] = userProfile.id
+                                            var profile:[String:Any]
+                                            if let delegate = plugin.userProfileDelegate {
+                                                profile = delegate.userProfileToDictionary(userProfile)
+                                            }
+                                            else {
+                                                profile = [String:Any]()
+                                                profile["displayName"] = userProfile.displayName
+                                                profile["provider"] = credentialsType
+                                                profile["id"] = userProfile.id
+                                            }
                                             session["userProfile"] = JSON(profile)
                                             
                                             var redirect : String?

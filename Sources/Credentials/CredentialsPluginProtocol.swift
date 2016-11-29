@@ -55,4 +55,15 @@ public protocol CredentialsPluginProtocol {
                        onFailure: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
                        onPass: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
                        inProgress: @escaping () -> Void)
+
+    /// A delegate for `UserProfile` manipulation.
+    var userProfileDelegate: UserProfileDelegate? { get }
+}
+
+/// An extention of `CredentialsPluginProtocol`.
+public extension CredentialsPluginProtocol {
+    /// The default (nil) value for `UserProfileDelegate`.
+    public var userProfileDelegate: UserProfileDelegate? {
+        return nil
+    }
 }
