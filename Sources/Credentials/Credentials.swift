@@ -340,8 +340,8 @@ public class Credentials : RouterMiddleware {
             dictionary["photos"] = photosArray
         }
         
-        if let extendedProperties = userProfile.extendedProperties {
-            dictionary["extendedProperties"] = extendedProperties
+        if !userProfile.extendedProperties.isEmpty {
+            dictionary["extendedProperties"] = userProfile.extendedProperties
         }
         
         session["userProfile"] = JSON(dictionary)

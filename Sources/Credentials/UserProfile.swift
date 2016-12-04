@@ -98,7 +98,7 @@ public class UserProfile {
     public var photos: [UserProfilePhoto]?
 
     /// A dictionary of additional properties. The values have to be serializable.
-    public var extendedProperties: [String:Any]?
+    public var extendedProperties: [String:Any]
     
     /// Initialize a `UserProfile` instance.
     ///
@@ -116,7 +116,7 @@ public class UserProfile {
         self.name = name
         self.emails = emails
         self.photos = photos
-        self.extendedProperties = extendedProperties
+        self.extendedProperties = extendedProperties ?? [String:Any]()
     }
 }
 
