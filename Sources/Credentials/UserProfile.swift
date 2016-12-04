@@ -97,7 +97,7 @@ public class UserProfile {
     /// An optional array of the user's photos.
     public var photos: [UserProfilePhoto]?
 
-    /// A dictionary of additional properties if needed. 
+    /// A dictionary of additional properties. The values have to be serializable.
     public var extendedProperties: [String:Any]?
     
     /// Initialize a `UserProfile` instance.
@@ -108,7 +108,7 @@ public class UserProfile {
     /// - Parameter name: The user's name.
     /// - Parameter emails: The user's email addresses.
     /// - Parameter photos: The user's photos.
-    /// - Parameter extendedProperties: A dictionary of additional properties if needed.
+    /// - Parameter extendedProperties: A dictionary of additional properties. The values have to be serializable.
     public init (id: String, displayName: String, provider: String, name: UserProfileName?=nil, emails: [UserProfileEmail]?=nil, photos: [UserProfilePhoto]?=nil, extendedProperties: [String:Any]?=nil) {
         self.id = id
         self.displayName = displayName

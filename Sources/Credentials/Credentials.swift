@@ -66,25 +66,10 @@ public class Credentials : RouterMiddleware {
                 return
             }
             else {
-                let sessionUserProfile = session["userProfile"]
-                if sessionUserProfile.type != .null  {
-                    var userProfile: UserProfile? = nil
-                    if let provider = sessionUserProfile["provider"].string,
-                        let plugin = redirectingPlugins[provider],
-                        let delegate = plugin.userProfileDelegate,
-                        let dictionary = sessionUserProfile.dictionaryObject {
-                        userProfile = delegate.dictionaryToUserProfile(dictionary)
-                    }
-                    else if let name = sessionUserProfile["displayName"].string,
-                        let provider = sessionUserProfile["provider"].string,
-                        let id = sessionUserProfile["id"].string {
-                        userProfile = UserProfile(id: id, displayName: name, provider: provider)
-                    }
-                    if let userProfile = userProfile {
-                        request.userProfile = userProfile
-                        next()
-                        return
-                    }
+                if let userProfile = restoreUserProfile(from: session) {
+                    request.userProfile = userProfile
+                    next()
+                    return
                 }
             }
         }
@@ -232,18 +217,7 @@ public class Credentials : RouterMiddleware {
                 if let plugin = self.redirectingPlugins[credentialsType] {
                     plugin.authenticate(request: request, response: response, options: self.options,
                                         onSuccess: { userProfile in
-                                            var profile:[String:Any]
-                                            if let delegate = plugin.userProfileDelegate {
-                                                profile = delegate.userProfileToDictionary(userProfile)
-                                            }
-                                            else {
-                                                profile = [String:Any]()
-                                                profile["displayName"] = userProfile.displayName
-                                                profile["provider"] = credentialsType
-                                                profile["id"] = userProfile.id
-                                            }
-                                            session["userProfile"] = JSON(profile)
-                                            
+                                            self.store(userProfile: userProfile, in: session)
                                             var redirect : String?
                                             if session["returnTo"].type != .null  {
                                                 redirect = session["returnTo"].stringValue
@@ -294,5 +268,82 @@ public class Credentials : RouterMiddleware {
             request.userProfile = nil
             session.remove(key: "userProfile")
         }
+    }
+    
+    private func restoreUserProfile(from session: SessionState) -> UserProfile? {
+        let sessionUserProfile = session["userProfile"]
+        if sessionUserProfile.type != .null  {
+            if let dictionary = sessionUserProfile.dictionaryObject,
+                let displayName = dictionary["displayName"] as? String,
+                let provider = dictionary["provider"] as? String,
+                let id = dictionary["id"] as? String {
+                
+                var userName: UserProfile.UserProfileName?
+                if let familyName = dictionary["familyName"] as? String,
+                    let givenName = dictionary["givenName"] as? String,
+                    let middleName = dictionary["middleName"] as? String {
+                    userName = UserProfile.UserProfileName(familyName: familyName, givenName: givenName, middleName: middleName)
+                }
+                
+                var userEmails: Array<UserProfile.UserProfileEmail>?
+                if let emails = dictionary["emails"] as? [String], let types = dictionary["emailTypes"] as? [String] {
+                    userEmails = Array()
+                    for (index, email) in emails.enumerated() {
+                        let userEmail = UserProfile.UserProfileEmail(value: email, type: types[index])
+                        userEmails!.append(userEmail)
+                    }
+                }
+                
+                var userPhotos: Array<UserProfile.UserProfilePhoto>?
+                if let photos = dictionary["photos"] as? [String] {
+                    userPhotos = Array()
+                    for photo in photos {
+                        let userPhoto = UserProfile.UserProfilePhoto(photo)
+                        userPhotos!.append(userPhoto)
+                    }
+                }
+                
+                return UserProfile(id: id, displayName: displayName, provider: provider, name: userName, emails: userEmails, photos: userPhotos, extendedProperties: dictionary["extendedProperties"] as? [String:Any])
+            }
+        }
+        return nil
+    }
+    
+    private func store(userProfile: UserProfile, in session: SessionState) {
+        var dictionary = [String:Any]()
+        dictionary["displayName"] = userProfile.displayName
+        dictionary["provider"] = userProfile.provider
+        dictionary["id"] = userProfile.id
+        
+        if let name = userProfile.name {
+            dictionary["familyName"] = name.familyName
+            dictionary["givenName"] = name.givenName
+            dictionary["middleName"] = name.middleName
+        }
+        
+        if let emails = userProfile.emails {
+            var emailsArray = [String]()
+            var emailTypesArray = [String]()
+            for email in emails {
+                emailsArray.append(email.value)
+                emailTypesArray.append(email.type)
+            }
+            dictionary["emails"] = emailsArray
+            dictionary["emailTypes"] = emailTypesArray
+        }
+        
+        if let photos = userProfile.photos {
+            var photosArray = [String]()
+            for photo in photos {
+                photosArray.append(photo.value)
+            }
+            dictionary["photos"] = photosArray
+        }
+        
+        if let extendedProperties = userProfile.extendedProperties {
+            dictionary["extendedProperties"] = extendedProperties
+        }
+        
+        session["userProfile"] = JSON(dictionary)
     }
 }

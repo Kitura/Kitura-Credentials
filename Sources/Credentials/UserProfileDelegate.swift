@@ -17,25 +17,13 @@
 // MARK UserProfileDelegate
 
 /// A protocol for `UserProfile` manipulation. 
-/// The current default implementation only copies UserProfile displayName, id, and provider. In case this default behaviour is insufficient,
-/// this protocol should be implemented, and passed as an option to the corresponding plugin's constructor.
-public protocol UserProfileDelegate {
- 
-    /// Creates a Dictionary from the `UserProfile` instance.
+/// The current default implementation only tries to fill in the standard `UserProfile` fields. In case this default behaviour is insufficient,
+/// additional data can be stored in `UserProfile.extendedProperties` and filled in using this delegate. An implementation
+/// should be passed in the `options` argument with the key `userProfileDelegate` to the corresponding plugin's constructor.
+public protocol UserProfileDelegate {    
+    /// Updates the `UserProfile` instance from the data received from an identity provider.
     ///
-    /// - Parameter userProfile: The user profile to convert to a Dictionary.
-    /// - Returns: A Dictionary containing the user profile.
-    func userProfileToDictionary(_ userProfile: UserProfile) -> [String:Any]
-    
-    /// Creates a `UserProfile` instance from the data received from an identity provider.
-    ///
-    /// - Parameter dictionary: A Dictionary containing the data to convert.
-    /// - Returns: A `UserProfile` containing the data. If the conversion fails, i.e., some fields are not found, nil is returned.
-    func identityProviderDictionaryToUserProfile(_ dictionary: [String:Any]) -> UserProfile?
-
-    /// Creates a `UserProfile` instance from the dictionary. Used to restore `UserProfile` from a `Session`.
-    ///
-    /// - Parameter dictionary: A Dictionary containing the data to convert.
-    /// - Returns: A `UserProfile` containing the data. If the conversion fails, i.e., some fields are not found, nil is returned.
-    func dictionaryToUserProfile(_ dictionary: [String:Any]) -> UserProfile?
+    /// - Returns: The `UserProfile` containing the data to update.
+    /// - Parameter from dictionary: A Dictionary containing the data.
+    func update(userProfile: UserProfile, from dictionary: [String:Any])
 }
