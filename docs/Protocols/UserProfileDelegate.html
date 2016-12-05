@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>BaseCacheElement Class Reference</title>
+    <title>UserProfileDelegate Protocol Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset="utf-8">
@@ -11,9 +11,9 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Class/BaseCacheElement" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Protocol/UserProfileDelegate" class="dashAnchor"></a>
 
-    <a title="BaseCacheElement Class Reference"></a>
+    <a title="UserProfileDelegate Protocol Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -35,7 +35,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="../index.html">Credentials Reference</a>
       <img class="carat" src="../img/carat.png" />
-      BaseCacheElement Class Reference
+      UserProfileDelegate Protocol Reference
     </p>
 
     <div class="content-wrapper">
@@ -89,14 +89,17 @@
 
         <section class="section">
           <div class="section-content">
-            <h1>BaseCacheElement</h1>
+            <h1>UserProfileDelegate</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">BaseCacheElement</span></code></pre>
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">UserProfileDelegate</span></code></pre>
 
                 </div>
               </div>
-            <p>The cache element for keeping user profile information.</p>
+            <p>A protocol for <code><a href="../Classes/UserProfile.html">UserProfile</a></code> manipulation. 
+The current default implementation only tries to fill in the standard <code><a href="../Classes/UserProfile.html">UserProfile</a></code> fields. In case this default behaviour is insufficient,
+additional data can be stored in <code><a href="../Classes/UserProfile.html#/s:vC11Credentials11UserProfile18extendedPropertiesGVs10DictionarySSP__">UserProfile.extendedProperties</a></code> and filled in using this delegate. An implementation
+should be passed in the <code>options</code> argument with the key <code>userProfileDelegate</code> to the corresponding plugin&rsquo;s constructor.</p>
 
           </div>
         </section>
@@ -108,9 +111,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vC11Credentials16BaseCacheElement11userProfileCS_11UserProfile"></a>
-                    <a name="//apple_ref/swift/Property/userProfile" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vC11Credentials16BaseCacheElement11userProfileCS_11UserProfile">userProfile</a>
+                    <a name="/s:FP11Credentials19UserProfileDelegate6updateFT11userProfileCS_11UserProfile4fromGVs10DictionarySSP___T_"></a>
+                    <a name="//apple_ref/swift/Method/update(userProfile:from:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FP11Credentials19UserProfileDelegate6updateFT11userProfileCS_11UserProfile4fromGVs10DictionarySSP___T_">update(userProfile:from:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -118,38 +121,17 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The user profile information stored as <code><a href="../Classes/UserProfile.html">UserProfile</a></code>.</p>
+                        <p>Updates the <code><a href="../Classes/UserProfile.html">UserProfile</a></code> instance from the data received from an identity provider.</p>
 
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">userProfile</span><span class="p">:</span> <span class="kt"><a href="../Classes/UserProfile.html">UserProfile</a></span></code></pre>
+<div class="aside aside-returns">
+    <p class="aside-title">Returns</p>
+    The <code><a href="../Classes/UserProfile.html">UserProfile</a></code> containing the data to update.
 
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:FC11Credentials16BaseCacheElementcFT7profileCS_11UserProfile_S0_"></a>
-                    <a name="//apple_ref/swift/Method/init(profile:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FC11Credentials16BaseCacheElementcFT7profileCS_11UserProfile_S0_">init(profile:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Initialize a <code>BaseCacheElement</code>.</p>
+</div>
 
 <div class="aside aside-parameter">
     <p class="aside-title">Parameter</p>
-    Parameter profile: the <code><a href="../Classes/UserProfile.html">UserProfile</a></code> to store.
+    Parameter from dictionary: A Dictionary containing the data.
 
 </div>
 
@@ -158,7 +140,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span> <span class="p">(</span><span class="nv">profile</span><span class="p">:</span> <span class="kt"><a href="../Classes/UserProfile.html">UserProfile</a></span><span class="p">)</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">func</span> <span class="nf">update</span><span class="p">(</span><span class="nv">userProfile</span><span class="p">:</span> <span class="kt"><a href="../Classes/UserProfile.html">UserProfile</a></span><span class="p">,</span> <span class="n">from</span> <span class="nv">dictionary</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span><span class="kt">Any</span><span class="p">])</span></code></pre>
 
                         </div>
                       </div>
@@ -169,18 +151,23 @@
                             <tr>
                               <td>
                                 <code>
-                                <em>profile</em>
+                                <em>from dictionary</em>
                                 </code>
                               </td>
                               <td>
                                 <div>
-                                  <p>the <code>UserProfile</code> to store.</p>
+                                  <p>A Dictionary containing the data.</p>
 
                                 </div>
                               </td>
                             </tr>
                           </tbody>
                         </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>The <code><a href="../Classes/UserProfile.html">UserProfile</a></code> containing the data to update.</p>
+
                       </div>
                     </section>
                   </div>
