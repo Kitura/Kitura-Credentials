@@ -49,6 +49,7 @@ let fbCredentialsPlugin = CredentialsFacebookToken()
 You can also set `options` (a dictionary of options passed to the plugin) either using the designated initializer or by setting them directly.
 
 Now register the plugin:
+
 ```swift
 credentials.register(fbCredentialsPlugin)
 ```
