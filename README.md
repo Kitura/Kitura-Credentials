@@ -84,5 +84,7 @@ router.post("/collection/:new") {request, response, next in
 
 * [HTTP Digest authentication](https://github.com/IBM-Swift/Kitura-CredentialsHTTP)
 
+* [Twitter OAuth](https://github.com/jacobvanorder/Kitura-CredentialsTwitter) (Third-party implemented)
+
 ## License
 This library is licensed under Apache 2.0. Full license text is available in [LICENSE](LICENSE.txt).
