@@ -47,9 +47,9 @@ public class DummyTokenPlugin : CredentialsPluginProtocol {
                 let userProfile = UserProfile(id: "123", displayName: "Dummy User", provider: self.name)
                 let newCacheElement = BaseCacheElement(profile: userProfile)
                 #if os(OSX)
-                    self.usersCache!.setObject(newCacheElement, forKey: token as NSString)
+                    self.usersCache?.setObject(newCacheElement, forKey: token as NSString)
                 #else
-                    self.usersCache!.setObject(newCacheElement, forKey: NSString(string: token))
+                    self.usersCache?.setObject(newCacheElement, forKey: NSString(string: token))
                 #endif
                 onSuccess(userProfile)
             }
