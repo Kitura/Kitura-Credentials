@@ -285,21 +285,26 @@ public class Credentials : RouterMiddleware {
                     userName = UserProfile.UserProfileName(familyName: familyName, givenName: givenName, middleName: middleName)
                 }
                 
-                var userEmails: Array<UserProfile.UserProfileEmail>?
-                if let emails = dictionary["emails"] as? [String], let types = dictionary["emailTypes"] as? [String] {
-                    userEmails = Array()
+                var userEmails: [UserProfile.UserProfileEmail]?
+
+                if let emails = dictionary["emails"] as? [String],
+                    let types = dictionary["emailTypes"] as? [String] {
+                    userEmails = []
+
                     for (index, email) in emails.enumerated() {
                         let userEmail = UserProfile.UserProfileEmail(value: email, type: types[index])
-                        userEmails!.append(userEmail)
+                        userEmails?.append(userEmail)
                     }
                 }
                 
-                var userPhotos: Array<UserProfile.UserProfilePhoto>?
+                var userPhotos: [UserProfile.UserProfilePhoto]?
+
                 if let photos = dictionary["photos"] as? [String] {
-                    userPhotos = Array()
+                    userPhotos = []
+
                     for photo in photos {
                         let userPhoto = UserProfile.UserProfilePhoto(photo)
-                        userPhotos!.append(userPhoto)
+                        userPhotos?.append(userPhoto)
                     }
                 }
                 

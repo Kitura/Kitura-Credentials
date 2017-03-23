@@ -46,7 +46,7 @@ class TestUnauthorizedSession : XCTestCase {
         performServerTest(router: router) { expectation in
             self.performRequest(method: "get", host: self.host, path: "/private/data", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.unauthorized, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.unauthorized, "HTTP Status code was \(String(describing: response?.statusCode))")
 
                 expectation.fulfill()
             })
@@ -58,7 +58,7 @@ class TestUnauthorizedSession : XCTestCase {
         performServerTest(router: router) { expectation in
             self.performRequest(method: "get", host: self.host, path: "/private/data", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.unauthorized, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.unauthorized, "HTTP Status code was \(String(describing: response?.statusCode))")
 
                 expectation.fulfill()
             })

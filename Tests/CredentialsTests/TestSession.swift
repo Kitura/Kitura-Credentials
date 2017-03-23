@@ -43,10 +43,10 @@ class TestSession : XCTestCase {
         performServerTest(router: router) { expectation in
             self.performRequest(method: "get", host: self.host, path: "/private/data", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
-                    let body = try response!.readString()
-                    XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Dummy User is logged in with DummySession</b></body></html>\n\n")
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Dummy User is logged in with DummySession</b></body></html>\n\n")
                 }
                 catch{
                     XCTFail("No response body")

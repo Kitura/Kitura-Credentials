@@ -41,10 +41,10 @@ class TestToken : XCTestCase {
         performServerTest(router: router) { expectation in
             self.performRequest(method: "get", path:"/private/user", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
-                    let body = try response!.readString()
-                    XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Dummy User is logged in with DummyToken</b></body></html>\n\n")
+                    let body = try response?.readString()
+                    XCTAssertEqual(body,"<!DOCTYPE html><html><body><b>Dummy User is logged in with DummyToken</b></body></html>\n\n")
                 }
                 catch{
                     XCTFail("No response body")
@@ -58,7 +58,7 @@ class TestToken : XCTestCase {
         performServerTest(router: router) { expectation in
             self.performRequest(method: "get", path:"/private/user", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.unauthorized, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.unauthorized, "HTTP Status code was \(String(describing: response?.statusCode))")
                 expectation.fulfill()
                 }, headers: ["X-token-type" : "DummyToken", "access_token" : "wrongToken"])
         }
