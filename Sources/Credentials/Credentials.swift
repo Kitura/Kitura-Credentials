@@ -114,7 +114,9 @@ public class Credentials : RouterMiddleware {
                     self.redirectUnauthorized(response: response)
                 }
                 else {
-                    Log.error("The authentication failed either because the authentication data was not recognized by any non-redirecting plugin, or because a session, required by redirecting authentication, was not configured.")
+                    if request.session == nil && !self.redirectingPlugins.isEmpty && self.nonRedirectingPlugins.isEmpty {
+                        Log.error("The authentication failed because a session, required by redirecting authentication, was not configured.")
+                    }
                     self.fail(response: response, status: passStatus, headers: passHeaders)
                 }
             }
