@@ -126,8 +126,7 @@ public class Credentials : RouterMiddleware {
         callbackHandler()
     }
     
-    /// Get the URL to which the flow will return to after successful authentication
-    /// with a redirecting plugin. 
+    /// Get the URL to which the flow will return to after successfully authenticating using a redirecting plugin.
     ///
     /// - Note: By default, it is set to `request.originalURL`.
     ///
@@ -140,8 +139,7 @@ public class Credentials : RouterMiddleware {
         return session["returnTo"].stringValue
     }
     
-    /// Set the URL to which the flow will return to after successful authentication
-    /// with a redirecting plugin.
+    /// Set the URL to which the flow will return to after successfully authenticating using a redirecting plugin.
     ///
     /// - Note: By default, it is set to `request.originalURL`.
     ///
