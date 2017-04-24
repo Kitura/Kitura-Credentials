@@ -126,13 +126,13 @@ public class Credentials : RouterMiddleware {
         callbackHandler()
     }
     
-    /// Get the `returnTo` property from the request's session if exists.
+    /// Get the URL to which the flow will return to after successful authentication
+    /// with a redirecting plugin. 
     ///
-    /// `returnTo` defines where the flow will return to after successful authentication
-    /// with a redirecting plugin. By default, it is set to `request.originalURL`.
+    /// - Note: By default, it is set to `request.originalURL`.
     ///
-    /// - Parameter for request: The `RouterRequest` to get the property.
-    /// - Returns: A String containing the property, or nil if there is no session or the property is not set.
+    /// - Parameter for request: The `RouterRequest` to get the URL.
+    /// - Returns: A String containing the URL, or nil if there is no session or the URL is not set.
     public static func getRedirectingReturnTo(for request: RouterRequest) -> String? {
         guard let session = request.session, session["returnTo"].type != .null else {
             return nil
@@ -140,12 +140,12 @@ public class Credentials : RouterMiddleware {
         return session["returnTo"].stringValue
     }
     
-    /// Set the `returnTo` property for the request's session if exists.
+    /// Set the URL to which the flow will return to after successful authentication
+    /// with a redirecting plugin.
     ///
-    /// `returnTo` defines where the flow will return to after successful authentication
-    /// with a redirecting plugin. By default, it is set to `request.originalURL`.
+    /// - Note: By default, it is set to `request.originalURL`.
     ///
-    /// - Parameter for request: The request to set the session property.
+    /// - Parameter for request: The `RouterRequest` to set the URL.
     public static func setRedirectingReturnTo(_ returnTo: String, for request: RouterRequest) {
         if let session = request.session {
             session["returnTo"] = JSON(returnTo)
