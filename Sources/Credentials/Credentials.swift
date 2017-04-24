@@ -109,8 +109,8 @@ public class Credentials : RouterMiddleware {
             }
             else {
                 // All the plugins passed
-                if let session = request.session, !self.redirectingPlugins.isEmpty {
-                    session["returnTo"] = JSON(request.originalURL)
+                if request.session != nil, !self.redirectingPlugins.isEmpty {
+                    Credentials.setRedirectingReturnTo(request.originalURL, for: request)
                     self.redirectUnauthorized(response: response)
                 }
                 else {
@@ -124,6 +124,32 @@ public class Credentials : RouterMiddleware {
         
         callback = callbackHandler
         callbackHandler()
+    }
+    
+    /// Get the `returnTo` property from the request's session if exists.
+    ///
+    /// `returnTo` defines where the flow will return to after successful authentication
+    /// with a redirecting plugin. By default, it is set to `request.originalURL`.
+    ///
+    /// - Parameter for request: The `RouterRequest` to get the property.
+    /// - Returns: A String containing the property, or nil if there is no session or the property is not set.
+    public static func getRedirectingReturnTo(for request: RouterRequest) -> String? {
+        guard let session = request.session, session["returnTo"].type != .null else {
+            return nil
+        }
+        return session["returnTo"].stringValue
+    }
+    
+    /// Set the `returnTo` property for the request's session if exists.
+    ///
+    /// `returnTo` defines where the flow will return to after successful authentication
+    /// with a redirecting plugin. By default, it is set to `request.originalURL`.
+    ///
+    /// - Parameter for request: The request to set the session property.
+    public static func setRedirectingReturnTo(_ returnTo: String, for request: RouterRequest) {
+        if let session = request.session {
+            session["returnTo"] = JSON(returnTo)
+        }
     }
     
     private func fail (response: RouterResponse, status: HTTPStatusCode?, headers: [String:String]?) {
@@ -156,7 +182,7 @@ public class Credentials : RouterMiddleware {
     }
     
     private func redirectUnauthorized (response: RouterResponse, path: String?=nil) {
-        let redirect : String?
+        let redirect: String?
         if let path = path {
             redirect = path
         }
@@ -220,12 +246,15 @@ public class Credentials : RouterMiddleware {
                     plugin.authenticate(request: request, response: response, options: self.options,
                                         onSuccess: { userProfile in
                                             self.store(userProfile: userProfile, in: session)
-                                            var redirect : String?
-                                            if session["returnTo"].type != .null  {
-                                                redirect = session["returnTo"].stringValue
+                                            var redirect: String?
+                                            if let returnTo = Credentials.getRedirectingReturnTo(for: request) {
+                                                redirect = returnTo
                                                 session.remove(key: "returnTo")
                                             }
-                                            self.redirectAuthorized(response: response, path: redirect ?? successRedirect)
+                                            else {
+                                                redirect = successRedirect
+                                            }
+                                            self.redirectAuthorized(response: response, path: redirect)
                                             next()
                         },
                                         onFailure: { _, _ in
