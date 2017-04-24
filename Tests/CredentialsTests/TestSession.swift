@@ -46,7 +46,7 @@ class TestSession : XCTestCase {
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
                     let body = try response?.readString()
-                    XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Dummy User is logged in with DummySession</b></body></html>\n\n")
+                    XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Dummy User is logged in with DummySession. Return to /hello.</b></body></html>\n\n")
                 }
                 catch{
                     XCTFail("No response body")
@@ -72,10 +72,16 @@ class TestSession : XCTestCase {
         router.all("/private", middleware: credentials)
 
         router.get("/private/data") { request, response, next in
+            Credentials.setRedirectingReturnTo("/hello", for: request)
+            
             response.headers["Content-Type"] = "text/html; charset=utf-8"
             do {
                 if let profile = request.userProfile {
-                    try response.status(.OK).send("<!DOCTYPE html><html><body><b>\(profile.displayName) is logged in with \(profile.provider)</b></body></html>\n\n").end()
+                    var returnToString = ""
+                    if let returnTo = Credentials.getRedirectingReturnTo(for: request) {
+                        returnToString = returnTo
+                    }
+                    try response.status(.OK).send("<!DOCTYPE html><html><body><b>\(profile.displayName) is logged in with \(profile.provider). Return to \(returnToString).</b></body></html>\n\n").end()
                 }
                 else {
                     try response.status(.unauthorized).end()
