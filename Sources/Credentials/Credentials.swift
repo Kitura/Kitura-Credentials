@@ -66,7 +66,7 @@ public class Credentials : RouterMiddleware {
                 return
             }
             else {
-                if let userProfile = restoreUserProfile(from: session) {
+                if let userProfile = Credentials.restoreUserProfile(from: session) {
                     request.userProfile = userProfile
                     next()
                     return
@@ -243,7 +243,7 @@ public class Credentials : RouterMiddleware {
                 if let plugin = self.redirectingPlugins[credentialsType] {
                     plugin.authenticate(request: request, response: response, options: self.options,
                                         onSuccess: { userProfile in
-                                            self.store(userProfile: userProfile, in: session)
+                                            Credentials.store(userProfile: userProfile, in: session)
                                             var redirect: String?
                                             if let returnTo = Credentials.getRedirectingReturnTo(for: request) {
                                                 redirect = returnTo
@@ -299,7 +299,7 @@ public class Credentials : RouterMiddleware {
         }
     }
     
-    private func restoreUserProfile(from session: SessionState) -> UserProfile? {
+    static func restoreUserProfile(from session: SessionState) -> UserProfile? {
         let sessionUserProfile = session["userProfile"]
         if sessionUserProfile.type != .null  {
             if let dictionary = sessionUserProfile.dictionaryObject,
@@ -343,7 +343,7 @@ public class Credentials : RouterMiddleware {
         return nil
     }
     
-    private func store(userProfile: UserProfile, in session: SessionState) {
+    private static func store(userProfile: UserProfile, in session: SessionState) {
         var dictionary = [String:Any]()
         dictionary["displayName"] = userProfile.displayName
         dictionary["provider"] = userProfile.provider

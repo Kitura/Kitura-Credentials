@@ -38,6 +38,7 @@ class TestSession : XCTestCase {
     let host = "127.0.0.1"
 
     let router = TestSession.setupRouter()
+    let routerWithEmptyPath = TestSession.setupRouterWithEmptyPath()
 
     func testSession() {
         performServerTest(router: router) { expectation in
@@ -54,6 +55,22 @@ class TestSession : XCTestCase {
                 expectation.fulfill()
                 })
         }
+        
+        performServerTest(router: routerWithEmptyPath) { expectation in
+            self.performRequest(method: "get", host: self.host, path: "/login", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
+                do {
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Dummy User is logged in with DummySession. Return to /hello.</b></body></html>\n\n")
+                }
+                catch{
+                    XCTFail("No response body")
+                }
+                expectation.fulfill()
+            })
+        }
+
     }
 
     static func setupRouter() -> Router {
@@ -123,4 +140,42 @@ class TestSession : XCTestCase {
         
         return router
     }
+    
+    static func setupRouterWithEmptyPath() -> Router {
+        let router = Router()
+        
+        router.all(middleware: Session(secret: "Very very secret....."))
+        
+        let dummySessionPlugin = DummySessionPlugin(clientId: "dummyClientId", clientSecret: "dummyClientSecret", callbackUrl: "/login/callback")
+        let credentials = Credentials()
+        credentials.register(plugin: dummySessionPlugin)
+        
+        let callbackHandler = credentials.authenticate(credentialsType: dummySessionPlugin.name, successRedirect: "/", failureRedirect: "/failure")
+        router.get("/login/callback", handler: callbackHandler)
+        router.get("/login", handler: credentials.authenticate(credentialsType: dummySessionPlugin.name))
+        
+        router.get("/") { request, response, next in
+            Credentials.setRedirectingReturnTo("/hello", for: request)
+
+            response.headers["Content-Type"] = "text/html; charset=utf-8"
+            do {
+                if let profile = request.userProfile {
+                    var returnToString = ""
+                    if let returnTo = Credentials.getRedirectingReturnTo(for: request) {
+                        returnToString = returnTo
+                    }
+                    try response.status(.OK).send("<!DOCTYPE html><html><body><b>\(profile.displayName) is logged in with \(profile.provider). Return to \(returnToString).</b></body></html>\n\n").end()
+                }
+                else {
+                    try response.status(.unauthorized).end()
+                }
+            }
+            catch {}
+            
+            next()
+        }
+        
+        return router
+    }
+
 }
