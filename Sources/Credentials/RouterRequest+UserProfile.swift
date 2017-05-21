@@ -29,7 +29,16 @@ public extension RouterRequest {
     /// `UserProfile` information of authenticated users.
     public internal(set) var userProfile: UserProfile? {
         get {
-            return userInfo[USER_PROFILE_USER_INFO_KEY] as? UserProfile
+            if let requestUserProfile = userInfo[USER_PROFILE_USER_INFO_KEY] as? UserProfile {
+                return requestUserProfile
+            }
+            
+            if let session = session,
+                let sessionUserProfile = Credentials.restoreUserProfile(from: session) {
+                return sessionUserProfile
+            }
+            
+            return nil
         }
         set {
             userInfo[USER_PROFILE_USER_INFO_KEY] = newValue
