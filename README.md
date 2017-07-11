@@ -1,7 +1,7 @@
 # Kitura-Credentials
 A pluggable framework for validating user credentials in a Swift server using Kitura
 
-[![Build Status - Master](https://travis-ci.org/IBM-Swift/Kitura.svg?branch=master)](https://travis-ci.org/IBM-Swift/Kitura-Credentials)
+[![Build Status - Master](https://travis-ci.org/IBM-Swift/Kitura-Credentials.svg?branch=master)](https://travis-ci.org/IBM-Swift/Kitura-Credentials)
 ![Mac OS X](https://img.shields.io/badge/os-Mac%20OS%20X-green.svg?style=flat)
 ![Linux](https://img.shields.io/badge/os-linux-green.svg?style=flat)
 ![Apache 2](https://img.shields.io/badge/license-Apache2-blue.svg?style=flat)
