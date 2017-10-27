@@ -8,6 +8,9 @@
     <script src="js/jquery.min.js" defer></script>
     <script src="js/jazzy.js" defer></script>
     
+    <script src="js/lunr.min.js" defer></script>
+    <script src="js/typeahead.jquery.js" defer></script>
+    <script src="js/jazzy.search.js" defer></script>
   </head>
   <body>
 
@@ -20,6 +23,12 @@
           Credentials Docs
         </a>
          (100% documented)
+      </p>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
       </p>
     
         <p class="header-col header-col--secondary">
@@ -89,15 +98,15 @@
         <section class="section">
           <div class="section-content">
             
-            <a href='#kitura-credentials' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h1 id='kitura-credentials'>Kitura-Credentials</h1>
+            <h1 id='kitura-credentials' class='heading'>Kitura-Credentials</h1>
 
 <p>A pluggable framework for validating user credentials in a Swift server using Kitura</p>
 
-<p><a href="https://travis-ci.org/IBM-Swift/Kitura-Credentials"><img src="https://travis-ci.org/IBM-Swift/Kitura.svg?branch=master" alt="Build Status - Master"></a>
+<p><a href="https://travis-ci.org/IBM-Swift/Kitura-Credentials"><img src="https://travis-ci.org/IBM-Swift/Kitura-Credentials.svg?branch=master" alt="Build Status - Master"></a>
 <img src="https://img.shields.io/badge/os-Mac%20OS%20X-green.svg?style=flat" alt="Mac OS X">
 <img src="https://img.shields.io/badge/os-linux-green.svg?style=flat" alt="Linux">
 <img src="https://img.shields.io/badge/license-Apache2-blue.svg?style=flat" alt="Apache 2"></p>
-<a href='#summary' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='summary'>Summary</h2>
+<h2 id='summary' class='heading'>Summary</h2>
 
 <p>Kitura-Credentials is an authentication middleware for Kitura. Kitura-Credentials recognizes that each application has unique authentication requirements. It allows individual authentication mechanisms to be packaged as plugins which it consumes.</p>
 
@@ -108,7 +117,7 @@
 <p>Kitura-Credentials middleware checks if the request belongs to a session. If so and the user is logged in, it updates request&rsquo;s user profile and propagates the request. Otherwise, it loops through the non-redirecting plugins in the order they were registered until a matching plugin is found. The plugin either succeeds to authenticate the request (in that case user profile information is returned) or fails. If a matching plugin is found but it fails to authenticate the request, HTTP status code in the router response is set to Unauthorized (401), or to the code returned from the plugin along with HTTP headers, and the request is not propagated. If no matching plugin is found, in case the request belongs to a session and a redirecting plugin exists, the request is redirected. Otherwise, HTTP status code in the router response is set to Unauthorized (401), or to the first code returned from the plugins along with HTTP headers, and the request is not propagated. In case of successful authentication, request&rsquo;s user profile is set with user profile information received from the authenticating plugin.</p>
 
 <p>In the scope of OAuth2 Authorization Code flow, authentication is performed by a specific plugin. Kitura-Credentials tries to login and authenticate the first request by calling the plugin and, if successful, stores the relevant data in the session for authentication of the further requests in that session. The plugin will not be called for other requests within the scope of the session.</p>
-<a href='#table-of-contents' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='table-of-contents'>Table of Contents</h2>
+<h2 id='table-of-contents' class='heading'>Table of Contents</h2>
 
 <ul>
 <li><a href="#swift-version">Swift version</a></li>
@@ -116,17 +125,17 @@
 <li><a href="#list-of-plugins">List of plugins</a></li>
 <li><a href="#license">License</a></li>
 </ul>
-<a href='#swift-version' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='swift-version'>Swift version</h2>
+<h2 id='swift-version' class='heading'>Swift version</h2>
 
-<p>The latest version of Kitura-Credentials requires <strong>Swift 3.0</strong>. You can download this version of the Swift binaries by following this <a href="https://swift.org/download/">link</a>. Compatibility with other Swift versions is not guaranteed.</p>
-<a href='#example' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='example'>Example</h2>
+<p>The latest version of Kitura-Credentials requires <strong>Swift 4.0</strong>. You can download this version of the Swift binaries by following this <a href="https://swift.org/download/">link</a>. Compatibility with other Swift versions is not guaranteed.</p>
+<h2 id='example' class='heading'>Example</h2>
 
 <p>For OAuth2 Authorization Code flow authentication example please see <a href="https://github.com/IBM-Swift/Kitura-Credentials-Sample">Kitura-Credentials-Sample</a>.
 <br></p>
 
 <p>The following is an example of  token-based authentication using Facebook OAuth2 access tokens.This example authenticates post requests using <a href="https://github.com/IBM-Swift/Kitura-CredentialsFacebook">CredentialsFacebookToken</a> plugin.</p>
 
-<p>First create an instance of <code>Credentials</code> and an instance of credentials plugin:</p>
+<p>First create an instance of <code><a href="Classes/Credentials.html">Credentials</a></code> and an instance of credentials plugin:</p>
 <pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">Credentials</span>
 <span class="kd">import</span> <span class="kt">CredentialsFacebook</span>
 
@@ -140,7 +149,7 @@
 <pre class="highlight swift"><code><span class="n">credentials</span><span class="o">.</span><span class="nf">register</span><span class="p">(</span><span class="n">fbCredentialsPlugin</span><span class="p">)</span>
 </code></pre>
 
-<p>Kitura-Credentials framework is <code>RouterMiddleware</code>. To connect it to the desired path use one of the <code>Router</code> methods. After successful authentication <code>request.userProfile</code> will contain an instance of <code>UserProfile</code> with user profile information received from OAuth server using the plugin.</p>
+<p>Kitura-Credentials framework is <code>RouterMiddleware</code>. To connect it to the desired path use one of the <code>Router</code> methods. After successful authentication <code>request.userProfile</code> will contain an instance of <code><a href="Classes/UserProfile.html">UserProfile</a></code> with user profile information received from OAuth server using the plugin.</p>
 <pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">post</span><span class="p">(</span><span class="s">"/collection/:new"</span><span class="p">,</span> <span class="nv">middleware</span><span class="p">:</span> <span class="n">credentials</span><span class="p">)</span>
 <span class="n">router</span><span class="o">.</span><span class="nf">post</span><span class="p">(</span><span class="s">"/collection/:new"</span><span class="p">)</span> <span class="p">{</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
    <span class="o">...</span>
@@ -151,7 +160,7 @@
    <span class="nf">next</span><span class="p">()</span>
 <span class="p">}</span>
 </code></pre>
-<a href='#list-of-plugins' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='list-of-plugins'>List of plugins:</h2>
+<h2 id='list-of-plugins' class='heading'>List of plugins:</h2>
 
 <ul>
 <li><p><a href="https://github.com/IBM-Swift/Kitura-CredentialsFacebook">Facebook OAuth2 Authorization Code flow login</a></p></li>
@@ -163,7 +172,7 @@
 <li><p><a href="https://github.com/IBM-Swift/Kitura-CredentialsHTTP">HTTP Digest authentication</a></p></li>
 <li><p><a href="https://github.com/jacobvanorder/Kitura-CredentialsTwitter">Twitter OAuth</a> (Third-party implemented)</p></li>
 </ul>
-<a href='#license' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='license'>License</h2>
+<h2 id='license' class='heading'>License</h2>
 
 <p>This library is licensed under Apache 2.0. Full license text is available in <a href="LICENSE.txt">LICENSE</a>.</p>
 
@@ -174,8 +183,8 @@
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-04-26)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-10-27)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

@@ -8,6 +8,9 @@
     <script src="../js/jquery.min.js" defer></script>
     <script src="../js/jazzy.js" defer></script>
     
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
   </head>
   <body>
 
@@ -21,6 +24,12 @@
           Credentials Docs
         </a>
          (100% documented)
+      </p>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="../search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
       </p>
     
         <p class="header-col header-col--secondary">
@@ -98,7 +107,7 @@
               </div>
             <p>A protocol for <code><a href="../Classes/UserProfile.html">UserProfile</a></code> manipulation. 
 The current default implementation only tries to fill in the standard <code><a href="../Classes/UserProfile.html">UserProfile</a></code> fields. In case this default behaviour is insufficient,
-additional data can be stored in <code><a href="../Classes/UserProfile.html#/s:vC11Credentials11UserProfile18extendedPropertiesGVs10DictionarySSP__">UserProfile.extendedProperties</a></code> and filled in using this delegate. An implementation
+additional data can be stored in <code><a href="../Classes/UserProfile.html#/s:11Credentials11UserProfileC18extendedPropertiess10DictionaryVySSypGv">UserProfile.extendedProperties</a></code> and filled in using this delegate. An implementation
 should be passed in the <code>options</code> argument with the key <code>userProfileDelegate</code> to the corresponding plugin&rsquo;s constructor.</p>
 
           </div>
@@ -111,9 +120,9 @@ should be passed in the <code>options</code> argument with the key <code>userPro
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FP11Credentials19UserProfileDelegate6updateFT11userProfileCS_11UserProfile4fromGVs10DictionarySSP___T_"></a>
+                    <a name="/s:11Credentials19UserProfileDelegateP6updateyAA0bC0C04userC0_s10DictionaryVySSypG4fromtF"></a>
                     <a name="//apple_ref/swift/Method/update(userProfile:from:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FP11Credentials19UserProfileDelegate6updateFT11userProfileCS_11UserProfile4fromGVs10DictionarySSP___T_">update(userProfile:from:)</a>
+                    <a class="token" href="#/s:11Credentials19UserProfileDelegateP6updateyAA0bC0C04userC0_s10DictionaryVySSypG4fromtF">update(userProfile:from:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -122,18 +131,6 @@ should be passed in the <code>options</code> argument with the key <code>userPro
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Updates the <code><a href="../Classes/UserProfile.html">UserProfile</a></code> instance from the data received from an identity provider.</p>
-
-<div class="aside aside-returns">
-    <p class="aside-title">Returns</p>
-    The <code><a href="../Classes/UserProfile.html">UserProfile</a></code> containing the data to update.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter from dictionary: A Dictionary containing the data.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -145,29 +142,8 @@ should be passed in the <code>options</code> argument with the key <code>userPro
                         </div>
                       </div>
                       <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>from dictionary</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>A Dictionary containing the data.</p>
-
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                      <div>
                         <h4>Return Value</h4>
                         <p>The <code><a href="../Classes/UserProfile.html">UserProfile</a></code> containing the data to update.</p>
-
                       </div>
                     </section>
                   </div>
@@ -180,8 +156,8 @@ should be passed in the <code>options</code> argument with the key <code>userPro
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-04-26)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-10-27)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

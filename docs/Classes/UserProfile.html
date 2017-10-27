@@ -8,6 +8,9 @@
     <script src="../js/jquery.min.js" defer></script>
     <script src="../js/jazzy.js" defer></script>
     
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
   </head>
   <body>
 
@@ -21,6 +24,12 @@
           Credentials Docs
         </a>
          (100% documented)
+      </p>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="../search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
       </p>
     
         <p class="header-col header-col--secondary">
@@ -109,9 +118,9 @@ different user information which is used to fill instances of this class.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vC11Credentials11UserProfile2idSS"></a>
+                    <a name="/s:11Credentials11UserProfileC2idSSv"></a>
                     <a name="//apple_ref/swift/Property/id" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vC11Credentials11UserProfile2idSS">id</a>
+                    <a class="token" href="#/s:11Credentials11UserProfileC2idSSv">id</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -136,9 +145,9 @@ different user information which is used to fill instances of this class.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vC11Credentials11UserProfile8providerSS"></a>
+                    <a name="/s:11Credentials11UserProfileC8providerSSv"></a>
                     <a name="//apple_ref/swift/Property/provider" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vC11Credentials11UserProfile8providerSS">provider</a>
+                    <a class="token" href="#/s:11Credentials11UserProfileC8providerSSv">provider</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -163,9 +172,9 @@ different user information which is used to fill instances of this class.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vC11Credentials11UserProfile11displayNameSS"></a>
+                    <a name="/s:11Credentials11UserProfileC11displayNameSSv"></a>
                     <a name="//apple_ref/swift/Property/displayName" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vC11Credentials11UserProfile11displayNameSS">displayName</a>
+                    <a class="token" href="#/s:11Credentials11UserProfileC11displayNameSSv">displayName</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -190,9 +199,9 @@ different user information which is used to fill instances of this class.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:VC11Credentials11UserProfile15UserProfileName"></a>
+                    <a name="/s:11Credentials11UserProfileC0bC4NameV"></a>
                     <a name="//apple_ref/swift/Struct/UserProfileName" class="dashAnchor"></a>
-                    <a class="token" href="#/s:VC11Credentials11UserProfile15UserProfileName">UserProfileName</a>
+                    <a class="token" href="#/s:11Credentials11UserProfileC0bC4NameV">UserProfileName</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -218,9 +227,9 @@ different user information which is used to fill instances of this class.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vC11Credentials11UserProfile4nameGSqVS0_15UserProfileName_"></a>
+                    <a name="/s:11Credentials11UserProfileC4nameAC0bC4NameVSgv"></a>
                     <a name="//apple_ref/swift/Property/name" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vC11Credentials11UserProfile4nameGSqVS0_15UserProfileName_">name</a>
+                    <a class="token" href="#/s:11Credentials11UserProfileC4nameAC0bC4NameVSgv">name</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -245,9 +254,9 @@ different user information which is used to fill instances of this class.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:VC11Credentials11UserProfile16UserProfileEmail"></a>
+                    <a name="/s:11Credentials11UserProfileC0bC5EmailV"></a>
                     <a name="//apple_ref/swift/Struct/UserProfileEmail" class="dashAnchor"></a>
-                    <a class="token" href="#/s:VC11Credentials11UserProfile16UserProfileEmail">UserProfileEmail</a>
+                    <a class="token" href="#/s:11Credentials11UserProfileC0bC5EmailV">UserProfileEmail</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -273,9 +282,9 @@ different user information which is used to fill instances of this class.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vC11Credentials11UserProfile6emailsGSqGSaVS0_16UserProfileEmail__"></a>
+                    <a name="/s:11Credentials11UserProfileC6emailsSayAC0bC5EmailVGSgv"></a>
                     <a name="//apple_ref/swift/Property/emails" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vC11Credentials11UserProfile6emailsGSqGSaVS0_16UserProfileEmail__">emails</a>
+                    <a class="token" href="#/s:11Credentials11UserProfileC6emailsSayAC0bC5EmailVGSgv">emails</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -300,9 +309,9 @@ different user information which is used to fill instances of this class.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:VC11Credentials11UserProfile16UserProfilePhoto"></a>
+                    <a name="/s:11Credentials11UserProfileC0bC5PhotoV"></a>
                     <a name="//apple_ref/swift/Struct/UserProfilePhoto" class="dashAnchor"></a>
-                    <a class="token" href="#/s:VC11Credentials11UserProfile16UserProfilePhoto">UserProfilePhoto</a>
+                    <a class="token" href="#/s:11Credentials11UserProfileC0bC5PhotoV">UserProfilePhoto</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -328,9 +337,9 @@ different user information which is used to fill instances of this class.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vC11Credentials11UserProfile6photosGSqGSaVS0_16UserProfilePhoto__"></a>
+                    <a name="/s:11Credentials11UserProfileC6photosSayAC0bC5PhotoVGSgv"></a>
                     <a name="//apple_ref/swift/Property/photos" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vC11Credentials11UserProfile6photosGSqGSaVS0_16UserProfilePhoto__">photos</a>
+                    <a class="token" href="#/s:11Credentials11UserProfileC6photosSayAC0bC5PhotoVGSgv">photos</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -355,9 +364,9 @@ different user information which is used to fill instances of this class.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vC11Credentials11UserProfile18extendedPropertiesGVs10DictionarySSP__"></a>
+                    <a name="/s:11Credentials11UserProfileC18extendedPropertiess10DictionaryVySSypGv"></a>
                     <a name="//apple_ref/swift/Property/extendedProperties" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vC11Credentials11UserProfile18extendedPropertiesGVs10DictionarySSP__">extendedProperties</a>
+                    <a class="token" href="#/s:11Credentials11UserProfileC18extendedPropertiess10DictionaryVySSypGv">extendedProperties</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -382,9 +391,9 @@ different user information which is used to fill instances of this class.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FC11Credentials11UserProfilecFT2idSS11displayNameSS8providerSS4nameGSqVS0_15UserProfileName_6emailsGSqGSaVS0_16UserProfileEmail__6photosGSqGSaVS0_16UserProfilePhoto__18extendedPropertiesGSqGVs10DictionarySSP____S0_"></a>
+                    <a name="/s:11Credentials11UserProfileCACSS2id_SS11displayNameSS8providerAC0bcF0VSg4nameSayAC0bC5EmailVGSg6emailsSayAC0bC5PhotoVGSg6photoss10DictionaryVySSypGSg18extendedPropertiestcfc"></a>
                     <a name="//apple_ref/swift/Method/init(id:displayName:provider:name:emails:photos:extendedProperties:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FC11Credentials11UserProfilecFT2idSS11displayNameSS8providerSS4nameGSqVS0_15UserProfileName_6emailsGSqGSaVS0_16UserProfileEmail__6photosGSqGSaVS0_16UserProfilePhoto__18extendedPropertiesGSqGVs10DictionarySSP____S0_">init(id:displayName:provider:name:emails:photos:extendedProperties:)</a>
+                    <a class="token" href="#/s:11Credentials11UserProfileCACSS2id_SS11displayNameSS8providerAC0bcF0VSg4nameSayAC0bC5EmailVGSg6emailsSayAC0bC5PhotoVGSg6photoss10DictionaryVySSypGSg18extendedPropertiestcfc">init(id:displayName:provider:name:emails:photos:extendedProperties:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -393,48 +402,6 @@ different user information which is used to fill instances of this class.</p>
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Initialize a <code>UserProfile</code> instance.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter id: The user&rsquo;s ID.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter displayName: The user&rsquo;s name to display.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter provider: The authenticating service.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter name: The user&rsquo;s name.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter emails: The user&rsquo;s email addresses.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter photos: The user&rsquo;s photos.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter extendedProperties: A dictionary of additional properties. The values have to be serializable.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -457,8 +424,7 @@ different user information which is used to fill instances of this class.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>The user’s ID.</p>
-
+                                  <p>The user&rsquo;s ID.</p>
                                 </div>
                               </td>
                             </tr>
@@ -470,8 +436,7 @@ different user information which is used to fill instances of this class.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>The user’s name to display.</p>
-
+                                  <p>The user&rsquo;s name to display.</p>
                                 </div>
                               </td>
                             </tr>
@@ -484,7 +449,6 @@ different user information which is used to fill instances of this class.</p>
                               <td>
                                 <div>
                                   <p>The authenticating service.</p>
-
                                 </div>
                               </td>
                             </tr>
@@ -496,8 +460,7 @@ different user information which is used to fill instances of this class.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>The user’s name.</p>
-
+                                  <p>The user&rsquo;s name.</p>
                                 </div>
                               </td>
                             </tr>
@@ -509,8 +472,7 @@ different user information which is used to fill instances of this class.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>The user’s email addresses.</p>
-
+                                  <p>The user&rsquo;s email addresses.</p>
                                 </div>
                               </td>
                             </tr>
@@ -522,8 +484,7 @@ different user information which is used to fill instances of this class.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>The user’s photos.</p>
-
+                                  <p>The user&rsquo;s photos.</p>
                                 </div>
                               </td>
                             </tr>
@@ -536,7 +497,6 @@ different user information which is used to fill instances of this class.</p>
                               <td>
                                 <div>
                                   <p>A dictionary of additional properties. The values have to be serializable.</p>
-
                                 </div>
                               </td>
                             </tr>
@@ -554,8 +514,8 @@ different user information which is used to fill instances of this class.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-04-26)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-10-27)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

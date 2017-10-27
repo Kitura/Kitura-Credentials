@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>UserProfileName Struct Reference</title>
+    <title>UserProfileName Structure Reference</title>
     <link rel="stylesheet" type="text/css" href="../../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../../css/highlight.css" />
     <meta charset="utf-8">
     <script src="../../js/jquery.min.js" defer></script>
     <script src="../../js/jazzy.js" defer></script>
     
+    <script src="../../js/lunr.min.js" defer></script>
+    <script src="../../js/typeahead.jquery.js" defer></script>
+    <script src="../../js/jazzy.search.js" defer></script>
   </head>
   <body>
 
     <a name="//apple_ref/swift/Struct/UserProfileName" class="dashAnchor"></a>
 
-    <a title="UserProfileName Struct Reference"></a>
+    <a title="UserProfileName Structure Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -21,6 +24,12 @@
           Credentials Docs
         </a>
          (100% documented)
+      </p>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="../../search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
       </p>
     
         <p class="header-col header-col--secondary">
@@ -35,7 +44,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="../../index.html">Credentials Reference</a>
       <img class="carat" src="../../img/carat.png" />
-      UserProfileName Struct Reference
+      UserProfileName Structure Reference
     </p>
 
     <div class="content-wrapper">
@@ -108,9 +117,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vVC11Credentials11UserProfile15UserProfileName10familyNameSS"></a>
+                    <a name="/s:11Credentials11UserProfileC0bC4NameV06familyD0SSv"></a>
                     <a name="//apple_ref/swift/Property/familyName" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vVC11Credentials11UserProfile15UserProfileName10familyNameSS">familyName</a>
+                    <a class="token" href="#/s:11Credentials11UserProfileC0bC4NameV06familyD0SSv">familyName</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -135,9 +144,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vVC11Credentials11UserProfile15UserProfileName9givenNameSS"></a>
+                    <a name="/s:11Credentials11UserProfileC0bC4NameV05givenD0SSv"></a>
                     <a name="//apple_ref/swift/Property/givenName" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vVC11Credentials11UserProfile15UserProfileName9givenNameSS">givenName</a>
+                    <a class="token" href="#/s:11Credentials11UserProfileC0bC4NameV05givenD0SSv">givenName</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -162,9 +171,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vVC11Credentials11UserProfile15UserProfileName10middleNameSS"></a>
+                    <a name="/s:11Credentials11UserProfileC0bC4NameV06middleD0SSv"></a>
                     <a name="//apple_ref/swift/Property/middleName" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vVC11Credentials11UserProfile15UserProfileName10middleNameSS">middleName</a>
+                    <a class="token" href="#/s:11Credentials11UserProfileC0bC4NameV06middleD0SSv">middleName</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -189,9 +198,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FVC11Credentials11UserProfile15UserProfileNamecFT10familyNameSS9givenNameSS10middleNameSS_S1_"></a>
+                    <a name="/s:11Credentials11UserProfileC0bC4NameVAESS06familyD0_SS05givenD0SS06middleD0tcfc"></a>
                     <a name="//apple_ref/swift/Method/init(familyName:givenName:middleName:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FVC11Credentials11UserProfile15UserProfileNamecFT10familyNameSS9givenNameSS10middleNameSS_S1_">init(familyName:givenName:middleName:)</a>
+                    <a class="token" href="#/s:11Credentials11UserProfileC0bC4NameVAESS06familyD0_SS05givenD0SS06middleD0tcfc">init(familyName:givenName:middleName:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -200,24 +209,6 @@
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Initialize a <code>UserProfileName</code> instance.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter familyName: The family/last name of the user.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter givenName: The given/first name of the user.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter middleName: The middle name of the user.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -241,7 +232,6 @@
                               <td>
                                 <div>
                                   <p>The family/last name of the user.</p>
-
                                 </div>
                               </td>
                             </tr>
@@ -254,7 +244,6 @@
                               <td>
                                 <div>
                                   <p>The given/first name of the user.</p>
-
                                 </div>
                               </td>
                             </tr>
@@ -267,7 +256,6 @@
                               <td>
                                 <div>
                                   <p>The middle name of the user.</p>
-
                                 </div>
                               </td>
                             </tr>
@@ -285,8 +273,8 @@
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-04-26)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-10-27)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

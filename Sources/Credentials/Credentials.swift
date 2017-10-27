@@ -192,11 +192,7 @@ public class Credentials : RouterMiddleware {
                 try response.redirect(redirect)
             }
             catch {
-                #if os(Linux)
-                    response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey:"Failed to redirect unauthorized request"])
-                #else
-                    response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey as NSString:"Failed to redirect unauthorized request"])
-                #endif
+                response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to redirect unauthorized request"])
             }
         }
         else {
@@ -222,11 +218,7 @@ public class Credentials : RouterMiddleware {
                 try response.redirect(redirect)
             }
             catch {
-                #if os(Linux)
-                    response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey:"Failed to redirect successfuly authorized request"])
-                #else
-                    response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey as NSString:"Failed to redirect successfuly authorized request"])
-                #endif
+                response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to redirect successfuly authorized request"])
             }
         }
     }
@@ -279,11 +271,7 @@ public class Credentials : RouterMiddleware {
             else {
                 let error = "The server was not configured properly: no session found for redirecting authentication"
                 Log.error(error)
-                #if os(Linux)
-                    response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey: error])
-                #else
-                    response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey as NSString: error])
-                #endif
+                response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey: error])
             }
         }
     }
