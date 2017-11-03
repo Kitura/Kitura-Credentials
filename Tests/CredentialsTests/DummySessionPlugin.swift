@@ -19,8 +19,6 @@ import KituraNet
 import LoggerAPI
 @testable import Credentials
 
-import SwiftyJSON
-
 import Foundation
 
 public class DummySessionPlugin : CredentialsPluginProtocol {

@@ -18,9 +18,6 @@ import Kitura
 import KituraNet
 import LoggerAPI
 @testable import Credentials
-
-import SwiftyJSON
-
 import Foundation
 
 public class DummyTokenPlugin : CredentialsPluginProtocol {

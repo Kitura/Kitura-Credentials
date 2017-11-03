@@ -31,18 +31,17 @@ let package = Package(
     dependencies: [
       .package(url: "https://github.com/IBM-Swift/Kitura.git", .upToNextMinor(from: "2.0.0")),
       .package(url: "https://github.com/IBM-Swift/Kitura-Session.git", .upToNextMinor(from: "2.0.0")),
-      .package(url: "https://github.com/IBM-Swift/SwiftyJSON.git", .upToNextMajor(from: "17.0.0")),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         .target(
             name: "Credentials",
-            dependencies: ["Kitura", "KituraSession", "SwiftyJSON"]
+            dependencies: ["Kitura", "KituraSession"]
         ),
         .testTarget(
             name: "CredentialsTests",
-            dependencies: ["Credentials", "SwiftyJSON"]
+            dependencies: ["Credentials"]
         )
     ]
 )
