@@ -118,5 +118,12 @@ public class UserProfile {
         self.photos = photos
         self.extendedProperties = extendedProperties ?? [String:Any]()
     }
+
+    required convenience public init(_ profile: UserProfile) {
+        self.init(id: profile.id, displayName: profile.displayName,
+            provider: profile.provider, name: profile.name,
+            emails: profile.emails, photos: profile.photos,
+            extendedProperties: profile.extendedProperties)
+    }
 }
 
