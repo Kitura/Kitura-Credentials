@@ -20,7 +20,7 @@ import Foundation
 
 /// The user's profile information. Different authentication services provide
 /// different user information which is used to fill instances of this class.
-public class UserProfile {
+open class UserProfile {
     
     /// The user's ID.
     public var id: String
