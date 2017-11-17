@@ -29,7 +29,7 @@ let package = Package(
         )
     ],
     dependencies: [
-      .package(url: "https://github.com/IBM-Swift/Kitura.git", .upToNextMinor(from: "2.0.0")),
+      .package(url: "https://github.com/IBM-Swift/Kitura.git", .branch("issue.encoding")),
       .package(url: "https://github.com/IBM-Swift/Kitura-Session.git", .upToNextMinor(from: "2.0.0")),
     ],
     targets: [
