@@ -25,19 +25,29 @@ let package = Package(
         // Products define the executables and libraries produced by a package, and make them visible to other packages.
         .library(
             name: "Credentials",
-            targets: ["Credentials"]
+            targets: ["Credentials", "CredentialsKit"]
         )
     ],
     dependencies: [
       .package(url: "https://github.com/IBM-Swift/Kitura.git", .branch("issue.encoding")),
+      .package(url: "https://github.com/IBM-Swift/KituraKit.git", .branch("amlAuth")),
       .package(url: "https://github.com/IBM-Swift/Kitura-Session.git", .upToNextMinor(from: "2.0.0")),
+      .package(url: "https://github.com/IBM-Swift/KituraContracts.git", .upToNextMajor(from: "0.0.0")),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         .target(
             name: "Credentials",
-            dependencies: ["Kitura", "KituraSession"]
+            dependencies: ["Kitura", "KituraSession", "AuthContracts"]
+        ),
+        .target(
+            name: "CredentialsKit",
+            dependencies: ["KituraKit", "AuthContracts"]
+        ),
+        .target(
+            name: "AuthContracts",
+            dependencies: ["KituraContracts"]
         ),
         .testTarget(
             name: "CredentialsTests",

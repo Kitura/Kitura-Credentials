@@ -15,12 +15,13 @@
  **/
 
 // MARK BaseCacheElement
+import AuthContracts
 
 /// The cache element for keeping user profile information.
 public class BaseCacheElement {
     /// The user profile information stored as `UserProfile`.
     public var userProfile: UserProfile
-    
+
     /// Initialize a `BaseCacheElement`.
     ///
     /// - Parameter profile: the `UserProfile` to store.
@@ -28,4 +29,3 @@ public class BaseCacheElement {
         userProfile = profile
     }
 }
-

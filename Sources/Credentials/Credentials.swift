@@ -18,7 +18,7 @@ import Kitura
 import KituraNet
 import KituraSession
 import LoggerAPI
-
+import AuthContracts
 import Foundation
 
 import SwiftyJSON
@@ -29,22 +29,22 @@ import SwiftyJSON
 public class Credentials : RouterMiddleware {
     var nonRedirectingPlugins = [CredentialsPluginProtocol]()
     var redirectingPlugins = [String : CredentialsPluginProtocol]()
-    
+
     /// The dictionary of options to pass to the plugins.
     public var options: [String:Any]
-    
+
     /// Initialize a `Credentials` instance.
     public convenience init () {
         self.init(options: [String:Any]())
     }
-    
+
     /// Initialize a `Credentials` instance.
     ///
     /// - Parameter options: The dictionary of options to pass to the plugins.
     public init (options: [String:Any]) {
         self.options = options
     }
-    
+
     /// Handle an incoming request: authenticate the request using the registered plugins.
     ///
     /// - Parameter request: The `RouterRequest` object used to get information
@@ -59,7 +59,7 @@ public class Credentials : RouterMiddleware {
             next()
             return
         }
-        
+
         if let session = request.session  {
             if let _ = request.userProfile {
                 next()
@@ -73,14 +73,14 @@ public class Credentials : RouterMiddleware {
                 }
             }
         }
-        
+
         var pluginIndex = -1
         var passStatus : HTTPStatusCode?
         var passHeaders : [String:String]?
-        
+
         // Extra variable to get around use of variable in its own initializer
         var callback: (()->Void)? = nil
-        
+
         let callbackHandler = {[unowned request, unowned response, next] () -> Void in
             pluginIndex += 1
             if pluginIndex < self.nonRedirectingPlugins.count {
@@ -121,11 +121,11 @@ public class Credentials : RouterMiddleware {
                 }
             }
         }
-        
+
         callback = callbackHandler
         callbackHandler()
     }
-    
+
     /// Get the URL to which the flow will return to after successfully authenticating using a redirecting plugin.
     ///
     /// - Note: By default, it is set to `request.originalURL`.
@@ -138,7 +138,7 @@ public class Credentials : RouterMiddleware {
         }
         return session["returnTo"].stringValue
     }
-    
+
     /// Set the URL to which the flow will return to after successfully authenticating using a redirecting plugin.
     ///
     /// - Note: By default, it is set to `request.originalURL`.
@@ -149,7 +149,7 @@ public class Credentials : RouterMiddleware {
             session["returnTo"] = JSON(returnTo)
         }
     }
-    
+
     private func fail (response: RouterResponse, status: HTTPStatusCode?, headers: [String:String]?) {
         let responseStatus = status ?? .unauthorized
         if let headers = headers {
@@ -164,7 +164,7 @@ public class Credentials : RouterMiddleware {
             Log.error("Failed to send response")
         }
     }
-    
+
     /// Register a plugin implementing `CredentialsPluginProtocol`.
     ///
     /// - Parameter plugin: An implementation of `CredentialsPluginProtocol`. The credentials
@@ -178,7 +178,7 @@ public class Credentials : RouterMiddleware {
             nonRedirectingPlugins[nonRedirectingPlugins.count - 1].usersCache = NSCache()
         }
     }
-    
+
     private func redirectUnauthorized (response: RouterResponse, path: String?=nil) {
         let redirect: String?
         if let path = path {
@@ -204,7 +204,7 @@ public class Credentials : RouterMiddleware {
             }
         }
     }
-    
+
     private func redirectAuthorized (response: RouterResponse, path: String?=nil) {
         let redirect : String?
         if let path = path {
@@ -222,7 +222,7 @@ public class Credentials : RouterMiddleware {
             }
         }
     }
-    
+
     /// Create a `RouterHandler` that invokes the specific redirecting plugin to authenticate incoming requests.
     ///
     /// - Parameter credentialsType: The name of a registered redirecting plugin that will be used for request authentication.
@@ -275,7 +275,7 @@ public class Credentials : RouterMiddleware {
             }
         }
     }
-    
+
     /// Delete the user profile information from the session and the request.
     ///
     /// - Parameter request: The `RouterRequest` object used to get information
@@ -286,7 +286,7 @@ public class Credentials : RouterMiddleware {
             session.remove(key: "userProfile")
         }
     }
-    
+
     static func restoreUserProfile(from session: SessionState) -> UserProfile? {
         let sessionUserProfile = session["userProfile"]
         if sessionUserProfile.type != .null  {
@@ -294,14 +294,14 @@ public class Credentials : RouterMiddleware {
                 let displayName = dictionary["displayName"] as? String,
                 let provider = dictionary["provider"] as? String,
                 let id = dictionary["id"] as? String {
-                
+
                 var userName: UserProfile.UserProfileName?
                 if let familyName = dictionary["familyName"] as? String,
                     let givenName = dictionary["givenName"] as? String,
                     let middleName = dictionary["middleName"] as? String {
                     userName = UserProfile.UserProfileName(familyName: familyName, givenName: givenName, middleName: middleName)
                 }
-                
+
                 var userEmails: [UserProfile.UserProfileEmail]?
 
                 if let emails = dictionary["emails"] as? [String],
@@ -313,7 +313,7 @@ public class Credentials : RouterMiddleware {
                         userEmails?.append(userEmail)
                     }
                 }
-                
+
                 var userPhotos: [UserProfile.UserProfilePhoto]?
 
                 if let photos = dictionary["photos"] as? [String] {
@@ -324,25 +324,25 @@ public class Credentials : RouterMiddleware {
                         userPhotos?.append(userPhoto)
                     }
                 }
-                
+
                 return UserProfile(id: id, displayName: displayName, provider: provider, name: userName, emails: userEmails, photos: userPhotos, extendedProperties: dictionary["extendedProperties"] as? [String:Any])
             }
         }
         return nil
     }
-    
+
     private static func store(userProfile: UserProfile, in session: SessionState) {
         var dictionary = [String:Any]()
         dictionary["displayName"] = userProfile.displayName
         dictionary["provider"] = userProfile.provider
         dictionary["id"] = userProfile.id
-        
+
         if let name = userProfile.name {
             dictionary["familyName"] = name.familyName
             dictionary["givenName"] = name.givenName
             dictionary["middleName"] = name.middleName
         }
-        
+
         if let emails = userProfile.emails {
             var emailsArray = [String]()
             var emailTypesArray = [String]()
@@ -353,7 +353,7 @@ public class Credentials : RouterMiddleware {
             dictionary["emails"] = emailsArray
             dictionary["emailTypes"] = emailTypesArray
         }
-        
+
         if let photos = userProfile.photos {
             var photosArray = [String]()
             for photo in photos {
@@ -361,11 +361,11 @@ public class Credentials : RouterMiddleware {
             }
             dictionary["photos"] = photosArray
         }
-        
+
         if !userProfile.extendedProperties.isEmpty {
             dictionary["extendedProperties"] = userProfile.extendedProperties
         }
-        
+
         session["userProfile"] = JSON(dictionary)
     }
 }

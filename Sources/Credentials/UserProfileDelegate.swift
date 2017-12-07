@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
+import AuthContracts
 
 // MARK UserProfileDelegate
 
-/// A protocol for `UserProfile` manipulation. 
+/// A protocol for `UserProfile` manipulation.
 /// The current default implementation only tries to fill in the standard `UserProfile` fields. In case this default behaviour is insufficient,
 /// additional data can be stored in `UserProfile.extendedProperties` and filled in using this delegate. An implementation
 /// should be passed in the `options` argument with the key `userProfileDelegate` to the corresponding plugin's constructor.
-public protocol UserProfileDelegate {    
+public protocol UserProfileDelegate {
     /// Updates the `UserProfile` instance from the data received from an identity provider.
     ///
     /// - Returns: The `UserProfile` containing the data to update.

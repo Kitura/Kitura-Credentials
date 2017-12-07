@@ -17,27 +17,28 @@
 import Kitura
 
 import Foundation
+import AuthContracts
 
 // MARK RouterRequest+UserProfile
 
 private let USER_PROFILE_USER_INFO_KEY = "@@Kitura@@UserProfile@@"
 
-/// Extension of the `RouterRequest` class to provide access to `UserProfile` 
+/// Extension of the `RouterRequest` class to provide access to `UserProfile`
 /// information of authenticated users.
 public extension RouterRequest {
-    
+
     /// `UserProfile` information of authenticated users.
     public internal(set) var userProfile: UserProfile? {
         get {
             if let requestUserProfile = userInfo[USER_PROFILE_USER_INFO_KEY] as? UserProfile {
                 return requestUserProfile
             }
-            
+
             if let session = session,
                 let sessionUserProfile = Credentials.restoreUserProfile(from: session) {
                 return sessionUserProfile
             }
-            
+
             return nil
         }
         set {

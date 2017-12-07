@@ -20,29 +20,29 @@ import Foundation
 
 /// The user's profile information. Different authentication services provide
 /// different user information which is used to fill instances of this class.
-open class UserProfile {
-    
+open class UserProfile: Codable {
+
     /// The user's ID.
     public var id: String
-    
+
     /// The authenticating service used to authenticate the user.
     public var provider: String
-    
+
     /// The user's name the way it should be displayed.
     public var displayName: String
-    
+
     /// A structure for the user's name.
-    public struct UserProfileName {
-        
+  public struct UserProfileName: Codable {
+
         /// The family/last name of the user.
         public var familyName: String
-        
+
         /// The given/first name of the user.
         public var givenName: String
-        
+
         /// The middle name of the user.
         public var middleName: String
-        
+
         /// Initialize a `UserProfileName` instance.
         ///
         /// - Parameter familyName: The family/last name of the user.
@@ -54,19 +54,19 @@ open class UserProfile {
             self.middleName = middleName
         }
     }
-    
+
     /// The user's name (optional).
     public var name: UserProfileName?
-    
+
     /// A structure for user's email address.
-    public struct UserProfileEmail {
+  public struct UserProfileEmail: Codable {
 
         /// The actual email address.
         public var value: String
-        
+
         /// The type of email address (home, work, etc.).
         public var type: String
-        
+
         /// Initialize a `UserProfileEmail` instance.
         ///
         /// - Parameter value: The actual email address.
@@ -76,16 +76,16 @@ open class UserProfile {
             self.type = type
         }
     }
-    
+
     /// An optional array of the user's email addresses.
     public var emails: [UserProfileEmail]?
-    
+
     /// A structure for the user's photo.
-    public struct UserProfilePhoto {
+  public struct UserProfilePhoto: Codable {
 
         /// The URL of the image.
         public var value: String
-        
+
         /// Initialize a `UserProfilePhoto` instance.
         ///
         /// - Parameter value: The photo's URL.
@@ -93,13 +93,13 @@ open class UserProfile {
             self.value = value
         }
     }
-    
+
     /// An optional array of the user's photos.
     public var photos: [UserProfilePhoto]?
 
     /// A dictionary of additional properties. The values have to be serializable.
     public var extendedProperties: [String:Any]
-    
+
     /// Initialize a `UserProfile` instance.
     ///
     /// - Parameter id: The user's ID.
@@ -119,11 +119,33 @@ open class UserProfile {
         self.extendedProperties = extendedProperties ?? [String:Any]()
     }
 
-    required convenience public init(_ profile: UserProfile) {
-        self.init(id: profile.id, displayName: profile.displayName,
-            provider: profile.provider, name: profile.name,
-            emails: profile.emails, photos: profile.photos,
-            extendedProperties: profile.extendedProperties)
-    }
-}
+  public enum CodingKeys: CodingKey {
+      case id
+      case provider
+      case displayName
+      case name
+      case emails
+      case photos
+  }
+  public required init(from decoder: Decoder) throws {
+    let values = try decoder.container(keyedBy: CodingKeys.self)
+    id = try values.decode(String.self, forKey: .id)
+    provider = try values.decode(String.self, forKey: .provider)
+    displayName = try values.decode(String.self, forKey: .displayName)
+    name = try values.decodeIfPresent(UserProfileName.self, forKey: .name)
+    emails = try values.decodeIfPresent([UserProfileEmail].self, forKey: .emails)
+    photos = try values.decodeIfPresent([UserProfilePhoto].self, forKey: .photos)
+    extendedProperties = [:]
+    print("Decoded!")
+  }
 
+  public func encode(to encoder: Encoder) throws {
+    var container = encoder.container(keyedBy: CodingKeys.self)
+    try container.encode(id, forKey: .id)
+    try container.encode(provider, forKey: .provider)
+    try container.encode(displayName, forKey: .displayName)
+    try container.encodeIfPresent(name, forKey: .name)
+    try container.encodeIfPresent(emails, forKey: .emails)
+    try container.encodeIfPresent(photos, forKey: .photos)
+  }
+}

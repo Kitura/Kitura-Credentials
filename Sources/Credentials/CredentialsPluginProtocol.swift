@@ -16,7 +16,7 @@
 
 import Kitura
 import KituraNet
-
+import AuthContracts
 import Foundation
 
 // MARK CredentialsPluginProtocol
@@ -27,16 +27,16 @@ public protocol CredentialsPluginProtocol {
 
     /// The name of the plugin.
     var name: String { get }
-    
+
     /// User profile cache.
     var usersCache: NSCache<NSString, BaseCacheElement>? { get set }
-    
+
     /// An indication as to whether the plugin is redirecting or not.
     /// The redirecting scheme is used for web session authentication, where the users,
-    /// that are not logged in, are redirected to a login page. All other types of 
+    /// that are not logged in, are redirected to a login page. All other types of
     /// authentication are non-redirecting, i.e., unauthorized requests are rejected.
     var redirecting: Bool { get }
-    
+
     /// Authenticate an incoming request.
     ///
     /// - Parameter request: The `RouterRequest` object used to get information
