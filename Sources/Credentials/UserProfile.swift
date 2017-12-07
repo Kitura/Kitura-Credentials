@@ -138,7 +138,6 @@ open class UserProfile: Codable {
     emails = try values.decodeIfPresent([UserProfileEmail].self, forKey: .emails)
     photos = try values.decodeIfPresent([UserProfilePhoto].self, forKey: .photos)
     extendedProperties = [:]
-    print("Decoded!")
   }
 
   public func encode(to encoder: Encoder) throws {
