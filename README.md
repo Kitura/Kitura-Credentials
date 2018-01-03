@@ -26,7 +26,7 @@ In the scope of OAuth2 Authorization Code flow, authentication is performed by a
 * [License](#license)
 
 ## Swift version
-The latest version of Kitura-Credentials requires **Swift 4.0**. You can download this version of the Swift binaries by following this [link](https://swift.org/download/). Compatibility with other Swift versions is not guaranteed.
+The latest version of Kitura-Credentials requires **Swift 4.0.3**. You can download this version of the Swift binaries by following this [link](https://swift.org/download/). Compatibility with other Swift versions is not guaranteed.
 
 
 ## Example
