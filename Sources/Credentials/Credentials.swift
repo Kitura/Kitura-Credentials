@@ -18,10 +18,7 @@ import Kitura
 import KituraNet
 import KituraSession
 import LoggerAPI
-
 import Foundation
-
-import SwiftyJSON
 
 // MARK Credentials
 
@@ -133,10 +130,10 @@ public class Credentials : RouterMiddleware {
     /// - Parameter for request: The `RouterRequest` to get the URL.
     /// - Returns: A String containing the URL, or nil if there is no session or the URL is not set.
     public static func getRedirectingReturnTo(for request: RouterRequest) -> String? {
-        guard let session = request.session, session["returnTo"].type != .null else {
+        guard let session = request.session, session["returnTo"] != nil else {
             return nil
         }
-        return session["returnTo"].stringValue
+        return (session["returnTo"] as? String) ?? ""
     }
     
     /// Set the URL to which the flow will return to after successfully authenticating using a redirecting plugin.
@@ -146,7 +143,7 @@ public class Credentials : RouterMiddleware {
     /// - Parameter for request: The `RouterRequest` to set the URL.
     public static func setRedirectingReturnTo(_ returnTo: String, for request: RouterRequest) {
         if let session = request.session {
-            session["returnTo"] = JSON(returnTo)
+            session["returnTo"] = returnTo
         }
     }
     
@@ -289,8 +286,8 @@ public class Credentials : RouterMiddleware {
     
     static func restoreUserProfile(from session: SessionState) -> UserProfile? {
         let sessionUserProfile = session["userProfile"]
-        if sessionUserProfile.type != .null  {
-            if let dictionary = sessionUserProfile.dictionaryObject,
+        if sessionUserProfile != nil  {
+            if let dictionary = sessionUserProfile as? [String:Any],
                 let displayName = dictionary["displayName"] as? String,
                 let provider = dictionary["provider"] as? String,
                 let id = dictionary["id"] as? String {
@@ -366,6 +363,6 @@ public class Credentials : RouterMiddleware {
             dictionary["extendedProperties"] = userProfile.extendedProperties
         }
         
-        session["userProfile"] = JSON(dictionary)
+        session["userProfile"] = dictionary
     }
 }
