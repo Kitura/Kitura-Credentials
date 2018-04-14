@@ -90,20 +90,14 @@ router.post("/collection/:new") {request, response, next in
 ## List of plugins:
 
 * [Facebook OAuth2 Authorization Code flow login](https://github.com/IBM-Swift/Kitura-CredentialsFacebook)
-
 * [Facebook OAuth2 token](https://github.com/IBM-Swift/Kitura-CredentialsFacebook)
-
 * [GitHub OAuth2 Authorization Code flow login](https://github.com/IBM-Swift/Kitura-CredentialsGitHub)
-
 * [Google OAuth2 Authorization Code flow login](https://github.com/IBM-Swift/Kitura-CredentialsGoogle)
-
 * [Google OAuth2 token](https://github.com/IBM-Swift/Kitura-CredentialsGoogle)
-
 * [HTTP Basic authentication](https://github.com/IBM-Swift/Kitura-CredentialsHTTP)
-
 * [HTTP Digest authentication](https://github.com/IBM-Swift/Kitura-CredentialsHTTP)
-
 * [Twitter OAuth](https://github.com/jacobvanorder/Kitura-CredentialsTwitter) (Third-party implemented)
+* [Local authentication](https://github.com/NocturnalSolutions/Kitura-CredentialsLocal) (For credentials stored in e.g. a local database; third-party implemented)
 
 ## License
 This library is licensed under Apache 2.0. Full license text is available in [LICENSE](LICENSE.txt).
