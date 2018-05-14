@@ -84,10 +84,12 @@ public class Credentials : RouterMiddleware {
                 let plugin = self.nonRedirectingPlugins[pluginIndex]
                 plugin.authenticate(request: request, response: response, options: self.options,
                                     onSuccess: { userProfile in
+                                        callback = nil
                                         request.userProfile = userProfile
                                         next()
                     },
                                     onFailure: { status, headers in
+                                        callback = nil
                                         self.fail(response: response, status: status, headers: headers)
                     },
                                     onPass: { status, headers in
@@ -99,6 +101,7 @@ public class Credentials : RouterMiddleware {
                                         callback!()
                     },
                                     inProgress: {
+                                        callback = nil
                                         self.redirectUnauthorized(response: response)
                                         next()
                     }
@@ -106,6 +109,7 @@ public class Credentials : RouterMiddleware {
             }
             else {
                 // All the plugins passed
+                callback = nil
                 if request.session != nil, !self.redirectingPlugins.isEmpty {
                     Credentials.setRedirectingReturnTo(request.originalURL, for: request)
                     self.redirectUnauthorized(response: response)
