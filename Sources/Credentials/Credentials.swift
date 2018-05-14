@@ -26,8 +26,6 @@ import Foundation
 public class Credentials : RouterMiddleware {
     var nonRedirectingPlugins = [CredentialsPluginProtocol]()
     var redirectingPlugins = [String : CredentialsPluginProtocol]()
-
-    private var callback: (()->Void)?
     
     /// The dictionary of options to pass to the plugins.
     public var options: [String:Any]
@@ -76,8 +74,11 @@ public class Credentials : RouterMiddleware {
         var pluginIndex = -1
         var passStatus : HTTPStatusCode?
         var passHeaders : [String:String]?
-
-        callback = {[unowned self, unowned request, unowned response, next] () -> Void in
+        
+        // Extra variable to get around use of variable in its own initializer
+        var callback: (()->Void)? = nil
+        
+        let callbackHandler = {[unowned request, unowned response, next] () -> Void in
             pluginIndex += 1
             if pluginIndex < self.nonRedirectingPlugins.count {
                 let plugin = self.nonRedirectingPlugins[pluginIndex]
@@ -95,7 +96,7 @@ public class Credentials : RouterMiddleware {
                                             passStatus = status
                                             passHeaders = headers
                                         }
-                                        self.callback!()
+                                        callback!()
                     },
                                     inProgress: {
                                         self.redirectUnauthorized(response: response)
@@ -118,7 +119,8 @@ public class Credentials : RouterMiddleware {
             }
         }
         
-        callback!()
+        callback = callbackHandler
+        callbackHandler()
     }
     
     /// Get the URL to which the flow will return to after successfully authenticating using a redirecting plugin.
