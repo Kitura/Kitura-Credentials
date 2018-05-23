@@ -21,15 +21,12 @@ import LoggerAPI
 
 import Foundation
 
-public protocol TypedCredentialsPluginProtocol: TypedMiddleware {
+public protocol TypedCredentialsPluginProtocol: TypeSafeMiddleware {
     
     /// The name of the plugin.
-    static var name: String { get }
+    static var pluginName: String { get }
     
     static var options: [String:Any] {get set}
-    
-    /// User profile cache.
-    static var usersCache: NSCache<NSString, BaseCacheElement>? { get set }
     
     /// An indication as to whether the plugin is redirecting or not.
     /// The redirecting scheme is used for web session authentication, where the users,

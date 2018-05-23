@@ -1,7 +1,7 @@
 import Kitura
 import KituraContracts
 
-public final class AuthenticatedUser: Credentials, TypedMiddleware {
+public final class AuthenticatedUser: Credentials, TypeSafeMiddleware {
     
     private static let credentials = Credentials()
     
