@@ -21,7 +21,15 @@ import LoggerAPI
 
 import Foundation
 
-public protocol TypeSafeCredentialsPluginProtocol: TypeSafeMiddleware {
+public protocol TypeSafeCredentials: TypeSafeMiddleware {
+    
+    /// The unique identifier for the authentication providers
+    var id: String { get }
+    
+    /// The name of the authentication provider
+    var provider: String { get }
+    
+    static var redirectUnauthorized: String? { get }
     
     /// Authenticate an incoming request.
     ///
@@ -39,14 +47,17 @@ public protocol TypeSafeCredentialsPluginProtocol: TypeSafeMiddleware {
     static func authenticate (request: RouterRequest, response: RouterResponse,
                               onSuccess: @escaping (Self) -> Void,
                               onFailure: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
-                              onPass: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
-                              inProgress: @escaping () -> Void)
+                              onPass: @escaping (HTTPStatusCode?, [String:String]?) -> Void
+                              )
+    }
 
-}
-
-extension TypeSafeCredentialsPluginProtocol {
+extension TypeSafeCredentials {
     
-    /// Handle an incoming request: authenticate the request using the registered plugins.
+    public var redirectUnauthorized: String? {
+        return nil
+    }
+    
+    /// Handle an incoming request: authenticate the request using the registered plugin.
     ///
     /// - Parameter request: The `RouterRequest` object used to get information
     ///                     about the request.
@@ -55,34 +66,25 @@ extension TypeSafeCredentialsPluginProtocol {
     /// - Parameter next: The closure to invoke to enable the Router to check for
     ///                  other handlers or middleware to work with this request.
     public static func handle(request: RouterRequest, response: RouterResponse, completion: @escaping (Self?, RequestError?) -> Void) {
-        
-        var passStatus : HTTPStatusCode?
-        var passHeaders : [String:String]?
-        
-        var callback: (()->Void)? = nil
-        let callbackHandler = {[request, response, completion] () -> Void in
-            authenticate(request: request, response: response,
-                         onSuccess: { selfInstance in
-                            completion(selfInstance, nil)
-            },
-                         onFailure: { status, headers in
-                            fail(response: response, status: status, headers: headers)
-                            completion(nil, .unauthorized)
-            },
-                         onPass: { status, headers in
-                            if let status = status, passStatus == nil {
-                                passStatus = status
-                                passHeaders = headers
+    
+        authenticate(request: request, response: response,
+                     onSuccess: { selfInstance in
+                        completion(selfInstance, nil)
+                     },
+                     onFailure: { status, headers in
+                        redirectUnauthorized(response: response)
+                        fail(response: response, status: status, headers: headers)
+                     },
+                     onPass: { status, headers in
+                        if let headers = headers {
+                            for (key, value) in headers {
+                                response.headers.append(key, value: value)
                             }
-                            completion(nil, .unauthorized)
-            },
-                         inProgress: {
-                            completion(nil, .unauthorized)
-            }
-            )
-        }
-        callback = callbackHandler
-        callbackHandler()
+                        }
+                        redirectUnauthorized(response: response)
+                        completion(nil, RequestError(httpCode: status?.rawValue ?? 401))
+                     }
+        )
     }
     
     private static func fail (response: RouterResponse, status: HTTPStatusCode?, headers: [String:String]?) {
@@ -97,6 +99,17 @@ extension TypeSafeCredentialsPluginProtocol {
         }
         catch {
             Log.error("Failed to send response")
+        }
+    }
+    
+    private static func redirectUnauthorized (response: RouterResponse) {
+        if let redirect = Self.redirectUnauthorized {
+            do {
+                try response.redirect(redirect)
+            }
+            catch {
+                response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to redirect unauthorized request"])
+            }
         }
     }
 }
