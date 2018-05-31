@@ -1,5 +1,5 @@
 /**
- * Copyright IBM Corporation 2016, 2017
+ * Copyright IBM Corporation 2018
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,18 +21,7 @@ import LoggerAPI
 
 import Foundation
 
-public protocol TypedCredentialsPluginProtocol: TypeSafeMiddleware {
-    
-    /// The name of the plugin.
-    static var pluginName: String { get }
-    
-    static var options: [String:Any] {get set}
-    
-    /// An indication as to whether the plugin is redirecting or not.
-    /// The redirecting scheme is used for web session authentication, where the users,
-    /// that are not logged in, are redirected to a login page. All other types of
-    /// authentication are non-redirecting, i.e., unauthorized requests are rejected.
-    static var redirecting: Bool { get }
+public protocol TypeSafeCredentialsPluginProtocol: TypeSafeMiddleware {
     
     /// Authenticate an incoming request.
     ///
@@ -52,7 +41,7 @@ public protocol TypedCredentialsPluginProtocol: TypeSafeMiddleware {
                               onFailure: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
                               onPass: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
                               inProgress: @escaping () -> Void)
-    
+
 }
 
 extension TypedCredentialsPluginProtocol {
@@ -66,27 +55,9 @@ extension TypedCredentialsPluginProtocol {
     /// - Parameter next: The closure to invoke to enable the Router to check for
     ///                  other handlers or middleware to work with this request.
     public static func handle(request: RouterRequest, response: RouterResponse, completion: @escaping (Self?, RequestError?) -> Void) {
-        print("Credentials plugin handle")
-        /*
-         TODO: deal with sessions
-         if let session = request.session  {
-         if let _ = request.userProfile {
-         next()
-         return
-         }
-         else {
-         if let userProfile = Credentials.restoreUserProfile(from: session) {
-         request.userProfile = userProfile
-         next()
-         return
-         }
-         }
-         }
-         */
         
         var passStatus : HTTPStatusCode?
         var passHeaders : [String:String]?
-        
         
         var callback: (()->Void)? = nil
         let callbackHandler = {[request, response, completion] () -> Void in
@@ -96,23 +67,17 @@ extension TypedCredentialsPluginProtocol {
             },
                          onFailure: { status, headers in
                             fail(response: response, status: status, headers: headers)
-                            print("fail")
                             completion(nil, .unauthorized)
             },
                          onPass: { status, headers in
-                            // First pass parameters are saved
                             if let status = status, passStatus == nil {
                                 passStatus = status
                                 passHeaders = headers
                             }
-                            print("pass")
                             completion(nil, .unauthorized)
-                            // TODO: see what's going on here -this causes infinite recursion
-                            //callback!()
             },
                          inProgress: {
                             redirectUnauthorized(response: response)
-                            print("progress")
                             completion(nil, .unauthorized)
             }
             )
