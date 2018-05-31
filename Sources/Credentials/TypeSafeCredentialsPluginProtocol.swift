@@ -44,7 +44,7 @@ public protocol TypeSafeCredentialsPluginProtocol: TypeSafeMiddleware {
 
 }
 
-extension TypedCredentialsPluginProtocol {
+extension TypeSafeCredentialsPluginProtocol {
     
     /// Handle an incoming request: authenticate the request using the registered plugins.
     ///
@@ -77,7 +77,6 @@ extension TypedCredentialsPluginProtocol {
                             completion(nil, .unauthorized)
             },
                          inProgress: {
-                            redirectUnauthorized(response: response)
                             completion(nil, .unauthorized)
             }
             )
@@ -98,32 +97,6 @@ extension TypedCredentialsPluginProtocol {
         }
         catch {
             Log.error("Failed to send response")
-        }
-    }
-    
-    private static func redirectUnauthorized (response: RouterResponse, path: String?=nil) {
-        let redirect: String?
-        if let path = path {
-            redirect = path
-        }
-        else {
-            redirect = options["failureRedirect"] as? String
-        }
-        if let redirect = redirect {
-            do {
-                try response.redirect(redirect)
-            }
-            catch {
-                response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to redirect unauthorized request"])
-            }
-        }
-        else {
-            do {
-                try response.status(.unauthorized).end()
-            }
-            catch {
-                Log.error("Failed to send response")
-            }
         }
     }
 }
