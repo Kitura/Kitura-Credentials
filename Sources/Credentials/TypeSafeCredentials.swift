@@ -15,12 +15,36 @@
  **/
 
 import Kitura
-import KituraNet
-import KituraContracts
 import LoggerAPI
 
 import Foundation
 
+// MARK TypeSafeCredentials
+
+/**
+ A `TypeSafeMiddleware` for authenticating users. This protocol will be implemented by plugins that identify the user from the router request. The plugin must implement a static `authenticate` function which returns an instance of Self on success. This instance must contain the authentication `provider` (e.g. HTTPBasic) and an `id`, uniquely identifying a single user for that `provider`.
+ ### Usage Example: ###
+ ```swift
+ public final class TypeSafeHTTPBasic : TypeSafeCredentialsPluginProtocol {
+ 
+     public let id: String
+     public let provider: String = "HTTPBasic"
+     public static let users = ["John" : "123"]
+ 
+    public static func authenticate(request: RouterRequest, response: RouterResponse, onSuccess: @escaping (TypeSafeHTTPBasic) -> Void, onFailure: @escaping (HTTPStatusCode?, [String : String]?) -> Void, onPass: @escaping (HTTPStatusCode?, [String : String]?) -> Void, inProgress: @escaping () -> Void) {
+ 
+    if let user = request.urlURL.user, let password = request.urlURL.password {
+        if users[user] == password {
+            return onSuccess(UserHTTPBasic(id: user))
+        } else {
+            return onFailure()
+        }
+    } else {
+        return onPass()
+    }
+ }
+ ```
+ */
 public protocol TypeSafeCredentials: TypeSafeMiddleware {
     
     /// The unique identifier for the authentication providers
@@ -29,21 +53,16 @@ public protocol TypeSafeCredentials: TypeSafeMiddleware {
     /// The name of the authentication provider
     var provider: String { get }
     
-    static var redirectUnauthorized: String? { get }
-    
-    /// Authenticate an incoming request.
+    /// Function to be implemented, by an plugin, to authenticate an incoming request. On success, an instance of Self is returned. On failure, the `HTTPStatusCode` and any headers you wish to set are returned. On passing (Meaning the plugin didn't recognize the authentication header), the `HTTPStatusCode` and any headers you wish to set are returned.
     ///
     /// - Parameter request: The `RouterRequest` object used to get information
     ///                     about the request.
     /// - Parameter response: The `RouterResponse` object used to respond to the
     ///                       request.
-    /// - Parameter options: The dictionary of plugin specific options.
     /// - Parameter onSuccess: The closure to invoke in the case of successful authentication.
     /// - Parameter onFailure: The closure to invoke in the case of an authentication failure.
     /// - Parameter onPass: The closure to invoke when the plugin doesn't recognize the
     ///                     authentication data (usually an authentication token) in the request.
-    /// - Parameter inProgress: The closure to invoke to cause a redirect to the login page in the
-    ///                     case of redirecting authentication.
     static func authenticate (request: RouterRequest, response: RouterResponse,
                               onSuccess: @escaping (Self) -> Void,
                               onFailure: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
@@ -53,18 +72,15 @@ public protocol TypeSafeCredentials: TypeSafeMiddleware {
 
 extension TypeSafeCredentials {
     
-    public var redirectUnauthorized: String? {
-        return nil
-    }
-    
-    /// Handle an incoming request: authenticate the request using the registered plugin.
-    ///
+    /// Static function that attempts to create an instance of Self by calling `authenticate`. On success, this Self instance is returned so it can be used by a `TypeSafeMiddleware` route. On failure, an unauthorized response is sent immediately. If the authentication header isn't recognised, an unauthorized `RequestError` is returned to the `TypeSafeMiddleware` route. This means the current route will not be invoked but other routes can still be matched.
     /// - Parameter request: The `RouterRequest` object used to get information
     ///                     about the request.
     /// - Parameter response: The `RouterResponse` object used to respond to the
     ///                       request.
-    /// - Parameter next: The closure to invoke to enable the Router to check for
-    ///                  other handlers or middleware to work with this request.
+    /// - Parameter completion: The closure to invoke once middleware processing
+    ///                         is complete. Either an instance of Self or a
+    ///                         RequestError should be provided, indicating a
+    ///                         successful or failed attempt to authenticate the request.
     public static func handle(request: RouterRequest, response: RouterResponse, completion: @escaping (Self?, RequestError?) -> Void) {
     
         authenticate(request: request, response: response,
@@ -72,7 +88,6 @@ extension TypeSafeCredentials {
                         completion(selfInstance, nil)
                      },
                      onFailure: { status, headers in
-                        redirectUnauthorized(response: response)
                         fail(response: response, status: status, headers: headers)
                      },
                      onPass: { status, headers in
@@ -81,7 +96,6 @@ extension TypeSafeCredentials {
                                 response.headers.append(key, value: value)
                             }
                         }
-                        redirectUnauthorized(response: response)
                         completion(nil, RequestError(httpCode: status?.rawValue ?? 401))
                      }
         )
@@ -102,14 +116,5 @@ extension TypeSafeCredentials {
         }
     }
     
-    private static func redirectUnauthorized (response: RouterResponse) {
-        if let redirect = Self.redirectUnauthorized {
-            do {
-                try response.redirect(redirect)
-            }
-            catch {
-                response.error = NSError(domain: "Credentials", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to redirect unauthorized request"])
-            }
-        }
-    }
+
 }
