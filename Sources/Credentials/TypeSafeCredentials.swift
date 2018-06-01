@@ -31,7 +31,7 @@ import Foundation
      public let provider: String = "HTTPBasic"
      public static let users = ["John" : "123"]
  
-    public static func authenticate(request: RouterRequest, response: RouterResponse, onSuccess: @escaping (TypeSafeHTTPBasic) -> Void, onFailure: @escaping (HTTPStatusCode?, [String : String]?) -> Void, onPass: @escaping (HTTPStatusCode?, [String : String]?) -> Void, inProgress: @escaping () -> Void) {
+    public static func authenticate(request: RouterRequest, response: RouterResponse, onSuccess: @escaping (TypeSafeHTTPBasic) -> Void, onFailure: @escaping (HTTPStatusCode?, [String : String]?) -> Void, onSkip: @escaping (HTTPStatusCode?, [String : String]?) -> Void {
  
     if let user = request.urlURL.user, let password = request.urlURL.password {
         if users[user] == password {
@@ -40,7 +40,7 @@ import Foundation
             return onFailure()
         }
     } else {
-        return onPass()
+        return onSkip()
     }
  }
  ```
@@ -53,7 +53,7 @@ public protocol TypeSafeCredentials: TypeSafeMiddleware, Codable {
     /// The name of the authentication provider
     var provider: String { get }
     
-    /// Function to be implemented, by an plugin, to authenticate an incoming request. On success, an instance of Self is returned. On failure, the `HTTPStatusCode` and any headers you wish to set are returned. On passing (Meaning the plugin didn't recognize the authentication header), the `HTTPStatusCode` and any headers you wish to set are returned.
+    /// Function to be implemented, by an plugin, to authenticate an incoming request. On success, an instance of Self is returned. On failure, the `HTTPStatusCode` and any headers you wish to set are returned. On skipping (Meaning the plugin didn't recognize the authentication header), the `HTTPStatusCode` and any headers you wish to set are returned.
     ///
     /// - Parameter request: The `RouterRequest` object used to get information
     ///                     about the request.
@@ -61,12 +61,13 @@ public protocol TypeSafeCredentials: TypeSafeMiddleware, Codable {
     ///                       request.
     /// - Parameter onSuccess: The closure to invoke in the case of successful authentication.
     /// - Parameter onFailure: The closure to invoke in the case of an authentication failure.
-    /// - Parameter onPass: The closure to invoke when the plugin doesn't recognize the
+    /// - Parameter onSkip: The closure to invoke when the plugin doesn't recognize the
     ///                     authentication data (usually an authentication token) in the request.
-    static func authenticate (request: RouterRequest, response: RouterResponse,
+    static func authenticate (request: RouterRequest,
+                              response: RouterResponse,
                               onSuccess: @escaping (Self) -> Void,
                               onFailure: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
-                              onPass: @escaping (HTTPStatusCode?, [String:String]?) -> Void
+                              onSkip: @escaping (HTTPStatusCode?, [String:String]?) -> Void
                               )
     }
 
@@ -83,20 +84,22 @@ extension TypeSafeCredentials {
     ///                         successful or failed attempt to authenticate the request.
     public static func handle(request: RouterRequest, response: RouterResponse, completion: @escaping (Self?, RequestError?) -> Void) {
     
-        authenticate(request: request, response: response,
+        authenticate(request: request,
+                     response: response,
                      onSuccess: { selfInstance in
                         completion(selfInstance, nil)
                      },
                      onFailure: { status, headers in
                         fail(response: response, status: status, headers: headers)
                      },
-                     onPass: { status, headers in
+                     onSkip: { status, headers in
                         if let headers = headers {
                             for (key, value) in headers {
                                 response.headers.append(key, value: value)
                             }
                         }
-                        // if previous statusCode is set use that
+                        // if no statusCode has been set, set the code as unauthorized
+                        // if a statusCode has been set by a previous route use that code
                         if response.statusCode ==  .unknown {
                             completion(nil, RequestError(rawValue: status?.rawValue ?? 401))
                         } else {
