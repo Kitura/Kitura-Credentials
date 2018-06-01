@@ -96,7 +96,13 @@ extension TypeSafeCredentials {
                                 response.headers.append(key, value: value)
                             }
                         }
-                        completion(nil, RequestError(httpCode: status?.rawValue ?? 401))
+                        // if previous statusCode is set use that
+                        if response.statusCode ==  .unknown {
+                            completion(nil, RequestError(rawValue: status?.rawValue ?? 401))
+                        } else {
+                            let existingStatus = RequestError(rawValue: response.statusCode.rawValue)
+                            completion(nil, existingStatus)
+                        }
                      }
         )
     }
