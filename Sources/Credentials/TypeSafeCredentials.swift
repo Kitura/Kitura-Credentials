@@ -45,7 +45,7 @@ import Foundation
  }
  ```
  */
-public protocol TypeSafeCredentials: TypeSafeMiddleware {
+public protocol TypeSafeCredentials: TypeSafeMiddleware, Codable {
     
     /// The unique identifier for the authentication providers
     var id: String { get }
