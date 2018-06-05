@@ -87,6 +87,9 @@
                 <a class="nav-group-task-link" href="Protocols/CredentialsPluginProtocol.html">CredentialsPluginProtocol</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/TypeSafeCredentials.html">TypeSafeCredentials</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/UserProfileDelegate.html">UserProfileDelegate</a>
               </li>
             </ul>
@@ -98,14 +101,29 @@
         <section class="section">
           <div class="section-content">
             
-            <h1 id='kitura-credentials' class='heading'>Kitura-Credentials</h1>
+            <p align="center">
+    <a href="http://kitura.io/">
+        <img src="https://raw.githubusercontent.com/IBM-Swift/Kitura/master/Sources/Kitura/resources/kitura-bird.svg?sanitize=true" height="100" alt="Kitura">
+    </a>
+</p>
+
+<p align="center">
+    <a href="http://www.kitura.io/">
+    <img src="https://img.shields.io/badge/docs-kitura.io-1FBCE4.svg" alt="Docs">
+    </a>
+    <a href="https://travis-ci.org/IBM-Swift/Kitura-Credentials">
+    <img src="https://travis-ci.org/IBM-Swift/Kitura-Credentials.svg?branch=master" alt="Build Status - Master">
+    </a>
+    <img src="https://img.shields.io/badge/os-macOS-green.svg?style=flat" alt="macOS">
+    <img src="https://img.shields.io/badge/os-linux-green.svg?style=flat" alt="Linux">
+    <img src="https://img.shields.io/badge/license-Apache2-blue.svg?style=flat" alt="Apache 2">
+    <a href="http://swift-at-ibm-slack.mybluemix.net/">
+    <img src="http://swift-at-ibm-slack.mybluemix.net/badge.svg" alt="Slack Status">
+    </a>
+</p>
+<h1 id='kitura-credentials' class='heading'>Kitura-Credentials</h1>
 
 <p>A pluggable framework for validating user credentials in a Swift server using Kitura</p>
-
-<p><a href="https://travis-ci.org/IBM-Swift/Kitura-Credentials"><img src="https://travis-ci.org/IBM-Swift/Kitura-Credentials.svg?branch=master" alt="Build Status - Master"></a>
-<img src="https://img.shields.io/badge/os-Mac%20OS%20X-green.svg?style=flat" alt="Mac OS X">
-<img src="https://img.shields.io/badge/os-linux-green.svg?style=flat" alt="Linux">
-<img src="https://img.shields.io/badge/license-Apache2-blue.svg?style=flat" alt="Apache 2"></p>
 <h2 id='summary' class='heading'>Summary</h2>
 
 <p>Kitura-Credentials is an authentication middleware for Kitura. Kitura-Credentials recognizes that each application has unique authentication requirements. It allows individual authentication mechanisms to be packaged as plugins which it consumes.</p>
@@ -127,7 +145,7 @@
 </ul>
 <h2 id='swift-version' class='heading'>Swift version</h2>
 
-<p>The latest version of Kitura-Credentials requires <strong>Swift 4.0</strong>. You can download this version of the Swift binaries by following this <a href="https://swift.org/download/">link</a>. Compatibility with other Swift versions is not guaranteed.</p>
+<p>The latest version of Kitura-Credentials requires <strong>Swift 4.0</strong> or newer. You can download this version of the Swift binaries by following this <a href="https://swift.org/download/">link</a>. Compatibility with other Swift versions is not guaranteed.</p>
 <h2 id='example' class='heading'>Example</h2>
 
 <p>For OAuth2 Authorization Code flow authentication example please see <a href="https://github.com/IBM-Swift/Kitura-Credentials-Sample">Kitura-Credentials-Sample</a>.
@@ -163,14 +181,15 @@
 <h2 id='list-of-plugins' class='heading'>List of plugins:</h2>
 
 <ul>
-<li><p><a href="https://github.com/IBM-Swift/Kitura-CredentialsFacebook">Facebook OAuth2 Authorization Code flow login</a></p></li>
-<li><p><a href="https://github.com/IBM-Swift/Kitura-CredentialsFacebook">Facebook OAuth2 token</a></p></li>
-<li><p><a href="https://github.com/IBM-Swift/Kitura-CredentialsGitHub">GitHub OAuth2 Authorization Code flow login</a></p></li>
-<li><p><a href="https://github.com/IBM-Swift/Kitura-CredentialsGoogle">Google OAuth2 Authorization Code flow login</a></p></li>
-<li><p><a href="https://github.com/IBM-Swift/Kitura-CredentialsGoogle">Google OAuth2 token</a></p></li>
-<li><p><a href="https://github.com/IBM-Swift/Kitura-CredentialsHTTP">HTTP Basic authentication</a></p></li>
-<li><p><a href="https://github.com/IBM-Swift/Kitura-CredentialsHTTP">HTTP Digest authentication</a></p></li>
-<li><p><a href="https://github.com/jacobvanorder/Kitura-CredentialsTwitter">Twitter OAuth</a> (Third-party implemented)</p></li>
+<li><a href="https://github.com/IBM-Swift/Kitura-CredentialsFacebook">Facebook OAuth2 Authorization Code flow login</a></li>
+<li><a href="https://github.com/IBM-Swift/Kitura-CredentialsFacebook">Facebook OAuth2 token</a></li>
+<li><a href="https://github.com/IBM-Swift/Kitura-CredentialsGitHub">GitHub OAuth2 Authorization Code flow login</a></li>
+<li><a href="https://github.com/IBM-Swift/Kitura-CredentialsGoogle">Google OAuth2 Authorization Code flow login</a></li>
+<li><a href="https://github.com/IBM-Swift/Kitura-CredentialsGoogle">Google OAuth2 token</a></li>
+<li><a href="https://github.com/IBM-Swift/Kitura-CredentialsHTTP">HTTP Basic authentication</a></li>
+<li><a href="https://github.com/IBM-Swift/Kitura-CredentialsHTTP">HTTP Digest authentication</a></li>
+<li><a href="https://github.com/jacobvanorder/Kitura-CredentialsTwitter">Twitter OAuth</a> (Third-party implemented)</li>
+<li><a href="https://github.com/NocturnalSolutions/Kitura-CredentialsLocal">Local authentication</a> (For credentials stored in e.g. a local database; third-party implemented)</li>
 </ul>
 <h2 id='license' class='heading'>License</h2>
 
@@ -183,8 +202,8 @@
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-10-27)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-06-05)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

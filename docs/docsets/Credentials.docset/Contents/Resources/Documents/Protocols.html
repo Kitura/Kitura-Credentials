@@ -87,6 +87,9 @@
                 <a class="nav-group-task-link" href="Protocols/CredentialsPluginProtocol.html">CredentialsPluginProtocol</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/TypeSafeCredentials.html">TypeSafeCredentials</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/UserProfileDelegate.html">UserProfileDelegate</a>
               </li>
             </ul>
@@ -129,7 +132,59 @@ incoming requests.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">CredentialsPluginProtocol</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">CredentialsPluginProtocol</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11Credentials08TypeSafeA0P"></a>
+                    <a name="//apple_ref/swift/Protocol/TypeSafeCredentials" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11Credentials08TypeSafeA0P">TypeSafeCredentials</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A <code>TypeSafeMiddleware</code> for authenticating users. This protocol will be implemented by plugins that identify the user from the router request. The plugin must implement a static <code>authenticate</code> function which returns an instance of Self on success. This instance must contain the authentication <code>provider</code> (e.g. HTTPBasic) and an <code>id</code>, uniquely identifying a single user for that <code>provider</code>.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">TypeSafeHTTPBasic</span> <span class="p">:</span> <span class="kt">TypeSafeCredentialsPluginProtocol</span> <span class="p">{</span>
+
+    <span class="kd">public</span> <span class="k">let</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">String</span>
+    <span class="kd">public</span> <span class="k">let</span> <span class="nv">provider</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">"HTTPBasic"</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">users</span> <span class="o">=</span> <span class="p">[</span><span class="s">"John"</span> <span class="p">:</span> <span class="s">"123"</span><span class="p">]</span>
+
+   <span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">authenticate</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt">RouterRequest</span><span class="p">,</span> <span class="nv">response</span><span class="p">:</span> <span class="kt">RouterResponse</span><span class="p">,</span> <span class="nv">onSuccess</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">TypeSafeHTTPBasic</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">,</span> <span class="nv">onFailure</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">HTTPStatusCode</span><span class="p">?,</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">String</span><span class="p">]?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">,</span> <span class="nv">onSkip</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">HTTPStatusCode</span><span class="p">?,</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">String</span><span class="p">]?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span> <span class="p">{</span>
+
+   <span class="k">if</span> <span class="k">let</span> <span class="nv">user</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">urlURL</span><span class="o">.</span><span class="n">user</span><span class="p">,</span> <span class="k">let</span> <span class="nv">password</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">urlURL</span><span class="o">.</span><span class="n">password</span> <span class="p">{</span>
+       <span class="k">if</span> <span class="n">users</span><span class="p">[</span><span class="n">user</span><span class="p">]</span> <span class="o">==</span> <span class="n">password</span> <span class="p">{</span>
+           <span class="k">return</span> <span class="nf">onSuccess</span><span class="p">(</span><span class="kt">UserHTTPBasic</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="n">user</span><span class="p">))</span>
+       <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+           <span class="k">return</span> <span class="nf">onFailure</span><span class="p">()</span>
+       <span class="p">}</span>
+   <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+       <span class="k">return</span> <span class="nf">onSkip</span><span class="p">()</span>
+   <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+
+                        <a href="Protocols/TypeSafeCredentials.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">TypeSafeCredentials</span><span class="p">:</span> <span class="kt">TypeSafeMiddleware</span><span class="p">,</span> <span class="kt">Codable</span></code></pre>
 
                         </div>
                       </div>
@@ -155,7 +210,7 @@ incoming requests.</p>
                       <div class="abstract">
                         <p>A protocol for <code><a href="Classes/UserProfile.html">UserProfile</a></code> manipulation. 
 The current default implementation only tries to fill in the standard <code><a href="Classes/UserProfile.html">UserProfile</a></code> fields. In case this default behaviour is insufficient,
-additional data can be stored in <code><a href="Classes/UserProfile.html#/s:11Credentials11UserProfileC18extendedPropertiess10DictionaryVySSypGv">UserProfile.extendedProperties</a></code> and filled in using this delegate. An implementation
+additional data can be stored in <code><a href="Classes/UserProfile.html#/s:11Credentials11UserProfileC18extendedPropertiess10DictionaryVySSypGvp">UserProfile.extendedProperties</a></code> and filled in using this delegate. An implementation
 should be passed in the <code>options</code> argument with the key <code>userProfileDelegate</code> to the corresponding plugin&rsquo;s constructor.</p>
 
                         <a href="Protocols/UserProfileDelegate.html" class="slightly-smaller">See more</a>
@@ -164,7 +219,7 @@ should be passed in the <code>options</code> argument with the key <code>userPro
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">UserProfileDelegate</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">UserProfileDelegate</span></code></pre>
 
                         </div>
                       </div>
@@ -179,8 +234,8 @@ should be passed in the <code>options</code> argument with the key <code>userPro
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-10-27)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-06-05)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>
