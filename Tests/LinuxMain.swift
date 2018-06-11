@@ -23,5 +23,6 @@ XCTMain([
             testCase(TestToken.allTests),
             testCase(TestSession.allTests),
             testCase(TestUnauthorizedSession.allTests),
-            testCase(TestTypeSafeBasic.allTests)
+            testCase(TestTypeSafeBasic.allTests),
+            testCase(TestTypeSafeMultiCredentials.allTests)
     ])
