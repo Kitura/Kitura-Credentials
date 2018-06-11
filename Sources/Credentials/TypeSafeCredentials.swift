@@ -22,38 +22,38 @@ import Foundation
 // MARK TypeSafeCredentials
 
 /**
- A `TypeSafeMiddleware` for authenticating users. This protocol will be implemented by plugins that identify the user from the router request. The plugin must implement a static `authenticate` function which returns an instance of Self on success. This instance must contain the authentication `provider` (e.g. HTTPBasic) and an `id`, uniquely identifying a single user for that `provider`.
+ A `TypeSafeMiddleware` for authenticating users. This protocol is implemented by plugins that identify the user using information supplied by the `RouterRequest`. The plugin must implement a static `authenticate` function which returns an instance of `Self` on success. This instance defines the name of the authentication provider (e.g. "HTTPBasic"), and an `id` that uniquely identifies a user for that provider.
  ### Usage Example: ###
  ```swift
- public final class TypeSafeHTTPBasic : TypeSafeCredentialsPluginProtocol {
+ public final class TypeSafeHTTPBasic : TypeSafeCredentials {
  
      public let id: String
      public let provider: String = "HTTPBasic"
-     public static let users = ["John" : "123"]
+     private static let users = ["John" : "123"]
  
-    public static func authenticate(request: RouterRequest, response: RouterResponse, onSuccess: @escaping (TypeSafeHTTPBasic) -> Void, onFailure: @escaping (HTTPStatusCode?, [String : String]?) -> Void, onSkip: @escaping (HTTPStatusCode?, [String : String]?) -> Void {
+     public static func authenticate(request: RouterRequest, response: RouterResponse, onSuccess: @escaping (TypeSafeHTTPBasic) -> Void, onFailure: @escaping (HTTPStatusCode?, [String : String]?) -> Void, onSkip: @escaping (HTTPStatusCode?, [String : String]?) -> Void {
  
-    if let user = request.urlURL.user, let password = request.urlURL.password {
-        if users[user] == password {
-            return onSuccess(UserHTTPBasic(id: user))
-        } else {
-            return onFailure()
-        }
-    } else {
-        return onSkip()
-    }
+     if let user = request.urlURL.user, let password = request.urlURL.password {
+         if users[user] == password {
+             return onSuccess(UserHTTPBasic(id: user))
+         } else {
+             return onFailure()
+         }
+     } else {
+         return onSkip()
+     }
  }
  ```
  */
 public protocol TypeSafeCredentials: TypeSafeMiddleware, Codable {
     
-    /// The unique identifier for the authentication providers
+    /// An identifier that uniquely identifies a user within the context of an authentication provider.
     var id: String { get }
     
-    /// The name of the authentication provider
+    /// The name of the authentication provider.
     var provider: String { get }
     
-    /// Function to be implemented, by an plugin, to authenticate an incoming request. On success, an instance of Self is returned. On failure, the `HTTPStatusCode` and any headers you wish to set are returned. On skipping (Meaning the plugin didn't recognize the authentication header), the `HTTPStatusCode` and any headers you wish to set are returned.
+    /// Authenticate an incoming request. On success, an instance of `Self` is returned. On failure, the `HTTPStatusCode` and any response headers to be set are returned. On skip (Meaning the plugin didn't recognize the authentication header), the `HTTPStatusCode` and any response headers to be set are returned.
     ///
     /// - Parameter request: The `RouterRequest` object used to get information
     ///                     about the request.
@@ -61,8 +61,8 @@ public protocol TypeSafeCredentials: TypeSafeMiddleware, Codable {
     ///                       request.
     /// - Parameter onSuccess: The closure to invoke in the case of successful authentication.
     /// - Parameter onFailure: The closure to invoke in the case of an authentication failure.
-    /// - Parameter onSkip: The closure to invoke when the plugin doesn't recognize the
-    ///                     authentication data (usually an authentication token) in the request.
+    /// - Parameter onSkip: The closure to invoke when the request does not contain authentication
+    ///                     data that this plugin recognises (such as a named token).
     static func authenticate (request: RouterRequest,
                               response: RouterResponse,
                               onSuccess: @escaping (Self) -> Void,
@@ -73,14 +73,14 @@ public protocol TypeSafeCredentials: TypeSafeMiddleware, Codable {
 
 extension TypeSafeCredentials {
     
-    /// Static function that attempts to create an instance of Self by calling `authenticate`. On success, this Self instance is returned so it can be used by a `TypeSafeMiddleware` route. On failure, an unauthorized response is sent immediately. If the authentication header isn't recognised, an unauthorized `RequestError` is returned to the `TypeSafeMiddleware` route. This means the current route will not be invoked but other routes can still be matched.
+    /// Static function that attempts to create an instance of `Self` by calling `authenticate`. On success, this `Self` instance is returned so it can be used by a `TypeSafeMiddleware` route. On failure, an unauthorized response is sent immediately. If the authentication header isn't recognised, `RequestError.unauthorized` is returned to the `TypeSafeMiddleware` route. This means the current route will not be invoked but other routes can still be matched.
     /// - Parameter request: The `RouterRequest` object used to get information
     ///                     about the request.
     /// - Parameter response: The `RouterResponse` object used to respond to the
     ///                       request.
     /// - Parameter completion: The closure to invoke once middleware processing
-    ///                         is complete. Either an instance of Self or a
-    ///                         RequestError should be provided, indicating a
+    ///                         is complete. Either an instance of `Self` or a
+    ///                         `RequestError` should be provided, indicating a
     ///                         successful or failed attempt to authenticate the request.
     public static func handle(request: RouterRequest, response: RouterResponse, completion: @escaping (Self?, RequestError?) -> Void) {
     
