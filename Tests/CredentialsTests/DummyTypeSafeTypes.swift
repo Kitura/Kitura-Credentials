@@ -55,12 +55,45 @@ public struct TypeSafeBasic : TypeSafeCredentials {
     }
 }
 
-public struct MultiTypeSafeBasic : TypeSafeMultiCredentials {
+public struct TypeSafeToken : TypeSafeCredentials {
+    
+    public let id: String
+    public let provider: String = "DummyToken"
+    private static let users = ["John" : "123", "Doe" : "456"]
+    
+    public static func authenticate(request: RouterRequest, response: RouterResponse, onSuccess: @escaping (TypeSafeToken) -> Void, onFailure: @escaping (HTTPStatusCode?, [String : String]?) -> Void, onSkip: @escaping (HTTPStatusCode?, [String : String]?) -> Void) {
+        
+        guard let type = request.headers["X-token-type"], type == "DummyToken" else {
+            return onSkip(nil, nil)
+        }
+        guard let token = request.headers["access_token"], token == "dummyToken123" else {
+            return onFailure(nil, nil)
+        }
+        
+        let userProfile = TypeSafeToken(id: token)
+        onSuccess(userProfile)
+    }
+}
+
+public struct MultiTypeSafeOnlyBasic : TypeSafeMultiCredentials {
     
     public let id: String
     public let provider: String
     
     public static var authenticationMethods: [TypeSafeCredentials.Type] = [TypeSafeBasic.self]
+    
+    public init(successfulAuth: TypeSafeCredentials) {
+        self.id = successfulAuth.id
+        self.provider = successfulAuth.provider
+    }
+}
+
+public struct MultiTypeSafeTokenBasic : TypeSafeMultiCredentials {
+    
+    public let id: String
+    public let provider: String
+    
+    public static var authenticationMethods: [TypeSafeCredentials.Type] = [TypeSafeBasic.self, TypeSafeToken.self]
     
     public init(successfulAuth: TypeSafeCredentials) {
         self.id = successfulAuth.id
