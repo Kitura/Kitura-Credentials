@@ -29,7 +29,6 @@ import Foundation
  
     public let id: String
     public let provider: String
- 
     public let name: String?
  
  } extension TypeSafeMultiCredentials {
@@ -57,14 +56,13 @@ public protocol TypeSafeMultiCredentials: TypeSafeCredentials {
      ```swift
      ### Usage Example: ###
      init(successfulAuth: TypeSafeCredentials) {
+         self.id = successfulAuth.id
+         self.provider = successfulAuth.provider
          switch(successAuth.self) {
          case let googleProfile as GoogleTokenProfile:
-             self.id = googleProfile.id
-             self.provider = googleProfile.provider
              self.name = googleProfile.name
          default:
-             self.id = successfulAuth.id
-             self.provider = successfulAuth.provider
+             self.name = nil
          }
      }
      ```
