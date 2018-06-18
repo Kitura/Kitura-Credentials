@@ -54,13 +54,15 @@ The latest version of Kitura-Credentials requires **Swift 4.0** or newer. You ca
 Within Codable routes, you implement a single credentials plugin by defining a Swift type that conforms to the plugins implementation of `TypeSafeCredentials`. This can then be applied to a codable route by defining it in the route signiture:
 
 ```swift
-router.get("/authenticated") { (userProfile: ExampleAuth, respondWith: (ExampleAuth?, RequestError?) -> Void) in
+router.get("/authenticated") { (userProfile: BasicAuthedUser, respondWith: (BasicAuthedUser?, RequestError?) -> Void) in
     print("authenticated \(userProfile.id) using \(userProfile.provider)")
     respondWith(userProfile, nil)
 }
 ```
 
-To apply multiple authentication methods to a route, you define a type which conforms to `TypeSafeMultiCredentials`  and add it to your codable route signiture.  The type you define must contain an array of `TypeSafeCredentials` types, which will be used to try and authenticate a user and an initialiser that creates an instance of self from an instance of the `TypeSafeCredentials` type. If the user can authenticate with either HTTP basic or a token, the server logic would be as follows:
+To apply multiple authentication methods to a route, you define a type which conforms to `TypeSafeMultiCredentials` and add it to your codable route signiture.  The type must define an array of `TypeSafeCredentials` types, that will be queried in order, to attempt to authenticate a user. It must also define an initialiser that creates an instance of self from an instance of the `TypeSafeCredentials` type.
+
+If a user can authenticate with either HTTP basic or a token, and has defined the types `BasicAuthedUser` and `TokenAuthedUser`, then an implementation could be as follows:
 
 ```swift
 public struct MultiAuthedUser : TypeSafeMultiCredentials {
@@ -68,7 +70,7 @@ public struct MultiAuthedUser : TypeSafeMultiCredentials {
     public let id: String
     public let provider: String
 
-    public static var authenticationMethods: [TypeSafeCredentials.Type] = [TypeSafeBasic.self, TypeSafeToken.self]
+    public static var authenticationMethods: [TypeSafeCredentials.Type] = [BasicAuthedUser.self, TokenAuthedUser.self]
 
     public init(successfulAuth: TypeSafeCredentials) {
         self.id = successfulAuth.id
