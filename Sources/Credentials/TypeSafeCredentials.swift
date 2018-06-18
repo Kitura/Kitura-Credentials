@@ -33,14 +33,15 @@ import Foundation
  
      public static func authenticate(request: RouterRequest, response: RouterResponse, onSuccess: @escaping (TypeSafeHTTPBasic) -> Void, onFailure: @escaping (HTTPStatusCode?, [String : String]?) -> Void, onSkip: @escaping (HTTPStatusCode?, [String : String]?) -> Void {
  
-     if let user = request.urlURL.user, let password = request.urlURL.password {
-         if users[user] == password {
-             return onSuccess(UserHTTPBasic(id: user))
+         if let user = request.urlURL.user, let password = request.urlURL.password {
+             if users[user] == password {
+                 return onSuccess(UserHTTPBasic(id: user))
+             } else {
+                 return onFailure()
+             }
          } else {
-             return onFailure()
+             return onSkip()
          }
-     } else {
-         return onSkip()
      }
  }
  ```

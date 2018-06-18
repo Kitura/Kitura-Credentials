@@ -22,5 +22,7 @@ import XCTest
 XCTMain([
             testCase(TestToken.allTests),
             testCase(TestSession.allTests),
-            testCase(TestUnauthorizedSession.allTests)
+            testCase(TestUnauthorizedSession.allTests),
+            testCase(TestTypeSafeBasic.allTests),
+            testCase(TestTypeSafeMultiCredentials.allTests)
     ])
