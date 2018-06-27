@@ -90,6 +90,9 @@
                 <a class="nav-group-task-link" href="Protocols/TypeSafeCredentials.html">TypeSafeCredentials</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/TypeSafeMultiCredentials.html">TypeSafeMultiCredentials</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/UserProfileDelegate.html">UserProfileDelegate</a>
               </li>
             </ul>
@@ -146,6 +149,59 @@ incoming requests.</p>
                 <li class="item">
                   <div>
                     <code>
+                    <a name="/s:11Credentials013TypeSafeMultiA0P"></a>
+                    <a name="//apple_ref/swift/Protocol/TypeSafeMultiCredentials" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11Credentials013TypeSafeMultiA0P">TypeSafeMultiCredentials</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A <code>TypeSafeMiddleware</code> for authenticating users using multiple authentication methods. A type conforming to <code>TypeSafeMultiCredentials</code> must implement a static array of <code><a href="Protocols/TypeSafeCredentials.html">TypeSafeCredentials</a></code> types and an initializer, which takes a <code><a href="Protocols/TypeSafeCredentials.html">TypeSafeCredentials</a></code> instance. The route will attempt to authenticate by iterating through this array of <code><a href="Protocols/TypeSafeCredentials.html">TypeSafeCredentials</a></code> until an authentication succeeds. This returns an instance of the succesful <code><a href="Protocols/TypeSafeCredentials.html">TypeSafeCredentials</a></code> which is used to initialize the <code>TypeSafeMultiCredentials</code> instance. If a plugin fails or you reach then end of your <code>TypeSafeCredentials array</code> an unauthorized response is sent. The type conforming to <code>TypeSafeMultiCredentials</code> can then be used as a middleware in codable routes.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">AuthedUser</span><span class="p">:</span> <span class="kt">TypeSafeMultiCredentials</span> <span class="p">{</span>
+
+   <span class="kd">public</span> <span class="k">let</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">String</span>
+   <span class="kd">public</span> <span class="k">let</span> <span class="nv">provider</span><span class="p">:</span> <span class="kt">String</span>
+   <span class="kd">public</span> <span class="k">let</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span>
+
+<span class="p">}</span> <span class="kd">extension</span> <span class="kt">TypeSafeMultiCredentials</span> <span class="p">{</span>
+   <span class="kd">static</span> <span class="k">let</span> <span class="nv">authenticationMethods</span><span class="p">:</span> <span class="p">[</span><span class="kt">TypeSafeCredentials</span><span class="o">.</span><span class="k">Type</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="kt">MyBasicAuth</span><span class="o">.</span><span class="k">self</span><span class="p">,</span> <span class="kt">GoogleTokenProfile</span><span class="o">.</span><span class="k">self</span><span class="p">]</span>
+
+    <span class="nf">init</span><span class="p">(</span><span class="nv">successfulAuth</span><span class="p">:</span> <span class="kt">TypeSafeCredentials</span><span class="p">)</span> <span class="p">{</span>        
+       <span class="k">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">successfulAuth</span><span class="o">.</span><span class="n">id</span>
+       <span class="k">self</span><span class="o">.</span><span class="n">provider</span> <span class="o">=</span> <span class="n">successfulAuth</span><span class="o">.</span><span class="n">provider</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/protected"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">authedUser</span><span class="p">:</span> <span class="kt">AuthedUser</span><span class="p">,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">AuthedUser</span><span class="p">?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+   <span class="nf">print</span><span class="p">(</span><span class="s">"user: </span><span class="se">\(</span><span class="n">authedUser</span><span class="o">.</span><span class="n">id</span><span class="se">)</span><span class="s"> successfully authenticated using: </span><span class="se">\(</span><span class="n">authedUser</span><span class="o">.</span><span class="n">provider</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
+   <span class="nf">respondWith</span><span class="p">(</span><span class="n">authedUser</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+
+                        <a href="Protocols/TypeSafeMultiCredentials.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">TypeSafeMultiCredentials</span><span class="p">:</span> <span class="kt"><a href="Protocols/TypeSafeCredentials.html">TypeSafeCredentials</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
                     <a name="/s:11Credentials08TypeSafeA0P"></a>
                     <a name="//apple_ref/swift/Protocol/TypeSafeCredentials" class="dashAnchor"></a>
                     <a class="token" href="#/s:11Credentials08TypeSafeA0P">TypeSafeCredentials</a>
@@ -166,14 +222,15 @@ incoming requests.</p>
 
     <span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">authenticate</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt">RouterRequest</span><span class="p">,</span> <span class="nv">response</span><span class="p">:</span> <span class="kt">RouterResponse</span><span class="p">,</span> <span class="nv">onSuccess</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">TypeSafeHTTPBasic</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">,</span> <span class="nv">onFailure</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">HTTPStatusCode</span><span class="p">?,</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">String</span><span class="p">]?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">,</span> <span class="nv">onSkip</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">HTTPStatusCode</span><span class="p">?,</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">String</span><span class="p">]?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span> <span class="p">{</span>
 
-    <span class="k">if</span> <span class="k">let</span> <span class="nv">user</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">urlURL</span><span class="o">.</span><span class="n">user</span><span class="p">,</span> <span class="k">let</span> <span class="nv">password</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">urlURL</span><span class="o">.</span><span class="n">password</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="n">users</span><span class="p">[</span><span class="n">user</span><span class="p">]</span> <span class="o">==</span> <span class="n">password</span> <span class="p">{</span>
-            <span class="k">return</span> <span class="nf">onSuccess</span><span class="p">(</span><span class="kt">UserHTTPBasic</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="n">user</span><span class="p">))</span>
+        <span class="k">if</span> <span class="k">let</span> <span class="nv">user</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">urlURL</span><span class="o">.</span><span class="n">user</span><span class="p">,</span> <span class="k">let</span> <span class="nv">password</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">urlURL</span><span class="o">.</span><span class="n">password</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="n">users</span><span class="p">[</span><span class="n">user</span><span class="p">]</span> <span class="o">==</span> <span class="n">password</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nf">onSuccess</span><span class="p">(</span><span class="kt">UserHTTPBasic</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="n">user</span><span class="p">))</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nf">onFailure</span><span class="p">()</span>
+            <span class="p">}</span>
         <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-            <span class="k">return</span> <span class="nf">onFailure</span><span class="p">()</span>
+            <span class="k">return</span> <span class="nf">onSkip</span><span class="p">()</span>
         <span class="p">}</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="nf">onSkip</span><span class="p">()</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
@@ -234,7 +291,7 @@ should be passed in the <code>options</code> argument with the key <code>userPro
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-06-05)</p>
+      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-06-27)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
