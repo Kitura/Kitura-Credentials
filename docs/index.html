@@ -90,6 +90,9 @@
                 <a class="nav-group-task-link" href="Protocols/TypeSafeCredentials.html">TypeSafeCredentials</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/TypeSafeMultiCredentials.html">TypeSafeMultiCredentials</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/UserProfileDelegate.html">UserProfileDelegate</a>
               </li>
             </ul>
@@ -147,6 +150,37 @@
 
 <p>The latest version of Kitura-Credentials requires <strong>Swift 4.0</strong> or newer. You can download this version of the Swift binaries by following this <a href="https://swift.org/download/">link</a>. Compatibility with other Swift versions is not guaranteed.</p>
 <h2 id='example' class='heading'>Example</h2>
+<h3 id='codable-routing' class='heading'>Codable routing</h3>
+
+<p>Within Codable routes, you implement a single credentials plugin by defining a Swift type that conforms to the plugins implementation of <code><a href="Protocols/TypeSafeCredentials.html">TypeSafeCredentials</a></code>. This can then be applied to a codable route by defining it in the route signiture:</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/authenticated"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">userProfile</span><span class="p">:</span> <span class="kt">BasicAuthedUser</span><span class="p">,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">BasicAuthedUser</span><span class="p">?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"authenticated </span><span class="se">\(</span><span class="n">userProfile</span><span class="o">.</span><span class="n">id</span><span class="se">)</span><span class="s"> using </span><span class="se">\(</span><span class="n">userProfile</span><span class="o">.</span><span class="n">provider</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
+    <span class="nf">respondWith</span><span class="p">(</span><span class="n">userProfile</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+
+<p>To apply multiple authentication methods to a route, you define a type which conforms to <code><a href="Protocols/TypeSafeMultiCredentials.html">TypeSafeMultiCredentials</a></code> and add it to your codable route signiture.  The type must define an array of <code><a href="Protocols/TypeSafeCredentials.html">TypeSafeCredentials</a></code> types, that will be queried in order, to attempt to authenticate a user. It must also define an initialiser that creates an instance of self from an instance of the <code><a href="Protocols/TypeSafeCredentials.html">TypeSafeCredentials</a></code> type.</p>
+
+<p>If a user can authenticate with either HTTP basic or a token, and has defined the types <code>BasicAuthedUser</code> and <code>TokenAuthedUser</code>, then an implementation could be as follows:</p>
+<pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">MultiAuthedUser</span> <span class="p">:</span> <span class="kt">TypeSafeMultiCredentials</span> <span class="p">{</span>
+
+    <span class="kd">public</span> <span class="k">let</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">String</span>
+    <span class="kd">public</span> <span class="k">let</span> <span class="nv">provider</span><span class="p">:</span> <span class="kt">String</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">authenticationMethods</span><span class="p">:</span> <span class="p">[</span><span class="kt">TypeSafeCredentials</span><span class="o">.</span><span class="k">Type</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="kt">BasicAuthedUser</span><span class="o">.</span><span class="k">self</span><span class="p">,</span> <span class="kt">TokenAuthedUser</span><span class="o">.</span><span class="k">self</span><span class="p">]</span>
+
+    <span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">successfulAuth</span><span class="p">:</span> <span class="kt">TypeSafeCredentials</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">successfulAuth</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">provider</span> <span class="o">=</span> <span class="n">successfulAuth</span><span class="o">.</span><span class="n">provider</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/multiauth"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">userProfile</span><span class="p">:</span> <span class="kt">MultiAuthedUser</span><span class="p">,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">MultiAuthedUser</span><span class="p">?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"authenticated </span><span class="se">\(</span><span class="n">userProfile</span><span class="o">.</span><span class="n">id</span><span class="se">)</span><span class="s"> using </span><span class="se">\(</span><span class="n">userProfile</span><span class="o">.</span><span class="n">provider</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
+    <span class="nf">respondWith</span><span class="p">(</span><span class="n">userProfile</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+<h3 id='raw-routing' class='heading'>Raw routing</h3>
 
 <p>For OAuth2 Authorization Code flow authentication example please see <a href="https://github.com/IBM-Swift/Kitura-Credentials-Sample">Kitura-Credentials-Sample</a>.
 <br></p>
@@ -202,7 +236,7 @@
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-06-05)</p>
+      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-06-27)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
