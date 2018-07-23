@@ -22,7 +22,7 @@ import Foundation
 // MARK TypeSafeMultiCredentials
 
 /**
- A `TypeSafeMiddleware` for authenticating users using multiple authentication methods. A type conforming to `TypeSafeMultiCredentials` must implement a static array of `TypeSafeCredentials` types and an initializer, which takes a `TypeSafeCredentials` instance. The route will attempt to authenticate by iterating through this array of `TypeSafeCredentials` until an authentication succeeds. This returns an instance of the succesful `TypeSafeCredentials` which is used to initialize the `TypeSafeMultiCredentials` instance. If a plugin fails or you reach then end of your `TypeSafeCredentials array` an unauthorized response is sent. The type conforming to `TypeSafeMultiCredentials` can then be used as a middleware in codable routes.
+ A `TypeSafeMiddleware` protocol for using multiple authentication methods on a Codable route. An object conforming to this protocol, must contain a static array of the acceptable `TypeSafeCredentials` types and be initializable from the authentication instance that succeeded. If an authentication fails or you reach then end of your array, an unauthorized response is sent.
  ### Usage Example: ###
  ```swift
  public final class AuthedUser: TypeSafeMultiCredentials {
@@ -48,13 +48,13 @@ import Foundation
  */
 public protocol TypeSafeMultiCredentials: TypeSafeCredentials {
     
-    /// An array of authentication types that conform to `TypeSafeCredentials`. The `authenticate` function for each type will be called in order and, on successfully authenticating, will call `init` using the `TypeSafeCredentials` instance.
+    /// An array of authentication types that conform to `TypeSafeCredentials`. The `authenticate` function for each type will be called in order. If a type successfully authenticates, it will call `init` using the instance of themselves.
     static var authenticationMethods: [TypeSafeCredentials.Type] { get }
 
     /**
      This initalizer creates an instance of the type conforming to `TypeSafeMultiCredentials` from a successfully authenticated `TypeSafeCredentials` instance.
-     ```swift
      ### Usage Example: ###
+     ```swift
      init(successfulAuth: TypeSafeCredentials) {
          self.id = successfulAuth.id
          self.provider = successfulAuth.provider
@@ -72,7 +72,7 @@ public protocol TypeSafeMultiCredentials: TypeSafeCredentials {
 
 extension TypeSafeMultiCredentials {
     
-    /// Static function that attempts to create an instance of Self by iterating through an array `TypeSafeCredentials` types and calling `authenticate`. On a successful authentication, an instance of Self is initialized from the `TypeSafeCredentials` instance and returned so it can be used by a `TypeSafeMiddleware` route. On a failed authentication, an unauthorized response is sent immediately. If the authentication header isn't recognised, authenticate is called on the next `TypeSafeCredentials` type.
+    /// Static function that attempts to create an instance of Self by iterating through the array `TypeSafeCredentials` types and calling authenticate. On a successful authentication, an instance of Self is initialized and returned for use in a Codable route. On a failed authentication, an unauthorized response is sent immediately. If the authentication header isn't recognised, authenticate is called on the next type in the array.
     /// - Parameter request: The `RouterRequest` object used to get information
     ///                     about the request.
     /// - Parameter response: The `RouterResponse` object used to respond to the
