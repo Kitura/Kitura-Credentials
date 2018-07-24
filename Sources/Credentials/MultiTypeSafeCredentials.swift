@@ -22,7 +22,7 @@ import Foundation
 // MARK TypeSafeMultiCredentials
 
 /**
- A `TypeSafeMiddleware` protocol for using multiple authentication methods on a Codable route. An object conforming to this protocol, must contain a static array of the acceptable `TypeSafeCredentials` types and be initializable from the authentication instance that succeeded. If an authentication fails or you reach then end of your array, an unauthorized response is sent.
+ A `TypeSafeMiddleware` protocol for using multiple authentication methods on a Codable route. An object conforming to this protocol must contain a static array of the acceptable `TypeSafeCredentials` types and be initializable from the authentication instance that succeeded. If an authentication fails or you reach the end of your array, an unauthorized response is sent.
  ### Usage Example: ###
  ```swift
  public final class AuthedUser: TypeSafeMultiCredentials {
@@ -48,7 +48,7 @@ import Foundation
  */
 public protocol TypeSafeMultiCredentials: TypeSafeCredentials {
     
-    /// An array of authentication types that conform to `TypeSafeCredentials`. The `authenticate` function for each type will be called in order. If a type successfully authenticates, it will call `init` using the instance of themselves.
+    /// An array of authentication types that conform to `TypeSafeCredentials`. Each type will be asked, in turn, to authenticate an incoming request.
     static var authenticationMethods: [TypeSafeCredentials.Type] { get }
 
     /**
@@ -72,7 +72,7 @@ public protocol TypeSafeMultiCredentials: TypeSafeCredentials {
 
 extension TypeSafeMultiCredentials {
     
-    /// Static function that attempts to create an instance of Self by iterating through the array `TypeSafeCredentials` types and calling authenticate. On a successful authentication, an instance of Self is initialized and returned for use in a Codable route. On a failed authentication, an unauthorized response is sent immediately. If the authentication header isn't recognised, authenticate is called on the next type in the array.
+    /// Static function that iterates through the `authenticationMethods` array of `TypeSafeCredentials` types calling their authenticate function. If a type successfully authenticates and returns onSuccess(Self), `TypeSafeMultiCredentials` will call init(successfulAuth:) with the successful instance. If a type matches its authorization header but fails to authenticate it returns onFailure() and an .unauthorized response is sent. If a type doesn't match its authorization header then it returns onSkip() and the next authentication method is called.
     /// - Parameter request: The `RouterRequest` object used to get information
     ///                     about the request.
     /// - Parameter response: The `RouterResponse` object used to respond to the
