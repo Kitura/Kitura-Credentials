@@ -136,4 +136,4 @@ router.post("/collection/:new") {request, response, next in
 * [Local authentication](https://github.com/NocturnalSolutions/Kitura-CredentialsLocal) (For credentials stored in e.g. a local database; third-party implemented)
 
 ## License
-This library is licensed under Apache 2.0. Full license text is available in [LICENSE](LICENSE.txt).
+This library is licensed under Apache 2.0. Full license text is available in [LICENSE](https://github.com/IBM-Swift/Kitura-Credentials/blob/master/LICENSE.txt).
