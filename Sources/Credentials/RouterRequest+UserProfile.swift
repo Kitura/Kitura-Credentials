@@ -24,7 +24,7 @@ private let USER_PROFILE_USER_INFO_KEY = "@@Kitura@@UserProfile@@"
 
 /// Extension of the `RouterRequest` class to provide access to `UserProfile` 
 /// information of authenticated users.
-public extension RouterRequest {
+extension RouterRequest {
     
     /// `UserProfile` information of authenticated users.
     public internal(set) var userProfile: UserProfile? {

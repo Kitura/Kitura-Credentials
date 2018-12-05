@@ -61,7 +61,7 @@ public protocol CredentialsPluginProtocol {
 }
 
 /// An extention of `CredentialsPluginProtocol`.
-public extension CredentialsPluginProtocol {
+extension CredentialsPluginProtocol {
     /// The default (nil) value for `UserProfileDelegate`.
     public var userProfileDelegate: UserProfileDelegate? {
         return nil
