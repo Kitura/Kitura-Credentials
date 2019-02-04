@@ -15,17 +15,22 @@
  **/
 
 // MARK BaseCacheElement
+import Foundation
 
 /// The cache element for keeping user profile information.
 public class BaseCacheElement {
     /// The user profile information stored as `UserProfile`.
     public var userProfile: UserProfile
     
+    /// The time the UserProfile was originally created
+    public var createdAt: Date
+    
     /// Initialize a `BaseCacheElement`.
     ///
     /// - Parameter profile: the `UserProfile` to store.
     public init (profile: UserProfile) {
         userProfile = profile
+        createdAt = Date()
     }
 }
 
