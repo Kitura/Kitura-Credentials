@@ -111,8 +111,8 @@
 </p>
 
 <p align="center">
-    <a href="http://www.kitura.io/">
-    <img src="https://img.shields.io/badge/docs-kitura.io-1FBCE4.svg" alt="Docs">
+    <a href="https://ibm-swift.github.io/Kitura-Credentials/index.html">
+        <img src="https://img.shields.io/badge/apidoc-KituraCredentials-1FBCE4.svg?style=flat" alt="APIDoc">
     </a>
     <a href="https://travis-ci.org/IBM-Swift/Kitura-Credentials">
     <img src="https://travis-ci.org/IBM-Swift/Kitura-Credentials.svg?branch=master" alt="Build Status - Master">
@@ -126,18 +126,18 @@
 </p>
 <h1 id='kitura-credentials' class='heading'>Kitura-Credentials</h1>
 
-<p>A pluggable framework for validating user credentials in a Swift server using Kitura</p>
+<p>A pluggable framework for validating user credentials in a Swift server using Kitura.</p>
 <h2 id='summary' class='heading'>Summary</h2>
 
 <p>Kitura-Credentials is an authentication middleware for Kitura. Kitura-Credentials recognizes that each application has unique authentication requirements. It allows individual authentication mechanisms to be packaged as plugins which it consumes.</p>
 
 <p>Plugins can range from a simple password based authentication or delegated authentication using OAuth (via Facebook OAuth provider, etc.), or federated authentication using OpenID.</p>
 
-<p>There are two main authentication schemes supported by Kitura-Credentials: redirecting and non-redirecting. Redirecting scheme is used for example in OAuth2 Authorization Code flow authentication, where the users, that are not logged in, are redirected to a login page. All other types of authentication are non-redirecting, i.e., unauthorized requests are rejected (usually with 401 Unauthorized HTTP status code). An example of non-redirecting authentication is delegated authentication using OAuth access token (also called bearer token) that was independently acquired (say by a mobile app or other client of the Kitura based backend).</p>
+<p>There are two main authentication schemes supported by Kitura-Credentials: redirecting and non-redirecting. Redirecting scheme is used, for example, in OAuth2 Authorization Code flow authentication, where the users, that are not logged in, are redirected to a login page. All other types of authentication are non-redirecting, i.e., unauthorized requests are rejected (usually with a 401 Unauthorized HTTP status code). An example of non-redirecting authentication is delegated authentication using an OAuth access token (also called a bearer token) that was independently acquired (say by a mobile app or other client of the Kitura based backend).</p>
 
-<p>Kitura-Credentials middleware checks if the request belongs to a session. If so and the user is logged in, it updates request&rsquo;s user profile and propagates the request. Otherwise, it loops through the non-redirecting plugins in the order they were registered until a matching plugin is found. The plugin either succeeds to authenticate the request (in that case user profile information is returned) or fails. If a matching plugin is found but it fails to authenticate the request, HTTP status code in the router response is set to Unauthorized (401), or to the code returned from the plugin along with HTTP headers, and the request is not propagated. If no matching plugin is found, in case the request belongs to a session and a redirecting plugin exists, the request is redirected. Otherwise, HTTP status code in the router response is set to Unauthorized (401), or to the first code returned from the plugins along with HTTP headers, and the request is not propagated. In case of successful authentication, request&rsquo;s user profile is set with user profile information received from the authenticating plugin.</p>
+<p>Kitura-Credentials middleware checks if the request belongs to a session. If so and the user is logged in, it updates the request&rsquo;s user profile and propagates the request. Otherwise, it loops through the non-redirecting plugins in the order they were registered until a matching plugin is found. The plugin either succeeds to authenticate the request (in that case user profile information is returned) or fails. If a matching plugin is found but it fails to authenticate the request, the HTTP status code in the router response is set to Unauthorized (401), or to the code returned from the plugin, along with HTTP headers, and the request is not propagated. If no matching plugin is found, in case the request belongs to a session and a redirecting plugin exists, the request is redirected. Otherwise, the HTTP status code in the router response is set to Unauthorized (401), or to the first code returned from the plugins along with HTTP headers, and the request is not propagated. In case of successful authentication, the request&rsquo;s user profile is set with user profile information received from the authenticating plugin.</p>
 
-<p>In the scope of OAuth2 Authorization Code flow, authentication is performed by a specific plugin. Kitura-Credentials tries to login and authenticate the first request by calling the plugin and, if successful, stores the relevant data in the session for authentication of the further requests in that session. The plugin will not be called for other requests within the scope of the session.</p>
+<p>In the scope of an OAuth2 Authorization Code flow, authentication is performed by a specific plugin. Kitura-Credentials tries to login and authenticate the first request by calling the plugin and, if successful, stores the relevant data in the session for authentication of any further requests in that session. The plugin will not be called for other requests within the scope of the session.</p>
 <h2 id='table-of-contents' class='heading'>Table of Contents</h2>
 
 <ul>
@@ -149,17 +149,30 @@
 <h2 id='swift-version' class='heading'>Swift version</h2>
 
 <p>The latest version of Kitura-Credentials requires <strong>Swift 4.0</strong> or newer. You can download this version of the Swift binaries by following this <a href="https://swift.org/download/">link</a>. Compatibility with other Swift versions is not guaranteed.</p>
+<h2 id='usage' class='heading'>Usage</h2>
+<h4 id='add-dependencies' class='heading'>Add dependencies</h4>
+
+<p>Add the <code>Kitura-Credentials</code> package to the dependencies within your application’s <code>Package.swift</code> file. Substitute <code>&quot;x.x.x&quot;</code> with the latest <code>Kitura-Credentials</code> <a href="https://github.com/IBM-Swift/Kitura-Credentials/releases">release</a>.</p>
+<pre class="highlight swift"><code><span class="o">.</span><span class="nf">package</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="s">"https://github.com/IBM-Swift/Kitura-Credentials.git"</span><span class="p">,</span> <span class="nv">from</span><span class="p">:</span> <span class="s">"x.x.x"</span><span class="p">)</span>
+</code></pre>
+
+<p>Add <code><a href="Classes/Credentials.html">Credentials</a></code> to your target&rsquo;s dependencies:</p>
+<pre class="highlight swift"><code><span class="o">.</span><span class="nf">target</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="s">"example"</span><span class="p">,</span> <span class="nv">dependencies</span><span class="p">:</span> <span class="p">[</span><span class="s">"Credentials"</span><span class="p">]),</span>
+</code></pre>
+<h4 id='import-packages' class='heading'>Import packages</h4>
+<pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">Credentials</span>
+</code></pre>
 <h2 id='example' class='heading'>Example</h2>
 <h3 id='codable-routing' class='heading'>Codable routing</h3>
 
-<p>Within Codable routes, you implement a single credentials plugin by defining a Swift type that conforms to the plugins implementation of <code><a href="Protocols/TypeSafeCredentials.html">TypeSafeCredentials</a></code>. This can then be applied to a codable route by defining it in the route signiture:</p>
+<p>Within Codable routes, you implement a single credentials plugin by defining a Swift type that conforms to the plugin&rsquo;s implementation of <code><a href="Protocols/TypeSafeCredentials.html">TypeSafeCredentials</a></code>. This can then be applied to a codable route by defining it in the route signature:</p>
 <pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/authenticated"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">userProfile</span><span class="p">:</span> <span class="kt">BasicAuthedUser</span><span class="p">,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">BasicAuthedUser</span><span class="p">?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
     <span class="nf">print</span><span class="p">(</span><span class="s">"authenticated </span><span class="se">\(</span><span class="n">userProfile</span><span class="o">.</span><span class="n">id</span><span class="se">)</span><span class="s"> using </span><span class="se">\(</span><span class="n">userProfile</span><span class="o">.</span><span class="n">provider</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
     <span class="nf">respondWith</span><span class="p">(</span><span class="n">userProfile</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre>
 
-<p>To apply multiple authentication methods to a route, you define a type which conforms to <code><a href="Protocols/TypeSafeMultiCredentials.html">TypeSafeMultiCredentials</a></code> and add it to your codable route signiture.  The type must define an array of <code><a href="Protocols/TypeSafeCredentials.html">TypeSafeCredentials</a></code> types, that will be queried in order, to attempt to authenticate a user. It must also define an initialiser that creates an instance of self from an instance of the <code><a href="Protocols/TypeSafeCredentials.html">TypeSafeCredentials</a></code> type.</p>
+<p>To apply multiple authentication methods to a route, you define a type which conforms to <code><a href="Protocols/TypeSafeMultiCredentials.html">TypeSafeMultiCredentials</a></code> and add it to your codable route signature.  The type must define an array of <code><a href="Protocols/TypeSafeCredentials.html">TypeSafeCredentials</a></code> types, that will be queried in order, to attempt to authenticate a user. It must also define an initializer that creates an instance of self from an instance of the <code><a href="Protocols/TypeSafeCredentials.html">TypeSafeCredentials</a></code> type.</p>
 
 <p>If a user can authenticate with either HTTP basic or a token, and has defined the types <code>BasicAuthedUser</code> and <code>TokenAuthedUser</code>, then an implementation could be as follows:</p>
 <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">MultiAuthedUser</span> <span class="p">:</span> <span class="kt">TypeSafeMultiCredentials</span> <span class="p">{</span>
@@ -182,7 +195,7 @@
 </code></pre>
 <h3 id='raw-routing' class='heading'>Raw routing</h3>
 
-<p>For OAuth2 Authorization Code flow authentication example please see <a href="https://github.com/IBM-Swift/Kitura-Credentials-Sample">Kitura-Credentials-Sample</a>.
+<p>For an OAuth2 Authorization Code flow authentication example please see <a href="https://github.com/IBM-Swift/Kitura-Sample">Kitura-Sample</a>.
 <br></p>
 
 <p>The following is an example of  token-based authentication using Facebook OAuth2 access tokens.This example authenticates post requests using <a href="https://github.com/IBM-Swift/Kitura-CredentialsFacebook">CredentialsFacebookToken</a> plugin.</p>
@@ -225,6 +238,12 @@
 <li><a href="https://github.com/jacobvanorder/Kitura-CredentialsTwitter">Twitter OAuth</a> (Third-party implemented)</li>
 <li><a href="https://github.com/NocturnalSolutions/Kitura-CredentialsLocal">Local authentication</a> (For credentials stored in e.g. a local database; third-party implemented)</li>
 </ul>
+<h2 id='api-documentation' class='heading'>API documentation</h2>
+
+<p>For more information visit our <a href="http://ibm-swift.github.io/Kitura-Credentials/">API reference</a>.</p>
+<h2 id='community' class='heading'>Community</h2>
+
+<p>We love to talk server-side Swift, and Kitura. Join our <a href="http://swift-at-ibm-slack.mybluemix.net/">Slack</a> to meet the team!</p>
 <h2 id='license' class='heading'>License</h2>
 
 <p>This library is licensed under Apache 2.0. Full license text is available in <a href="https://github.com/IBM-Swift/Kitura-Credentials/blob/master/LICENSE.txt">LICENSE</a>.</p>
@@ -236,7 +255,7 @@
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-07-25)</p>
+      <p>&copy; 2019 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2019-05-01)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
