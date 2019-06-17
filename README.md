@@ -142,6 +142,8 @@ router.post("/collection/:new") {request, response, next in
 }
 ```
 
+> **NOTE**: The credential middleware must be registered before any route handlers, as shown in the example above. Failure to register the credential middleware before other route handlers may cause exposure of unauthorized data on protected routes.
+
 ## List of plugins:
 
 * [Facebook OAuth2 Authorization Code flow login](https://github.com/IBM-Swift/Kitura-CredentialsFacebook)
