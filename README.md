@@ -154,6 +154,7 @@ router.post("/collection/:new") {request, response, next in
 * [HTTP Basic authentication](https://github.com/IBM-Swift/Kitura-CredentialsHTTP)
 * [HTTP Digest authentication](https://github.com/IBM-Swift/Kitura-CredentialsHTTP)
 * [Twitter OAuth](https://github.com/jacobvanorder/Kitura-CredentialsTwitter) (Third-party implemented)
+* [Discord OAuth](https://github.com/123FLO321/Kitura-CredentialsDiscord) (Third-party implemented)
 * [Local authentication](https://github.com/NocturnalSolutions/Kitura-CredentialsLocal) (For credentials stored in e.g. a local database; third-party implemented)
 
 ## API documentation
