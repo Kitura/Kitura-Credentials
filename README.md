@@ -146,6 +146,7 @@ router.post("/collection/:new") {request, response, next in
 
 ## List of plugins:
 
+* [JWT authentication](https://github.com/IBM-Swift/Kitura-CredentialsJWT)
 * [Facebook OAuth2 Authorization Code flow login](https://github.com/IBM-Swift/Kitura-CredentialsFacebook)
 * [Facebook OAuth2 token](https://github.com/IBM-Swift/Kitura-CredentialsFacebook)
 * [GitHub OAuth2 Authorization Code flow login](https://github.com/IBM-Swift/Kitura-CredentialsGitHub)
