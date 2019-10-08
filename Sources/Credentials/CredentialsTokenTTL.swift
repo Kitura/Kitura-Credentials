@@ -31,14 +31,16 @@ public enum CredentialsTokenTTLResult {
 
 extension CredentialsTokenTTL {
 
-    /// Returns the profile (from cache or generated with the passed closure), or a failure result. After calling this method, you need to call the corresponding onSuccess or onFailure methods of the authentication method.
+    /// Calls the completion handler with the profile (from cache or generated with the passed closure), or failure result. After calling getProfileAndCacheIfNeeded, and getting a success or failure result, you need to call the corresponding onSuccess or onFailure methods of the authentication method.
     ///
     /// - Parameter token: The Oauth2 token, used as a key in the cache.
-    /// - Parameter userProfileGenerator: Called if the token found in the cache has expired or if there is no token in the cache.
+    /// - Parameter userProfileGenerator: Called if the token found in the cache has expired or if there is no token in the cache. Your closure must call its closure parameter when it is done.
+    /// - Parameter completion: Called to return the result.
     ///
     public func getProfileAndCacheIfNeeded(
         token: String,
-        userProfileGenerator: @escaping () -> CredentialsTokenTTLResult) -> CredentialsTokenTTLResult {
+        userProfileGenerator: @escaping ((CredentialsTokenTTLResult)->()) -> Void,
+        completion: @escaping (CredentialsTokenTTLResult) -> Void) {
         
         #if os(Linux)
             let key = NSString(string: token)
@@ -49,34 +51,36 @@ extension CredentialsTokenTTL {
         if let cached = usersCache?.object(forKey: key) {
             if let ttl = tokenTimeToLive {
                 if Date() < cached.createdAt.addingTimeInterval(ttl) {
-                    return .success(cached.userProfile)
+                    completion(.success(cached.userProfile))
+                    return
                 }
                 // If current time is later than time to live, continue to standard token authentication.
                 // Don't need to evict token, since it will replaced if the token is successfully autheticated.
             } else {
                 // No time to live set, use token until it is evicted from the cache
-                return .success(cached.userProfile)
+                completion(.success(cached.userProfile))
+                return
             }
         }
         
         // Either the token/profile expired or there was none in the cache. Make one.
         
-        let generatedResult = userProfileGenerator()
-        
-        switch generatedResult {
-        case .success(let userProfile):
-            let newCacheElement = BaseCacheElement(profile: userProfile)
-            #if os(Linux)
-                let key = NSString(string: token)
-            #else
-                let key = token as NSString
-            #endif
-            
-            self.usersCache!.setObject(newCacheElement, forKey: key)
-            return generatedResult
-            
-        case .failure:
-            return generatedResult
+        userProfileGenerator() { generatedResult in
+            switch generatedResult {
+            case .success(let userProfile):
+                let newCacheElement = BaseCacheElement(profile: userProfile)
+                #if os(Linux)
+                    let key = NSString(string: token)
+                #else
+                    let key = token as NSString
+                #endif
+                
+                self.usersCache!.setObject(newCacheElement, forKey: key)
+                completion(generatedResult)
+                
+            case .failure:
+                completion(generatedResult)
+            }
         }
     }
 }
