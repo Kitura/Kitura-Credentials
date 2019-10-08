@@ -18,13 +18,13 @@ import Kitura
 import KituraNet
 import Foundation
 
-/// Protocol to make it easier to add token TLL to credentials plugins.
-public protocol CredentialsTokenTLL {
+/// Protocol to make it easier to add token TTL to credentials plugins.
+public protocol CredentialsTokenTTL {
     var usersCache: NSCache<NSString, BaseCacheElement>? {get}
     var tokenTimeToLive: TimeInterval? {get}
 }
 
-extension CredentialsTokenTLL {
+extension CredentialsTokenTTL {
     /// Returns true iff the token/UserProfile was found in the cache and onSuccess was called.
     ///
     /// - Parameter token: The Oauth2 token, used as a key in the cache.
