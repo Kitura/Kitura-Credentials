@@ -43,7 +43,7 @@ extension CredentialsTokenTTL {
     ///
     public func getProfileAndCacheIfNeeded(
         token: String,
-        userProfileGenerator: @escaping ((CredentialsTokenTTLResult)->()) -> Void,
+        userProfileGenerator: @escaping (@escaping (CredentialsTokenTTLResult)->()) -> Void,
         completion: @escaping (CredentialsTokenTTLResult) -> Void) {
         
         #if os(Linux)
