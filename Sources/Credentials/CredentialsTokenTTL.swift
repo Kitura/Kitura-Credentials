@@ -19,19 +19,25 @@ import KituraNet
 import Foundation
 
 /// Protocol to make it easier to add token TTL to credentials plugins.
+/// Using this protocol:
+/// Step 1) Conform to the protocol
+/// Step 2) Call the getProfileAndCacheIfNeeded method-- probably at the end of your authenticate method.
 public protocol CredentialsTokenTTL: AnyObject {
     var usersCache: NSCache<NSString, BaseCacheElement>? {get}
     var tokenTimeToLive: TimeInterval? {get}
     
     /// Used by the getProfileAndCacheIfNeeded method to generate a profile if one can't be used from cache.
+    /// - Parameter token: The Oauth2 token, used as a key in the cache.
+    /// - Parameter options: The dictionary of plugin specific options.
     func generateNewProfile(token: String, options: [String:Any], completion: @escaping (CredentialsTokenTTLResult) -> Void)
 }
 
+/// Enum with cases corresponding to the onSuccess and onFailure closures in the authentication method.
 public enum CredentialsTokenTTLResult {
     case success(UserProfile)
     case failure(HTTPStatusCode?, [String:String]?)
     
-    /// Helper method to convert an Error to a enum failure
+    /// Helper method to convert an Error to a failure enum
     public static func error(_ error: Swift.Error) -> CredentialsTokenTTLResult {
         return .failure(nil, ["failure": "\(error)"])
     }
@@ -75,6 +81,7 @@ extension CredentialsTokenTTL {
     /// Calls the completion handler with the profile (from cache or generated with the protocol generateNewProfile method), or failure result.
     ///
     /// - Parameter token: The Oauth2 token, used as a key in the cache.
+    /// - Parameter options: The dictionary of plugin specific options.
     /// - Parameter onSuccess: From the authentication method.
     /// - Parameter onFailure: From the authentication method.
     ///
