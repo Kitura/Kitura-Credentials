@@ -24,7 +24,7 @@ public protocol CredentialsTokenTTL: AnyObject {
     var tokenTimeToLive: TimeInterval? {get}
     
     /// Used by the getProfileAndCacheIfNeeded method to generate a profile if one can't be used from cache.
-    func generateNewProfile(token: String, completion: @escaping (CredentialsTokenTTLResult) -> Void)
+    func generateNewProfile(token: String, options: [String:Any], completion: @escaping (CredentialsTokenTTLResult) -> Void)
 }
 
 public enum CredentialsTokenTTLResult {
@@ -80,6 +80,7 @@ extension CredentialsTokenTTL {
     ///
     public func getProfileAndCacheIfNeeded(
         token: String,
+        options: [String:Any],
         onSuccess: @escaping (UserProfile) -> Void,
         onFailure: @escaping (HTTPStatusCode?, [String:String]?) -> Void) {
         
@@ -90,7 +91,7 @@ extension CredentialsTokenTTL {
         
         // Either the token/profile expired or there was none in the cache. Make one.
         
-        generateNewProfile(token: token) {[weak self] generatedResult in
+        generateNewProfile(token: token, options: options) {[weak self] generatedResult in
             guard let self = self else {
                 onFailure(nil, nil)
                 return
