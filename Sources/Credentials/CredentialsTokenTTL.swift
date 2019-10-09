@@ -27,6 +27,10 @@ public protocol CredentialsTokenTTL {
 public enum CredentialsTokenTTLResult {
     case success(UserProfile)
     case failure(HTTPStatusCode?, [String:String]?)
+    
+    static func error(_ error: Swift.Error) -> CredentialsTokenTTLResult {
+        return .failure(nil, ["failure": "\(error)"])
+    }
 }
 
 extension CredentialsTokenTTL {
