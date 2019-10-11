@@ -99,14 +99,14 @@ extension CredentialsTokenTTL {
         // Either the token/profile expired or there was none in the cache. Make one.
         
         generateNewProfile(token: token, options: options) {[weak self] generatedResult in
-            guard let self = self else {
+            guard let strongSelf = self else {
                 onFailure(nil, nil)
                 return
             }
             
             switch generatedResult {
             case .success(let profile):
-                self.saveProfileToCache(token: token, profile: profile)
+                strongSelf.saveProfileToCache(token: token, profile: profile)
                 onSuccess(profile)
                 
             case .failure(let statusCode, let dict):
