@@ -85,7 +85,7 @@ extension CredentialsTokenTTL {
         self.usersCache!.setObject(newCacheElement, forKey: key)
     }
 
-    /// Calls the completion handler with the profile (from cache or generated with the protocol generateNewProfile method), or failure result. This method should be suited for most plugins that use a TTL.
+    /// Calls the completion handler with the profile (from cache or generated with the protocol generateNewProfile method), or failure result. This method should be suited to most plugins that use a TTL.
     ///
     /// - Parameter token: The Oauth2 token, used as a key in the cache.
     /// - Parameter options: The dictionary of plugin specific options.
@@ -98,27 +98,12 @@ extension CredentialsTokenTTL {
         onSuccess: @escaping (UserProfile) -> Void,
         onFailure: @escaping (HTTPStatusCode?, [String:String]?) -> Void) {
         
-        if let profile = getProfileFromCache(token: token) {
-            onSuccess(profile)
-            return
-        }
-        
-        // Either the token/profile expired or there was none in the cache. Make one.
-        
-        generateNewProfile(token: token, options: options) {[weak self] generatedResult in
-            guard let strongSelf = self else {
-                onFailure(nil, nil)
-                return
-            }
-            
-            switch generatedResult {
-            case .success(let profile):
-                strongSelf.saveProfileToCache(token: token, profile: profile)
-                onSuccess(profile)
-                
+        getProfileAndCacheIfNeeded(token: token, options: options) { result in
+            switch result {
+            case .success(let userProfile):
+                onSuccess(userProfile)
             case .other:
                 onFailure(nil, nil)
-
             case .failure(let statusCode, let dict):
                 onFailure(statusCode, dict)
             }
