@@ -110,7 +110,7 @@ extension CredentialsTokenTTL {
         }
     }
 
-    /// Calls the completion handler with the profile (from cache or generated with the protocol generateNewProfile method), or failure result. This method is suited to plugins with more complicated TTL needs. E.g., the Credentials JWT.
+    /// Calls the completion handler with the profile (from cache or generated with the protocol generateNewProfile method), or failure result. This method is suited to plugins with more complicated credentials needs. E.g., the Credentials JWT.
     ///
     /// - Parameter token: The Oauth2 token, used as a key in the cache.
     /// - Parameter options: The dictionary of plugin specific options.
