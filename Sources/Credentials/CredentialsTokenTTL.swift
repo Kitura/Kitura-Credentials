@@ -34,7 +34,9 @@ public protocol CredentialsTokenTTL: AnyObject {
 
 /// Enum with cases corresponding to the onSuccess and onFailure closures in the authentication method.
 public enum CredentialsTokenTTLResult {
-    case success(UserProfile)
+    // The user profile is optional to accomodate cases such as in CredentialsJWT.
+    case success(UserProfile?)
+    
     case failure(HTTPStatusCode?, [String:String]?)
     
     /// Helper method to convert an Error to a failure enum
@@ -82,13 +84,13 @@ extension CredentialsTokenTTL {
     ///
     /// - Parameter token: The Oauth2 token, used as a key in the cache.
     /// - Parameter options: The dictionary of plugin specific options.
-    /// - Parameter onSuccess: From the authentication method.
+    /// - Parameter onSuccess: From the authentication method, adapted to have optional user profile.
     /// - Parameter onFailure: From the authentication method.
     ///
     public func getProfileAndCacheIfNeeded(
         token: String,
         options: [String:Any],
-        onSuccess: @escaping (UserProfile) -> Void,
+        onSuccess: @escaping (UserProfile?) -> Void,
         onFailure: @escaping (HTTPStatusCode?, [String:String]?) -> Void) {
         
         if let profile = getProfileFromCache(token: token) {
@@ -106,7 +108,9 @@ extension CredentialsTokenTTL {
             
             switch generatedResult {
             case .success(let profile):
-                strongSelf.saveProfileToCache(token: token, profile: profile)
+                if let profile = profile {
+                    strongSelf.saveProfileToCache(token: token, profile: profile)
+                }
                 onSuccess(profile)
                 
             case .failure(let statusCode, let dict):
