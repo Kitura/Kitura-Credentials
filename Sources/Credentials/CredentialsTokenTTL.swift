@@ -32,17 +32,22 @@ public protocol CredentialsTokenTTL: AnyObject {
     func generateNewProfile(token: String, options: [String:Any], completion: @escaping (CredentialsTokenTTLResult) -> Void)
 }
 
-/// Enum with cases corresponding to the onSuccess and onFailure closures in the authentication method.
 public enum CredentialsTokenTTLResult {
-    // The user profile is optional to accomodate cases such as in CredentialsJWT.
-    case success(UserProfile?)
-    
+    // These two cases should be sufficient for most plugins. And are used by the getProfileAndCacheIfNeeded method with onSuccess and onFailure callbacks.
+    case success(UserProfile)
     case failure(HTTPStatusCode?, [String:String]?)
+    
+    // This case is only used by the getProfileAndCacheIfNeeded method with the completion callback and is intended for plugins with more complicated needs.
+    case other(details: String)
     
     /// Helper method to convert an Error to a failure enum
     public static func error(_ error: Swift.Error) -> CredentialsTokenTTLResult {
         return .failure(nil, ["failure": "\(error)"])
     }
+}
+
+enum CredentialsTokenTTLError: Swift.Error {
+    case couldNotGetSelf
 }
 
 extension CredentialsTokenTTL {
@@ -80,17 +85,17 @@ extension CredentialsTokenTTL {
         self.usersCache!.setObject(newCacheElement, forKey: key)
     }
 
-    /// Calls the completion handler with the profile (from cache or generated with the protocol generateNewProfile method), or failure result.
+    /// Calls the completion handler with the profile (from cache or generated with the protocol generateNewProfile method), or failure result. This method should be suited for most plugins that use a TTL.
     ///
     /// - Parameter token: The Oauth2 token, used as a key in the cache.
     /// - Parameter options: The dictionary of plugin specific options.
-    /// - Parameter onSuccess: From the authentication method, adapted to have optional user profile.
+    /// - Parameter onSuccess: From the authentication method.
     /// - Parameter onFailure: From the authentication method.
     ///
     public func getProfileAndCacheIfNeeded(
         token: String,
         options: [String:Any],
-        onSuccess: @escaping (UserProfile?) -> Void,
+        onSuccess: @escaping (UserProfile) -> Void,
         onFailure: @escaping (HTTPStatusCode?, [String:String]?) -> Void) {
         
         if let profile = getProfileFromCache(token: token) {
@@ -108,13 +113,49 @@ extension CredentialsTokenTTL {
             
             switch generatedResult {
             case .success(let profile):
-                if let profile = profile {
-                    strongSelf.saveProfileToCache(token: token, profile: profile)
-                }
+                strongSelf.saveProfileToCache(token: token, profile: profile)
                 onSuccess(profile)
                 
+            case .other:
+                onFailure(nil, nil)
+
             case .failure(let statusCode, let dict):
                 onFailure(statusCode, dict)
+            }
+        }
+    }
+
+    /// Calls the completion handler with the profile (from cache or generated with the protocol generateNewProfile method), or failure result. This method is suited to plugins with more complicated TTL needs. E.g., the Credentials JWT.
+    ///
+    /// - Parameter token: The Oauth2 token, used as a key in the cache.
+    /// - Parameter options: The dictionary of plugin specific options.
+    /// - Parameter completion: The detailed credentials TTL result.
+    ///
+    public func getProfileAndCacheIfNeeded(
+        token: String,
+        options: [String:Any],
+        completion: @escaping (CredentialsTokenTTLResult) -> Void) {
+        
+        if let profile = getProfileFromCache(token: token) {
+            completion(.success(profile))
+            return
+        }
+        
+        // Either the token/profile expired or there was none in the cache. Make one.
+        
+        generateNewProfile(token: token, options: options) {[weak self] generatedResult in
+            guard let strongSelf = self else {
+                completion(.error(CredentialsTokenTTLError.couldNotGetSelf))
+                return
+            }
+            
+            switch generatedResult {
+            case .success(let profile):
+                strongSelf.saveProfileToCache(token: token, profile: profile)
+                completion(.success(profile))
+                
+            case .other, .failure:
+                completion(generatedResult)
             }
         }
     }
