@@ -18,27 +18,48 @@ import Kitura
 import KituraNet
 import Foundation
 
-/// Protocol to make it easier to add token TTL to credentials plugins.
+/// Protocol to make it easier to add token TTL (Time To Live) to credentials plugins.
 /// Using this protocol:
+/// --------------------
 /// Step 1) Conform to the protocol
-/// Step 2) Call the getProfileAndCacheIfNeeded method-- probably at the end of your authenticate method.
+/// Step 2) Call one of the two getProfileAndCacheIfNeeded methods-- probably at the end of your authenticate method:
+///
+/// Either: Step 2a) Typical plugins will call the getProfileAndCacheIfNeeded method with the onSuccess and onFailure closures. I.e., typical plugins will either simply fail or succeed when attempting to generate a user profile when generateNewProfile is called. E.g., see https://github.com/crspybits/CredentialsMicrosoft/blob/master/Sources/CredentialsMicrosoft/CredentialsMicrosoftToken.swift
+///
+/// Or: Step 2b) More complicated plugins will call the getProfileAndCacheIfNeeded method with the single, completion, closure. These plugins (e.g., see https://github.com/IBM-Swift/Kitura-CredentialsJWT/blob/master/Sources/CredentialsJWT/CredentialsJWT.swift) not only either succeed or fail, but they can have a third, unprocessable result.
+
 public protocol CredentialsTokenTTL: AnyObject {
+    /// Needed for caching (token, user profile) pairs until their TTL expires or they are evicted from the cache. If nil, no caching of user profiles is carried out.
     var usersCache: NSCache<NSString, BaseCacheElement>? {get}
+    
+    /// The specific TTL value used by the plugin. If nil, the TTL is not used.
     var tokenTimeToLive: TimeInterval? {get}
     
     /// Used by the getProfileAndCacheIfNeeded method to generate a profile if one can't be used from cache.
     /// - Parameter token: The Oauth2 token, used as a key in the cache.
     /// - Parameter options: The dictionary of plugin specific options.
+    /// Effects: Method you implement needs to generate a new profile for a user given the token, if possible. Your method is *not* reponsible for caching the resulting profile (if successful). Caching is handled by other components of this protocol.
     func generateNewProfile(token: String, options: [String:Any], completion: @escaping (CredentialsTokenTTLResult) -> Void)
 }
 
+/// Represents the result of a call to `generateNewProfile()`, and one of the two possible `getProfileAndCacheIfNeeded` methods, with an authentication token.
+/// On success, the resulting `UserProfile` is returned. On failure, the plugin may return
+/// a status code and headers that should be sent in response. If the plugin cannot
+/// process the token provided, then it may choose whether to fail, or to pass `unprocessable` to
+/// allow other plugins to handle authentication instead.
 public enum CredentialsTokenTTLResult {
-    // These two cases should be sufficient for most plugins. And are used by the getProfileAndCacheIfNeeded method with onSuccess and onFailure callbacks.
+    /// Authentication was successful. The `UserProfile` represents the identity of the bearer.
     case success(UserProfile)
+    
+    /// The token was successfully parsed, but authentication failed. The plugin may provide
+    /// a status code and headers to send in response.
     case failure(HTTPStatusCode?, [String:String]?)
     
-    // This case is only used by the getProfileAndCacheIfNeeded method with the completion callback and is intended for plugins with more complicated needs.
-    case other(details: String)
+    /// The token could not be handled by this plugin. It may be malformed, or intended for
+    /// another plugin.
+    /// This case is only used by the getProfileAndCacheIfNeeded method with the completion
+    /// callback and is intended for plugins with more complicated needs.
+    case unprocessable(details: String)
     
     /// Helper method to convert an Error to a failure enum
     public static func error(_ error: Swift.Error) -> CredentialsTokenTTLResult {
@@ -46,12 +67,12 @@ public enum CredentialsTokenTTLResult {
     }
 }
 
-enum CredentialsTokenTTLError: Swift.Error {
+private enum CredentialsTokenTTLError: Swift.Error {
     case couldNotGetSelf
 }
 
 extension CredentialsTokenTTL {
-    func getProfileFromCache(token: String) -> UserProfile? {
+    private func getProfileFromCache(token: String) -> UserProfile? {
         #if os(Linux)
             let key = NSString(string: token)
         #else
@@ -74,7 +95,7 @@ extension CredentialsTokenTTL {
         return nil
     }
     
-    func saveProfileToCache(token: String, profile: UserProfile) {
+    private func saveProfileToCache(token: String, profile: UserProfile) {
         let newCacheElement = BaseCacheElement(profile: profile)
         #if os(Linux)
             let key = NSString(string: token)
@@ -102,7 +123,7 @@ extension CredentialsTokenTTL {
             switch result {
             case .success(let userProfile):
                 onSuccess(userProfile)
-            case .other:
+            case .unprocessable:
                 onFailure(nil, nil)
             case .failure(let statusCode, let dict):
                 onFailure(statusCode, dict)
@@ -139,7 +160,7 @@ extension CredentialsTokenTTL {
                 strongSelf.saveProfileToCache(token: token, profile: profile)
                 completion(.success(profile))
                 
-            case .other, .failure:
+            case .unprocessable, .failure:
                 completion(generatedResult)
             }
         }
