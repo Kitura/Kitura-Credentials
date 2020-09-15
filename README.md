@@ -105,11 +105,11 @@ router.get("/multiauth") { (userProfile: MultiAuthedUser, respondWith: (MultiAut
 
 ### Raw routing
 
-For an OAuth2 Authorization Code flow authentication example please see [Kitura-Sample](https://github.com/IBM-Swift/Kitura-Sample).
+For an OAuth2 Authorization Code flow authentication example please see [Kitura-Sample](https://github.com/Kitura/Kitura-Sample).
 <br>
 
 
-The following is an example of  token-based authentication using Facebook OAuth2 access tokens.This example authenticates post requests using [CredentialsFacebookToken](https://github.com/IBM-Swift/Kitura-CredentialsFacebook) plugin.
+The following is an example of  token-based authentication using Facebook OAuth2 access tokens.This example authenticates post requests using [CredentialsFacebookToken](https://github.com/Kitura/Kitura-CredentialsFacebook) plugin.
 
 First create an instance of `Credentials` and an instance of credentials plugin:
 
@@ -146,9 +146,9 @@ router.post("/collection/:new") {request, response, next in
 
 ## List of plugins:
 
-* [JWT authentication](https://github.com/IBM-Swift/Kitura-CredentialsJWT)
-* [Facebook OAuth2 Authorization Code flow login](https://github.com/IBM-Swift/Kitura-CredentialsFacebook)
-* [Facebook OAuth2 token](https://github.com/IBM-Swift/Kitura-CredentialsFacebook)
+* [JWT authentication](https://github.com/Kitura/Kitura-CredentialsJWT)
+* [Facebook OAuth2 Authorization Code flow login](https://github.com/Kitura/Kitura-CredentialsFacebook)
+* [Facebook OAuth2 token](https://github.com/Kitura/Kitura-CredentialsFacebook)
 * [GitHub OAuth2 Authorization Code flow login](https://github.com/IBM-Swift/Kitura-CredentialsGitHub)
 * [Google OAuth2 Authorization Code flow login](https://github.com/IBM-Swift/Kitura-CredentialsGoogle)
 * [Google OAuth2 token](https://github.com/IBM-Swift/Kitura-CredentialsGoogle)

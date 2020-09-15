@@ -26,7 +26,7 @@ import Foundation
 ///
 /// Either: Step 2a) Typical plugins will call the getProfileAndCacheIfNeeded method with the onSuccess and onFailure closures. I.e., typical plugins will either simply fail or succeed when attempting to generate a user profile when generateNewProfile is called. E.g., see https://github.com/crspybits/CredentialsMicrosoft/blob/master/Sources/CredentialsMicrosoft/CredentialsMicrosoftToken.swift
 ///
-/// Or: Step 2b) More complicated plugins will call the getProfileAndCacheIfNeeded method with the single, completion, closure. These plugins (e.g., see https://github.com/IBM-Swift/Kitura-CredentialsJWT/blob/master/Sources/CredentialsJWT/CredentialsJWT.swift) not only either succeed or fail, but they can have a third, unprocessable result.
+/// Or: Step 2b) More complicated plugins will call the getProfileAndCacheIfNeeded method with the single, completion, closure. These plugins (e.g., see https://github.com/Kitura/Kitura-CredentialsJWT/blob/master/Sources/CredentialsJWT/CredentialsJWT.swift) not only either succeed or fail, but they can have a third, unprocessable result.
 
 public protocol CredentialsTokenTTL: AnyObject {
     /// Needed for caching (token, user profile) pairs until their TTL expires or they are evicted from the cache. If nil, no caching of user profiles is carried out.
