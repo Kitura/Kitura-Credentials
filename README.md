@@ -1,15 +1,15 @@
 <p align="center">
     <a href="http://kitura.io/">
-        <img src="https://raw.githubusercontent.com/IBM-Swift/Kitura/master/Sources/Kitura/resources/kitura-bird.svg?sanitize=true" height="100" alt="Kitura">
+        <img src="https://raw.githubusercontent.com/Kitura/Kitura/master/Sources/Kitura/resources/kitura-bird.svg?sanitize=true" height="100" alt="Kitura">
     </a>
 </p>
 
 <p align="center">
-    <a href="https://ibm-swift.github.io/Kitura-Credentials/index.html">
+    <a href="https://kitura.github.io/Kitura-Credentials/index.html">
         <img src="https://img.shields.io/badge/apidoc-KituraCredentials-1FBCE4.svg?style=flat" alt="APIDoc">
     </a>
-    <a href="https://travis-ci.org/IBM-Swift/Kitura-Credentials">
-    <img src="https://travis-ci.org/IBM-Swift/Kitura-Credentials.svg?branch=master" alt="Build Status - Master">
+    <a href="https://travis-ci.org/Kitura/Kitura-Credentials">
+    <img src="https://travis-ci.org/Kitura/Kitura-Credentials.svg?branch=master" alt="Build Status - Master">
     </a>
     <img src="https://img.shields.io/badge/os-macOS-green.svg?style=flat" alt="macOS">
     <img src="https://img.shields.io/badge/os-linux-green.svg?style=flat" alt="Linux">
@@ -49,10 +49,10 @@ The latest version of Kitura-Credentials requires **Swift 4.0** or newer. You ca
 
 #### Add dependencies
 
-Add the `Kitura-Credentials` package to the dependencies within your application’s `Package.swift` file. Substitute `"x.x.x"` with the latest `Kitura-Credentials` [release](https://github.com/IBM-Swift/Kitura-Credentials/releases).
+Add the `Kitura-Credentials` package to the dependencies within your application’s `Package.swift` file. Substitute `"x.x.x"` with the latest `Kitura-Credentials` [release](https://github.com/Kitura/Kitura-Credentials/releases).
 
 ```swift
-.package(url: "https://github.com/IBM-Swift/Kitura-Credentials.git", from: "x.x.x")
+.package(url: "https://github.com/Kitura/Kitura-Credentials.git", from: "x.x.x")
 ```
 
 Add `Credentials` to your target's dependencies:
@@ -149,22 +149,22 @@ router.post("/collection/:new") {request, response, next in
 * [JWT authentication](https://github.com/Kitura/Kitura-CredentialsJWT)
 * [Facebook OAuth2 Authorization Code flow login](https://github.com/Kitura/Kitura-CredentialsFacebook)
 * [Facebook OAuth2 token](https://github.com/Kitura/Kitura-CredentialsFacebook)
-* [GitHub OAuth2 Authorization Code flow login](https://github.com/IBM-Swift/Kitura-CredentialsGitHub)
-* [Google OAuth2 Authorization Code flow login](https://github.com/IBM-Swift/Kitura-CredentialsGoogle)
-* [Google OAuth2 token](https://github.com/IBM-Swift/Kitura-CredentialsGoogle)
-* [HTTP Basic authentication](https://github.com/IBM-Swift/Kitura-CredentialsHTTP)
-* [HTTP Digest authentication](https://github.com/IBM-Swift/Kitura-CredentialsHTTP)
+* [GitHub OAuth2 Authorization Code flow login](https://github.com/Kitura/Kitura-CredentialsGitHub)
+* [Google OAuth2 Authorization Code flow login](https://github.com/Kitura/Kitura-CredentialsGoogle)
+* [Google OAuth2 token](https://github.com/Kitura/Kitura-CredentialsGoogle)
+* [HTTP Basic authentication](https://github.com/Kitura/Kitura-CredentialsHTTP)
+* [HTTP Digest authentication](https://github.com/Kitura/Kitura-CredentialsHTTP)
 * [Twitter OAuth](https://github.com/jacobvanorder/Kitura-CredentialsTwitter) (Third-party implemented)
 * [Discord OAuth](https://github.com/123FLO321/Kitura-CredentialsDiscord) (Third-party implemented)
 * [Local authentication](https://github.com/NocturnalSolutions/Kitura-CredentialsLocal) (For credentials stored in e.g. a local database; third-party implemented)
 
 ## API documentation
 
-For more information visit our [API reference](http://ibm-swift.github.io/Kitura-Credentials/).
+For more information visit our [API reference](http://kitura.github.io/Kitura-Credentials/).
 
 ## Community
 
 We love to talk server-side Swift, and Kitura. Join our [Slack](http://swift-at-ibm-slack.mybluemix.net/) to meet the team!
 
 ## License
-This library is licensed under Apache 2.0. Full license text is available in [LICENSE](https://github.com/IBM-Swift/Kitura-Credentials/blob/master/LICENSE.txt).
+This library is licensed under Apache 2.0. Full license text is available in [LICENSE](https://github.com/Kitura/Kitura-Credentials/blob/master/LICENSE.txt).
