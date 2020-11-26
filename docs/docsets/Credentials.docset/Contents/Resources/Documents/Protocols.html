@@ -14,6 +14,7 @@
   </head>
   <body>
 
+    <a name="//apple_ref/swift/Section/Protocols" class="dashAnchor"></a>
 
     <a title="Protocols  Reference"></a>
 
@@ -32,7 +33,7 @@
       </p>
     
         <p class="header-col header-col--secondary">
-          <a class="header-link" href="https://github.com/IBM-Swift/Kitura-Credentials/">
+          <a class="header-link" href="https://github.com/Kitura/Kitura-Credentials/">
             <img class="header-icon" src="img/gh.png"/>
             View on GitHub
           </a>
@@ -73,6 +74,14 @@
             </ul>
           </li>
           <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/CredentialsTokenTTLResult.html">CredentialsTokenTTLResult</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
             <a class="nav-group-name-link" href="Extensions.html">Extensions</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
@@ -85,6 +94,9 @@
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/CredentialsPluginProtocol.html">CredentialsPluginProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/CredentialsTokenTTL.html">CredentialsTokenTTL</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/TypeSafeCredentials.html">TypeSafeCredentials</a>
@@ -102,7 +114,7 @@
       <article class="main-content">
 
         <section class="section">
-          <div class="section-content">
+          <div class="section-content top-matter">
             <h1>Protocols</h1>
             <p>The following protocols are available globally.</p>
 
@@ -142,10 +154,42 @@ incoming requests.</p>
                     </section>
                   </div>
                 </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11Credentials0A8TokenTTLP"></a>
+                    <a name="//apple_ref/swift/Protocol/CredentialsTokenTTL" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11Credentials0A8TokenTTLP">CredentialsTokenTTL</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Protocol to make it easier to add token TTL (Time To Live) to credentials plugins.</p>
+<h2 id='using-this-protocol' class='heading'>Using this protocol:</h2>
+
+<p>Step 1) Conform to the protocol
+Step 2) Call one of the two getProfileAndCacheIfNeeded methods&ndash; probably at the end of your authenticate method:</p>
+
+<p>Either: Step 2a) Typical plugins will call the getProfileAndCacheIfNeeded method with the onSuccess and onFailure closures. I.e., typical plugins will either simply fail or succeed when attempting to generate a user profile when generateNewProfile is called. E.g., see <a href="https://github.com/crspybits/CredentialsMicrosoft/blob/master/Sources/CredentialsMicrosoft/CredentialsMicrosoftToken.swift">https://github.com/crspybits/CredentialsMicrosoft/blob/master/Sources/CredentialsMicrosoft/CredentialsMicrosoftToken.swift</a></p>
+
+<p>Or: Step 2b) More complicated plugins will call the getProfileAndCacheIfNeeded method with the single, completion, closure. These plugins (e.g., see <a href="https://github.com/Kitura/Kitura-CredentialsJWT/blob/master/Sources/CredentialsJWT/CredentialsJWT.swift">https://github.com/Kitura/Kitura-CredentialsJWT/blob/master/Sources/CredentialsJWT/CredentialsJWT.swift</a>) not only either succeed or fail, but they can have a third, unprocessable result.</p>
+
+                        <a href="Protocols/CredentialsTokenTTL.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">CredentialsTokenTTL</span> <span class="p">:</span> <span class="kt">AnyObject</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
                 <li class="item">
                   <div>
                     <code>
@@ -188,17 +232,13 @@ incoming requests.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">TypeSafeMultiCredentials</span><span class="p">:</span> <span class="kt"><a href="Protocols/TypeSafeCredentials.html">TypeSafeCredentials</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">TypeSafeMultiCredentials</span> <span class="p">:</span> <span class="kt"><a href="Protocols/TypeSafeCredentials.html">TypeSafeCredentials</a></span></code></pre>
 
                         </div>
                       </div>
                     </section>
                   </div>
                 </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -212,7 +252,7 @@ incoming requests.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A <code>TypeSafeMiddleware</code> for authenticating users. This protocol is implemented by plugins that identify the user using information supplied by the <code>RouterRequest</code>. The plugin must implement a static <code>authenticate</code> function which returns an instance of <code>Self</code> on success. This instance defines the name of the authentication provider (e.g. <q>HTTPBasic</q>), and an <code>id</code> that uniquely identifies a user for that provider.</p>
+                        <p>A <code>TypeSafeMiddleware</code> for authenticating users. This protocol is implemented by plugins that identify the user using information supplied by the <code>RouterRequest</code>. The plugin must implement a static <code>authenticate</code> function which returns an instance of <code>Self</code> on success. This instance defines the name of the authentication provider (e.g. &ldquo;HTTPBasic&rdquo;), and an <code>id</code> that uniquely identifies a user for that provider.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">TypeSafeHTTPBasic</span> <span class="p">:</span> <span class="kt">TypeSafeCredentials</span> <span class="p">{</span>
 
@@ -241,17 +281,13 @@ incoming requests.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">TypeSafeCredentials</span><span class="p">:</span> <span class="kt">TypeSafeMiddleware</span><span class="p">,</span> <span class="kt">Codable</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">TypeSafeCredentials</span> <span class="p">:</span> <span class="kt">TypeSafeMiddleware</span><span class="p">,</span> <span class="kt">Decodable</span><span class="p">,</span> <span class="kt">Encodable</span></code></pre>
 
                         </div>
                       </div>
                     </section>
                   </div>
                 </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -267,7 +303,7 @@ incoming requests.</p>
                       <div class="abstract">
                         <p>A protocol for <code><a href="Classes/UserProfile.html">UserProfile</a></code> manipulation. 
 The current default implementation only tries to fill in the standard <code><a href="Classes/UserProfile.html">UserProfile</a></code> fields. In case this default behaviour is insufficient,
-additional data can be stored in <code><a href="Classes/UserProfile.html#/s:11Credentials11UserProfileC18extendedPropertiess10DictionaryVySSypGvp">UserProfile.extendedProperties</a></code> and filled in using this delegate. An implementation
+additional data can be stored in <code><a href="Classes/UserProfile.html#/s:11Credentials11UserProfileC18extendedPropertiesSDySSypGvp">UserProfile.extendedProperties</a></code> and filled in using this delegate. An implementation
 should be passed in the <code>options</code> argument with the key <code>userProfileDelegate</code> to the corresponding plugin&rsquo;s constructor.</p>
 
                         <a href="Protocols/UserProfileDelegate.html" class="slightly-smaller">See more</a>
@@ -291,8 +327,8 @@ should be passed in the <code>options</code> argument with the key <code>userPro
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2019 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2019-05-01)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external">IBM &amp; Kitura Project Contributors</a>. All rights reserved. (Last updated: 2020-11-25)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

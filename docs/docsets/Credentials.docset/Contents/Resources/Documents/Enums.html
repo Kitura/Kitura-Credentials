@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Classes  Reference</title>
+    <title>Enumerations  Reference</title>
     <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="css/highlight.css" />
     <meta charset="utf-8">
@@ -14,9 +14,9 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Section/Classes" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Section/Enumerations" class="dashAnchor"></a>
 
-    <a title="Classes  Reference"></a>
+    <a title="Enumerations  Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -44,7 +44,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="index.html">Credentials Reference</a>
       <img class="carat" src="img/carat.png" />
-      Classes  Reference
+      Enumerations  Reference
     </p>
 
     <div class="content-wrapper">
@@ -115,8 +115,8 @@
 
         <section class="section">
           <div class="section-content top-matter">
-            <h1>Classes</h1>
-            <p>The following classes are available globally.</p>
+            <h1>Enumerations</h1>
+            <p>The following enumerations are available globally.</p>
 
           </div>
         </section>
@@ -128,9 +128,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:11Credentials16BaseCacheElementC"></a>
-                    <a name="//apple_ref/swift/Class/BaseCacheElement" class="dashAnchor"></a>
-                    <a class="token" href="#/s:11Credentials16BaseCacheElementC">BaseCacheElement</a>
+                    <a name="/s:11Credentials0A14TokenTTLResultO"></a>
+                    <a name="//apple_ref/swift/Enum/CredentialsTokenTTLResult" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11Credentials0A14TokenTTLResultO">CredentialsTokenTTLResult</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -138,72 +138,19 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The cache element for keeping user profile information.</p>
+                        <p>Represents the result of a call to <code>generateNewProfile()</code>, and one of the two possible <code>getProfileAndCacheIfNeeded</code> methods, with an authentication token.
+On success, the resulting <code><a href="Classes/UserProfile.html">UserProfile</a></code> is returned. On failure, the plugin may return
+a status code and headers that should be sent in response. If the plugin cannot
+process the token provided, then it may choose whether to fail, or to pass <code>unprocessable</code> to
+allow other plugins to handle authentication instead.</p>
 
-                        <a href="Classes/BaseCacheElement.html" class="slightly-smaller">See more</a>
+                        <a href="Enums/CredentialsTokenTTLResult.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">BaseCacheElement</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:11CredentialsAAC"></a>
-                    <a name="//apple_ref/swift/Class/Credentials" class="dashAnchor"></a>
-                    <a class="token" href="#/s:11CredentialsAAC">Credentials</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>A pluggable framework for validating user credentials.</p>
-
-                        <a href="Classes/Credentials.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Credentials</span> <span class="p">:</span> <span class="kt">RouterMiddleware</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:11Credentials11UserProfileC"></a>
-                    <a name="//apple_ref/swift/Class/UserProfile" class="dashAnchor"></a>
-                    <a class="token" href="#/s:11Credentials11UserProfileC">UserProfile</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>The user&rsquo;s profile information. Different authentication services provide
-different user information which is used to fill instances of this class.</p>
-
-                        <a href="Classes/UserProfile.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">UserProfile</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">CredentialsTokenTTLResult</span></code></pre>
 
                         </div>
                       </div>
